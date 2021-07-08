@@ -1,0 +1,32 @@
+--1) Escreva comandos select, utilizando as tabelas para uma rede social criadas nas listas de exercícios anteriores, para responder as perguntas:
+--  a) Quais os nomes dos usuários que são amigos de Maria Cruz Albuquerque, e-mail mcalbuq@mymail.com?
+--  b) Quais os nomes dos usuários que são amigos de Paulo Xavier Ramos, e-mail pxramos@mymail.com, e também de Joana Rosa Medeiros, e-mail jorosamed@mymail.com?
+--  c) Qual a média de curtidas nas postagens que contém o assunto banco de dados?
+--  d) Qual a média de comentários das postagens que contém o assunto banco de dados?
+--  e) Quantas postagens sobre o assunto banco de dados receberam a reação amei nos últimos 3 meses?
+--  f) Qual o ranking dos assuntos mais postados na última semana?
+--  g) Qual o ranking da quantidade de postagens por estado no Brasil nos últimos 3 meses?
+--  h) Qual o ranking da quantidade de postagens contendo o assunto banco de dados por estado no Brasil nos últimos 3 meses?
+--  i) Qual o ranking dos usuários do Brasil que mais receberam curtidas em suas postagens nos últimos 30 dias?
+--  j) Qual o ranking da quantidade de reações às postagens do grupo SQLite por faixa etária por gênero nos últimos 60 dias? Considere as faixas etárias: -18, 18-21, 21-25, 25-30, 30-36, 36-43, 43-51, 51-60 e 60-.
+--  k) Quais os nomes dos usuários que tiveram alguma postagem comentada pelo usuário Edson Arantes do Nascimento, e-mail pele@cbf.com.br, no último mês?
+--  l) Quais os nomes dos usuários que são amigos dos membros do grupo Banco de Dados-IFRS2021?
+--  m) Quais os nomes dos usuários que receberam mais de 1000 curtidas em uma postagem, em menos de 24 horas após a postagem, nos últimos 7 dias?
+--  n) Quais os assuntos das postagens do usuário Paulo Martins Silva, e-mail pmartinssilva90@mymail.com, compartilhadas pelo usuário João Silva Brasil, e-mail joaosbras@mymail.com, nos últimos 3 meses?
+
+--2) Descreva e justifique as adequações/alterações que foram realizadas nas tabelas criadas para uma rede social nas listas de exercícios anteriores para que o exercício 1 acima pudesse ser resolvido.
+
+--3) Utilizando a modelagem da pizzaria do material, escreva comandos select para responder as perguntas:
+--  a) Quais os nomes dos ingredientes no sabor cujo nome é São Tomé e Príncipe?
+--  b) Quais os nomes dos sabores que contém o ingrediente bacon?
+--  c) Quais os nomes dos sabores que contém os ingredientes bacon e gorgonzola?
+--  d) Quais os nomes dos sabores salgados que possuem mais de 8 ingredientes?
+--  e) Quais os nomes dos sabores doces que possuem mais de 8 ingredientes?
+--  f) Quais os nomes dos sabores que foram pedidos mais de 20 vezes no mês passado?
+--  g) Quais os nomes dos sabores salgados que foram pedidos mais de 20 vezes no mês passado?
+--  h) Quais is nomes dos sabores doces que foram pedidos mais de 20 vezes no mês passado?
+--  i) Qual o ranking dos ingredientes mais pedidos nos últimos 12 meses?
+--  j) Qual o ranking dos sabores salgados mais pedidos por mês nos últimos 12 meses?
+--  k) Qual o ranking dos sabores doces mais pedidos por mês nos últimos 12 meses?
+--  l) Qual o ranking da quantidade de pizzas pedidas por tipo por tamanho nos últimos 6 meses?
+--  m) Qual o ranking dos ingredientes mais pedidos acompanhando cada borda nos últimos 6 meses?
