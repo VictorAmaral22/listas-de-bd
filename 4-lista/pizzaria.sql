@@ -74,7 +74,7 @@ select ingrediente.nome, count(*) as qtdPedidos from comanda
     join saboringrediente on sabor.codigo = saboringrediente.sabor
     join ingrediente on ingrediente.codigo = saboringrediente.ingrediente
 where 
-    date(data, 'localtime') between date('now', '-12 month', 'localtime') and date('now', 'localtime')
+    (date(data, 'localtime') between date('now', 'start of month','-12 month', 'localtime') and date('now', 'localtime'))
 group by ingrediente.nome order by qtdPedidos desc;
 
 --  j) Qual o ranking dos sabores salgados mais pedidos por mês nos últimos 12 meses?   REVISAR
@@ -84,7 +84,7 @@ select sabor.nome, count(*) as qtdPedidos, strftime('%Y-%m', data, 'localtime') 
     join sabor on pizzasabor.sabor = sabor.codigo
     join tipo on sabor.tipo = tipo.codigo
 where 
-    (date(data, 'localtime') between date('now', '-12 month', 'localtime') and date('now', 'localtime')) and
+    (date(data, 'localtime') between date('now', 'start of month','-12 month', 'localtime') and date('now', 'localtime')) and
     lower(tipo.nome) like '%salgadas%'
 group by sabor.nome, strftime('%m', data, 'localtime') order by data asc, qtdPedidos desc;
 
@@ -95,7 +95,7 @@ select sabor.nome, count(*) as qtdPedidos, strftime('%Y-%m', data, 'localtime') 
     join sabor on pizzasabor.sabor = sabor.codigo
     join tipo on sabor.tipo = tipo.codigo
 where 
-    (date(data, 'localtime') between date('now', '-12 month', 'localtime') and date('now', 'localtime')) and
+    (date(data, 'localtime') between date('now', 'start of month','-12 month', 'localtime') and date('now', 'localtime')) and
     lower(tipo.nome) like '%doces%'
 group by sabor.nome, strftime('%m', data, 'localtime') order by data asc, qtdPedidos desc;
 
@@ -106,7 +106,7 @@ select tipo.nome as tipo, pizza.tamanho as tamanho, count(*) as qtdPedidos from 
     join sabor on pizzasabor.sabor = sabor.codigo
     join tipo on sabor.tipo = tipo.codigo
 where
-    date(data, 'localtime') between date('now', '-6 month', 'localtime') and date('now', 'localtime')
+    (date(data, 'localtime') between date('now', 'start of month','-6 month', 'localtime') and date('now', 'localtime'))
 group by pizza.tamanho, tipo order by qtdPedidos desc;
 
 --  m) Qual o ranking dos ingredientes mais pedidos acompanhando cada borda nos últimos 6 meses? 
@@ -118,6 +118,6 @@ select ingrediente.nome, borda.nome, count(*) as qtdPedidos from comanda
     join saboringrediente on sabor.codigo = saboringrediente.sabor
     join ingrediente on ingrediente.codigo = saboringrediente.ingrediente
 where 
-    (date(data, 'localtime') between date('now', '-6 month', 'localtime') and date('now', 'localtime')) and
+    (date(data, 'localtime') between date('now', 'start of month','-6 month', 'localtime') and date('now', 'localtime')) and
     pizza.borda is not null
 group by ingrediente.nome, borda.nome order by qtdPedidos desc;
