@@ -44,11 +44,14 @@ create table cidade(
 create table usuario(
    email varchar(200) not null,
    nome varchar(200) not null,
+   genero char(1) not null,
+   datanasc date not null,
    datadecadastro date not null, --default current_date
    horadecadastro time not null, --default current_timestamp
    cidade integer not null, 
    foreign key(cidade) references cidade(codigo),
-   primary key(email)
+   primary key(email),
+   check(genero = 'm' or genero = 'f')
 );
  
 create table amigo(
@@ -191,12 +194,12 @@ insert into pais(codigoISO, nome) values('BRA', 'Brasil');
 insert into estado(codigodaUF, nome, pais) values('RS', 'Rio Grande do Sul', 'BRA');
 insert into cidade(codigo, nome, estado) values(1, 'Rio Grande', 'RS');
 
-insert into usuario(email, nome, datadecadastro, horadecadastro, cidade) values('professordebd@gmail.com','Professor de BD', '2010-01-01', '09:00:00', 1); 
-insert into usuario(email, nome, datadecadastro, horadecadastro, cidade) values('joaosbras@mymail.com','João Silva Brasil', '2020-01-01', '13:00:00', 1);
-insert into usuario(email, nome, datadecadastro, horadecadastro, cidade) values('pedroalencar@gmail.com','Pedro Alencar Pereira', '2020-01-01', '13:05:00', 1); 
-insert into usuario(email, nome, datadecadastro, horadecadastro, cidade) values('mcalbuq@mymail.com','Maria Cruz Albuquerque', '2020-01-01', '13:10:00', 1); 
-insert into usuario(email, nome, datadecadastro, horadecadastro, cidade) values('jorosamed@mymail.com','Joana Rosa Medeiros', '2020-01-01', '13:15:00', 1); 
-insert into usuario(email, nome, datadecadastro, horadecadastro, cidade) values('pxramos@mymail.com','Paulo Xavier Ramos', '2020-01-01', '13:20:00', 1); 
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('professordebd@gmail.com','Professor de BD', 'm', '1950-01-22', '2010-01-01', '09:00:00', 1); 
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('joaosbras@mymail.com','João Silva Brasil', 'm', '1966-01-22', '2020-01-01', '13:00:00', 1);
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('pedroalencar@gmail.com','Pedro Alencar Pereira', 'm', '1974-03-23', '2020-01-01', '13:05:00', 1); 
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('mcalbuq@mymail.com','Maria Cruz Albuquerque', 'f', '1983-12-02', '2020-01-01', '13:10:00', 1); 
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('jorosamed@mymail.com','Joana Rosa Medeiros', 'f', '1986-11-20', '2020-01-01', '13:15:00', 1); 
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('pxramos@mymail.com','Paulo Xavier Ramos', 'm', '1995-10-30', '2020-01-01', '13:20:00', 1); 
 
 insert into amigo(usuario1, usuario2, datadeamizade, horadeamizade) values('professordebd@gmail.com','joaosbras@mymail.com', '2021-05-17', '10:00:00');
 insert into amigo(usuario1, usuario2, datadeamizade, horadeamizade) values('professordebd@gmail.com','pedroalencar@gmail.com', '2021-05-17', '10:05:00');
@@ -207,7 +210,7 @@ insert into amigo(usuario1, usuario2, datadeamizade, horadeamizade) values('prof
 
 insert into assunto(codigo, nome) values(1, 'BD');
 insert into assunto(codigo, nome) values(2, 'SQLite');
-insert into usuario(email, nome, datadecadastro, horadecadastro, cidade) values('ifrsrg@gmail.com','IFRS campus Rio Grande', '2020-01-01', '13:20:00', 1);
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('ifrsrg@gmail.com','IFRS campus Rio Grande', 'm', '1999-01-01', '2020-01-01', '13:20:00', 1);
 insert into post(codigo, usuario, datadopost, horadopost, conteudo, cidade) values(1, 'joaosbras@mymail.com', '2021-06-02', '15:00:00', 'Hoje eu aprendi como inserir dados no SQLite no IFRS', 1);
 insert into assuntopost(assunto, post) values(1, 1);
 insert into assuntopost(assunto, post) values(2, 1);
@@ -266,10 +269,10 @@ insert into post(codigo, usuario, datadopost, horadopost, conteudo, cidade) valu
 insert into cidade(codigo, nome, estado) values(2, 'São José do Norte', 'RS');
 insert into cidade(codigo, nome, estado) values(3, 'Santa Maria', 'RS');
 
-insert into usuario(email, nome, datadecadastro, horadecadastro, cidade) values('aninha@gmail.com','Aninha', '2010-01-01', '09:00:00', 2); 
-insert into usuario(email, nome, datadecadastro, horadecadastro, cidade) values('mariaclara1@gmail.com','Maria Clara 1', '2010-01-01', '09:00:00', 3); 
-insert into usuario(email, nome, datadecadastro, horadecadastro, cidade) values('mariaclara2@gmail.com','Maria Clara 2', '2010-01-01', '09:00:00', 3); 
-insert into usuario(email, nome, datadecadastro, horadecadastro, cidade) values('giovanna@gmail.com','Giovanna', '2021-07-01', '09:00:00', 1); 
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('aninha@gmail.com','Aninha', 'f', '2001-09-11', '2010-01-01', '09:00:00', 2); 
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('mariaclara1@gmail.com','Maria Clara 1', 'f', '2002-04-22', '2010-01-01', '09:00:00', 3); 
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('mariaclara2@gmail.com','Maria Clara 2', 'f', '2005-11-05', '2010-01-01', '09:00:00', 3); 
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('giovanna@gmail.com','Giovanna', 'f', '2006-01-22', '2021-07-01', '09:00:00', 1); 
 
 insert into postreacao(post, reacao, usuario, datapostreacao, horapostreacao) values(5,1,'pedroalencar@gmail.com','2021-06-02', '15:00:00');
 insert into postreacao(post, reacao, usuario, datapostreacao, horapostreacao) values(6,1,'pedroalencar@gmail.com','2021-06-02', '15:05:00');
@@ -381,6 +384,7 @@ insert into post(codigo, usuario, datadopost, horadopost, conteudo, cidade) valu
 insert into post(codigo, usuario, datadopost, horadopost, conteudo, cidade) values(30,'mariaclara1@gmail.com', '2021-06-27', '16:05:00', 'Olá mundo9', 4);
 insert into post(codigo, usuario, datadopost, horadopost, conteudo, cidade) values(31,'mariaclara1@gmail.com', '2021-06-27', '16:10:00', 'Olá mundo9', 4);
 insert into post(codigo, usuario, datadopost, horadopost, conteudo, cidade) values(32,'mariaclara1@gmail.com', '2021-06-27', '16:15:00', 'Olá mundo9', 4);
+
 select count(post.codigo), estado.nome as estado from post join cidade on post.cidade = cidade.codigo join estado on cidade.estado = estado.codigodaUF
 where
     date(post.datadopost, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
@@ -403,11 +407,43 @@ order by count(post.codigo) desc;
 --  i) Qual o ranking dos usuários do Brasil que mais receberam curtidas em suas postagens nos últimos 30 dias?
 
 
---  j) Qual o ranking da quantidade de reações às postagens do grupo SQLite por faixa etária por gênero nos últimos 60 dias? Considere as faixas etárias: -18, 18-21, 21-25, 25-30, 30-36, 36-43, 43-51, 51-60 e 60-.
+--  j) Qual o ranking da quantidade de reações às postagens do grupo SQLite por faixa etária por gênero nos últimos 60 dias? 
+-- Considere as faixas etárias: -18, 18-21, 21-25, 25-30, 30-36, 36-43, 43-51, 51-60 e 60-.
 insert into grupo (nome) values ('SQLite');
-insert into membro (usuario, grupo) values ('professordebd@gmail.com', 1);
-insert into membro (usuario, grupo) values ('pedroalencar@gmail.com', 1);
+insert into membro (usuario, grupo) values ('professordebd@gmail.com', 1); --71
+insert into membro (usuario, grupo) values ('joaosbras@mymail.com', 1); --55
+insert into membro (usuario, grupo) values ('pedroalencar@gmail.com', 1); --47
+insert into membro (usuario, grupo) values ('pxramos@mymail.com', 1); --25
+insert into membro (usuario, grupo) values ('aninha@gmail.com', 1); --19
 
+insert into post(codigo, grupo, usuario, datadopost, horadopost, conteudo, cidade) values(33, 1, 'professordebd@gmail.com', '2021-06-27', '16:00:00', 'Post aleatório no grupo guys...', 4);
+insert into post(codigo, grupo, usuario, datadopost, horadopost, conteudo, cidade) values(34, 1, 'pxramos@mymail.com', '2021-07-02', '16:00:00', 'Post aleatório 2 no grupo guys...', 4);
+insert into post(codigo, grupo, usuario, datadopost, horadopost, conteudo, cidade) values(35, 1, 'aninha@gmail.com', '2021-07-13', '16:00:00', 'Post aleatório 3 no grupo guys...', 4);
+
+insert into postreacao(post, reacao, usuario, datapostreacao, horapostreacao) values(33, 1, 'aninha@gmail.com', '2021-06-27', '16:05:00');
+insert into postreacao(post, reacao, usuario, datapostreacao, horapostreacao) values(33, 2, 'pxramos@mymail.com', '2021-06-27', '16:05:00');
+insert into postreacao(post, reacao, usuario, datapostreacao, horapostreacao) values(33, 3, 'joaosbras@mymail.com', '2021-06-27', '16:55:00');
+insert into postreacao(post, reacao, usuario, datapostreacao, horapostreacao) values(34, 3, 'joaosbras@mymail.com', '2021-07-02', '16:15:00');
+insert into postreacao(post, reacao, usuario, datapostreacao, horapostreacao) values(34, 3, 'pxramos@mymail.com', '2021-07-02', '16:15:00');
+insert into postreacao(post, reacao, usuario, datapostreacao, horapostreacao) values(35, 3, 'professordebd@gmail.com', '2021-07-13', '16:01:00');
+
+select case
+    when cast((julianday('now', 'localtime')-julianday(usuario.datanasc, 'localtime'))/365.2422 as integer) < 18 then 'Menor de 18'
+    when cast((julianday('now', 'localtime')-julianday(usuario.datanasc, 'localtime'))/365.2422 as integer) between 18 and 21 then 'De 18 a 21'
+    when cast((julianday('now', 'localtime')-julianday(usuario.datanasc, 'localtime'))/365.2422 as integer) between 21 and 25 then 'De 21 a 25'
+    when cast((julianday('now', 'localtime')-julianday(usuario.datanasc, 'localtime'))/365.2422 as integer) between 25 and 30 then 'De 25 a 30'
+    when cast((julianday('now', 'localtime')-julianday(usuario.datanasc, 'localtime'))/365.2422 as integer) between 30 and 36 then 'De 30 a 36'
+    when cast((julianday('now', 'localtime')-julianday(usuario.datanasc, 'localtime'))/365.2422 as integer) between 36 and 43 then 'De 36 a 43'
+    when cast((julianday('now', 'localtime')-julianday(usuario.datanasc, 'localtime'))/365.2422 as integer) between 43 and 51 then 'De 43 a 51'
+    when cast((julianday('now', 'localtime')-julianday(usuario.datanasc, 'localtime'))/365.2422 as integer) between 51 and 60 then 'De 51 a 60'
+    when cast((julianday('now', 'localtime')-julianday(usuario.datanasc, 'localtime'))/365.2422 as integer) > 60 then 'Maior de 60'
+end as faixaEtaria, usuario.genero, count(*) as qtdReacoes
+from post
+    join postreacao on post.codigo = postreacao.post
+    join reacao on postreacao.reacao = reacao.codigo
+    join usuario on postreacao.usuario = usuario.email
+where post.grupo = 1
+group by faixaEtaria, usuario.genero;
 
 --  k) Quais os nomes dos usuários que tiveram alguma postagem comentada pelo usuário Edson Arantes do Nascimento, e-mail pele@cbf.com.br, no último mês?
 
@@ -422,3 +458,4 @@ insert into membro (usuario, grupo) values ('pedroalencar@gmail.com', 1);
 --2) Descreva e justifique as adequações/alterações que foram realizadas nas tabelas criadas para uma rede social nas listas de exercícios anteriores para que o exercício 1 acima pudesse ser resolvido.
 
 --Ligamos as tabelas página e grupo ao post.
+--Adicionamos a data de nascimento dos usuários e o gênero deles.
