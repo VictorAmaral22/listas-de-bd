@@ -17,4 +17,3 @@
 
 --2) Descreva e justifique as adequações/alterações que foram realizadas nas tabelas criadas para uma rede social nas listas de exercícios anteriores para que o exercício 1 acima pudesse ser resolvido.
 
---trocar a pk do user pro email
