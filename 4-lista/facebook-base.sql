@@ -29,16 +29,16 @@ create table estado(
    codigodaUF char(2) not null,
    nome varchar(100),
    pais char(3) not null,
-   primary key(codigodaUF),
-   foreign key(pais) references pais(codigoISO)
-   );
+   foreign key(pais) references pais(codigoISO),
+   primary key(codigodaUF)
+);
 
 create table cidade(
    codigo integer not null,
    nome varchar(100) not null,
    estado char(2) not null,
-   primary key (codigo),
-   foreign key (estado) references estado(codigodaUF)
+   foreign key (estado) references estado(codigodaUF),
+   primary key (codigo)
 );
 
 create table usuario(
@@ -60,7 +60,8 @@ create table amigo(
    datadeamizade date not null, --default current_date
    horadeamizade time not null, --default current_timestamp
    foreign key(usuario1) references usuario(email),
-   foreign key(usuario2) references usuario(email)
+   foreign key(usuario2) references usuario(email),
+   primary key(usuario1, usuario2)
 );
 
 create table pagina(
@@ -73,7 +74,8 @@ create table seguidor(
     usuario varchar(200) not null,
     pagina integer not null,
     foreign key(usuario) references usuario(email),
-    foreign key(pagina) references pagina(codigo)
+    foreign key(pagina) references pagina(codigo),
+    primary key(usuario, pagina)
 );
 
 create table grupo(
@@ -85,8 +87,9 @@ create table grupo(
 create table membro(
     usuario varchar(200) not null,
     grupo integer not null,
-    foreign key(usuario) references usuario(email)
-    foreign key(grupo) references grupo(codigo)
+    foreign key(usuario) references usuario(email),
+    foreign key(grupo) references grupo(codigo),
+    primary key(usuario, grupo)
 );
 
 
@@ -102,15 +105,16 @@ create table post(
     foreign key(cidade) references cidade(codigo),
     foreign key(grupo) references grupo(codigo),
     foreign key(pagina) references pagina(codigo),
-    primary key(codigo),
-    foreign key(usuario) references usuario(email)
+    foreign key(usuario) references usuario(email),
+    primary key(codigo)
 );
 
 create table citacao(
     post integer not null,
     usuario varchar(200) not null,
     foreign key(post) references post(codigo),
-    foreign key(usuario) references usuario(email)
+    foreign key(usuario) references usuario(email),
+    primary key(post, usuario)
 );
 
 
@@ -119,8 +123,9 @@ create table compartilhar(
     usuario varchar(200) not null,
     datadecompartilhamento date not null, --default current_date
     horariodecompartilhamento time not null, --default current_timestamp
-  foreign key(post) references post(codigo),
-    foreign key(usuario) references usuario(email)
+    foreign key(post) references post(codigo),
+    foreign key(usuario) references usuario(email),
+    primary key(post, usuario)
 );
 
 create table reacao(
@@ -137,7 +142,8 @@ create table postreacao(
     horapostreacao time not null, --default current_timestamp
     foreign key(post) references post(codigo),
     foreign key(reacao) references reacao(codigo),
-    foreign key(usuario) references usuario(email)
+    foreign key(usuario) references usuario(email),
+    primary key(post, usuario)
 );
 
 create table comentario(
@@ -147,16 +153,17 @@ create table comentario(
     horacomentario time not null, --default current_timestamp
     usuario varchar(200) not null,
     post integer not null,
-    primary key(codigo),
     foreign key (usuario) references usuario(email),
-    foreign key (post) references post(codigo)
+    foreign key (post) references post(codigo),
+    primary key(codigo)
 );
 
 create table resposta(
     comentario1 integer not null,
     comentario2 integer not null,
     foreign key(comentario1) references comentario(codigo),
-    foreign key(comentario2) references comentario(codigo)
+    foreign key(comentario2) references comentario(codigo),
+    primary key(comentario1, comentario2)
 );
 
 create table comentarioreacao(
@@ -167,7 +174,8 @@ create table comentarioreacao(
    horacomentarioreacao time not null, --default current_timestamp
    foreign key(comentario) references comentario(codigo),
    foreign key(reacao) references reacao(codigo),
-    foreign key(usuario) references usuario(email)
+   foreign key(usuario) references usuario(email),
+   primary key(comentario, usuario)
 );
 
 create table assunto(
@@ -180,14 +188,16 @@ create table assuntopost(
    assunto integer not null,
    post integer not null,
    foreign key(assunto) references assunto(codigo),
-   foreign key(post) references post(codigo)
+   foreign key(post) references post(codigo),
+   primary key(assunto,post)
 );
 
 create table assuntocomentario(
   assunto integer not null,
   comentario integer not null,
   foreign key(assunto) references assunto(codigo),
-   foreign key(comentario) references comentario(codigo)
+  foreign key(comentario) references comentario(codigo),
+  primary key(assunto,comentario)
 );
 
 insert into pais(codigoISO, nome) values('BRA', 'Brasil');
@@ -236,8 +246,7 @@ insert into comentarioreacao(comentario, reacao, usuario, datacomentarioreacao, 
 insert into comentario(codigo, conteudo, datacomentario, horacomentario, usuario, post) values(3, 'Já agendaste horário de atendimento com o professor?', '2021-06-02', '15:30:00', 'joaosbras@mymail.com', 1);
 insert into resposta(comentario1, comentario2) values(2,3);
 
-insert into post(codigo, usuario, datadopost, horadopost, conteudo, cidade) values(2, 'professordebd@gmail.com', 
-'2021-06-02', '15:35:00', 'Atendimento de BD no GMeet amanhã para quem tiver dúvidas de INSERT', 1);
+insert into post(codigo, usuario, datadopost, horadopost, conteudo, cidade) values(2, 'professordebd@gmail.com','2021-06-02', '15:35:00', 'Atendimento de BD no GMeet amanhã para quem tiver dúvidas de INSERT', 1);
 insert into assunto(codigo, nome) values(4, 'atendimento');
 insert into assuntopost(assunto, post) values(1,2);
 insert into assuntopost(assunto, post) values(2,2);
@@ -302,6 +311,7 @@ where
 group by usuario.nome
 having usuario.email!='mcalbuq@mymail.com';
 
+
 --  b) Quais os nomes dos usuários que são amigos de Paulo Xavier Ramos, e-mail pxramos@mymail.com, e também de Joana Rosa Medeiros, e-mail jorosamed@mymail.com?
 insert into amigo(usuario1, usuario2, datadeamizade, horadeamizade) values('pxramos@mymail.com','joaosbras@mymail.com', '2021-05-17', '10:00:00');
 insert into amigo(usuario1, usuario2, datadeamizade, horadeamizade) values('pxramos@mymail.com','pedroalencar@gmail.com', '2021-05-17', '10:00:00');
@@ -320,13 +330,18 @@ where
 group by usuario.nome
 having (usuario.email != 'pxramos@mymail.com' and usuario.email != 'jorosamed@mymail.com');
 
---  c) Qual a média de curtidas nas postagens que contém o assunto banco de dados? -REVISAR
-select assunto.nome, count(*)/count(distinct post.codigo) as media from post
+
+--  c) Qual a média de curtidas nas postagens que contém o assunto banco de dados?
+select cast(count(case when reacao.nome = 'curtir' then 1 else null end ) as real)/cast(count(distinct post.codigo) as real) as media from post
     join assuntopost on post.codigo = assuntopost.post
     join assunto on assuntopost.assunto = assunto.codigo
     left join postreacao on post.codigo = postreacao.post
     left join reacao on postreacao.reacao = reacao.codigo
-where assunto.nome = 'BD' and reacao.nome = 'curtir' or assunto.nome = 'BD' and reacao.nome is null;
+where 
+    (assunto.nome = 'BD' and reacao.nome = 'curtir') or 
+    (assunto.nome = 'BD' and reacao.nome != 'curtir') or 
+    (assunto.nome = 'BD' and reacao.nome is null);
+
 
 --  d) Qual a média de comentários das postagens que contém o assunto banco de dados?
 select assunto.nome, cast(count(distinct comentario.codigo) as real)/cast(count(distinct post.codigo) as real) as media from post
@@ -406,6 +421,14 @@ order by count(post.codigo) desc;
 
 --  i) Qual o ranking dos usuários do Brasil que mais receberam curtidas em suas postagens nos últimos 30 dias?
 
+--Estamos considerando que mais curtidas em suas postagens se trata de independente de quantas postagens, ter mais curtidas.primary
+
+select post.usuario from post join postreacao on post.codigo = postreacao.post join usuario on post.usuario= usuario.email join
+ cidade on usuario.cidade=cidade.codigo join estado on cidade.estado= estado.codigodaUF join pais on estado.pais = pais.codigoISO join reacao on postreacao.reacao= reacao.codigo
+ where reacao.nome='curtir' and pais.nome = "Brasil"
+group by post.usuario
+order by count(post.codigo) desc;
+ 
 
 --  j) Qual o ranking da quantidade de reações às postagens do grupo SQLite por faixa etária por gênero nos últimos 60 dias? 
 -- Considere as faixas etárias: -18, 18-21, 21-25, 25-30, 30-36, 36-43, 43-51, 51-60 e 60-.
@@ -447,13 +470,74 @@ group by faixaEtaria, usuario.genero;
 
 --  k) Quais os nomes dos usuários que tiveram alguma postagem comentada pelo usuário Edson Arantes do Nascimento, e-mail pele@cbf.com.br, no último mês?
 
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('pele@cbf.com.br','Edson Arantes do Nascimento', 'm', 
+'1950-01-22', '2010-01-01', '09:00:00', 1); 
+
+insert into comentario(codigo, conteudo, datacomentario, horacomentario, usuario, post) values(4, 'Blablabla', '2021-06-02', '15:15:00', 'pele@cbf.com.br', 1);
+
+insert into comentario(codigo, conteudo, datacomentario, horacomentario, usuario, post) values(5, 'Blablabla1', '2021-06-02', '15:20:00', 'pele@cbf.com.br', 2);
+
+select post.codigo, post.usuario, comentario.codigo, comentario.usuario, comentario.post from post join comentario on post.codigo = comentario.post
+ join usuario on comentario.usuario = usuario.email
+ where usuario.email = "pele@cbf.com.br";
+
+select post.codigo, usuario.nome from post 
+    join usuario on post.usuario = usuario.email
+    join comentario on post.codigo = comentario.post
+where 
+    comentario.usuario = 'pele@cbf.com.br' and
+    (date(comentario.datacomentario, 'localtime') between date('now', '-1 month', 'localtime') and date('now', 'localtime'));
+
 --  l) Quais os nomes dos usuários que são amigos dos membros do grupo Banco de Dados-IFRS2021?
+insert into grupo (nome) values ('Banco de Dados-IFRS2021');
+insert into membro (usuario, grupo) values 
+    ('mariaclara2@gmail.com', 2),
+    ('professordebd@gmail.com', 2),
+    ('jorosamed@mymail.com', 2),
+    ('joaosbras@mymail.com', 2);
+
+select grupo.nome, 
+    case
+        when usuario.email = membro.usuario then null
+        when usuario.email != membro.usuario then usuario.nome
+    end as amigoNome
+from grupo
+    join membro on grupo.codigo = membro.grupo
+    join amigo on membro.usuario = amigo.usuario1 or membro.usuario = amigo.usuario2
+    join usuario on amigo.usuario1 = usuario.email or amigo.usuario2 = usuario.email
+where
+    grupo.nome = 'Banco de Dados-IFRS2021' and
+    amigoNome is not null
+group by amigoNome
+order by grupo.nome, membro.usuario;
 
 --  m) Quais os nomes dos usuários que receberam mais de 1000 curtidas em uma postagem, em menos de 24 horas após a postagem, nos últimos 7 dias?
+select postreacao.post, post.usuario, usuario.nome, count(postreacao.reacao) from postreacao 
+    join post on postreacao.post=post.codigo 
+    join reacao on postreacao.reacao=reacao.codigo 
+    join usuario on post.usuario = usuario.email
+where 
+    reacao.nome = 'curtir' and
+    (datetime(postreacao.datapostreacao, 'localtime') between datetime(post.datadopost, 'localtime') and datetime(post.datadopost, '+1 day', 'localtime')) and
+    (datetime(post.datadopost, 'localtime') between datetime('now', '-7 days', 'localtime') and datetime('now', 'localtime'))
+group by post.codigo
+having count(postreacao.reacao) > 1000;
 
 --  n) Quais os assuntos das postagens do usuário Paulo Martins Silva, e-mail pmartinssilva90@mymail.com, compartilhadas pelo usuário João Silva Brasil, e-mail joaosbras@mymail.com, nos últimos 3 meses?
+insert into usuario(email, nome, genero, datanasc, datadecadastro, horadecadastro, cidade) values('pmartinssilva90@mymail.com','Paulo Martins Silva', 'm', '2001-09-11', '2010-01-01', '09:00:00', 2); 
+insert into post(codigo, usuario, datadopost, horadopost, conteudo, cidade) values(36,'pmartinssilva90@mymail.com', '2021-06-25', '15:40:00', 'Olá mundo', 1);
+insert into assuntopost(assunto, post) values(1, 36);
+insert into assuntopost(assunto, post) values(2, 36);
+insert into compartilhar(post, usuario, datadecompartilhamento, horariodecompartilhamento) values(36, 'joaosbras@mymail.com', '2021-06-25', '15:40:00');
 
-
+select post.codigo, group_concat(assunto.nome, ', ') from post
+    join assuntopost on post.codigo = assuntopost.post
+    join assunto on assuntopost.assunto = assunto.codigo
+    join compartilhar on post.codigo = compartilhar.post
+where 
+    (post.usuario = 'pmartinssilva90@mymail.com') and
+    (compartilhar.usuario = 'joaosbras@mymail.com') and
+    (date(datadopost, 'localtime') between date('now', '-3 month', 'localtime') and date('now', 'localtime'));
 
 --2) Descreva e justifique as adequações/alterações que foram realizadas nas tabelas criadas para uma rede social nas listas de exercícios anteriores para que o exercício 1 acima pudesse ser resolvido.
 
