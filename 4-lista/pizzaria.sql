@@ -4,7 +4,7 @@ select sabor.nome, group_concat(ingrediente.nome, ', ') as ingredientes from sab
     join sabor on saboringrediente.sabor = sabor.codigo
     join ingrediente on saboringrediente.ingrediente = ingrediente.codigo
 where lower(sabor.nome) like '%sao tome e principe%';
-    
+ 
 --  b) Quais os nomes dos sabores que contém o ingrediente bacon?
 select ingrediente.nome, group_concat(sabor.nome, ', ') as sabores from saboringrediente
     join sabor on saboringrediente.sabor = sabor.codigo
@@ -77,7 +77,7 @@ where
     (date(data, 'localtime') between date('now', 'start of month','-12 month', 'localtime') and date('now', 'localtime'))
 group by ingrediente.nome order by qtdPedidos desc;
 
---  j) Qual o ranking dos sabores salgados mais pedidos por mês nos últimos 12 meses?   REVISAR
+--  j) Qual o ranking dos sabores salgados mais pedidos por mês nos últimos 12 meses?
 select sabor.nome, count(*) as qtdPedidos, strftime('%Y-%m', data, 'localtime') from comanda 
     join pizza on comanda.numero = pizza.comanda
     join pizzasabor on pizza.codigo = pizzasabor.pizza
@@ -86,9 +86,10 @@ select sabor.nome, count(*) as qtdPedidos, strftime('%Y-%m', data, 'localtime') 
 where 
     (date(data, 'localtime') between date('now', 'start of month','-12 month', 'localtime') and date('now', 'localtime')) and
     lower(tipo.nome) like '%salgadas%'
-group by sabor.nome, strftime('%m', data, 'localtime') order by data asc, qtdPedidos desc;
+group by sabor.nome, strftime('%m', data, 'localtime') 
+order by data asc, qtdPedidos desc;
 
---  k) Qual o ranking dos sabores doces mais pedidos por mês nos últimos 12 meses?  REVISAR
+--  k) Qual o ranking dos sabores doces mais pedidos por mês nos últimos 12 meses?
 select sabor.nome, count(*) as qtdPedidos, strftime('%Y-%m', data, 'localtime') from comanda 
     join pizza on comanda.numero = pizza.comanda
     join pizzasabor on pizza.codigo = pizzasabor.pizza
@@ -97,7 +98,8 @@ select sabor.nome, count(*) as qtdPedidos, strftime('%Y-%m', data, 'localtime') 
 where 
     (date(data, 'localtime') between date('now', 'start of month','-12 month', 'localtime') and date('now', 'localtime')) and
     lower(tipo.nome) like '%doces%'
-group by sabor.nome, strftime('%m', data, 'localtime') order by data asc, qtdPedidos desc;
+group by sabor.nome, strftime('%m', data, 'localtime') 
+order by data asc, qtdPedidos desc;
 
 --  l) Qual o ranking da quantidade de pizzas pedidas por tipo por tamanho nos últimos 6 meses?
 select tipo.nome as tipo, pizza.tamanho as tamanho, count(*) as qtdPedidos from comanda
