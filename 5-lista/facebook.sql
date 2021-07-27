@@ -43,26 +43,8 @@ having count(*) = (
 );
 
 --  c) Quais os 5 assuntos mais comentados no Brasil nos últimos 30 dias? - em desenvolvimento ainda
-insert into assunto(nome) values ('Subselect');
 
-insert into assuntopost(assunto, post) values(4, 23);
-insert into assuntopost(assunto, post) values(5, 23);
-insert into assuntopost(assunto, post) values(5, 27);
-insert into assuntopost(assunto, post) values(1, 26);
-insert into assuntopost(assunto, post) values(5, 28);
-insert into assuntopost(assunto, post) values(5, 29);
-insert into assuntopost(assunto, post) values(2, 32);
-insert into assuntopost(assunto, post) values(4, 24);
-insert into assuntopost(assunto, post) values(4, 25);
-insert into assuntopost(assunto, post) values(5, 25);
-
-insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-15', '00:00:00', 'aninha@gmail.com', 23);
-insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-15', '00:05:00', 'aninha@gmail.com', 23);
-insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:00:00', 'aninha@gmail.com', 25);
-insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:05:00', 'aninha@gmail.com', 25);
-insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:10:00', 'aninha@gmail.com', 25);
-insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:00:00', 'aninha@gmail.com', 26);
-
+--Mostra os assuntos dos posts dos últimos 30 dias
 select post.codigo, pais.nome, assunto.nome from post
     join cidade on post.cidade = cidade.codigo
     join estado on cidade.estado = estado.codigodaUF
@@ -70,12 +52,86 @@ select post.codigo, pais.nome, assunto.nome from post
     join assuntopost on post.codigo = assuntopost.post
     join assunto on assuntopost.assunto = assunto.codigo
 where 
-    date(post.datadopost, 'localtime') between date('now', '-30 days', 'localtime') and date('now', 'localtime')
+    date(post.datadopost, 'localtime') between date('now', '-30 days', 'localtime') and date('now', 'localtime') and
+    pais.nome = 'Brasil'
 order by post.codigo;
 
+-- Mostra todos os comentarios dos últimos 30 dias
+select post.codigo, pais.nome, comentario.conteudo from post
+    join cidade on post.cidade = cidade.codigo
+    join estado on cidade.estado = estado.codigodaUF
+    join pais on estado.pais = pais.codigoISO
+    join comentario on post.codigo = comentario.post
+where
+    date(comentario.datacomentario, 'localtime') between date('now', '-30 days', 'localtime') and date('now', 'localtime') and
+    pais.nome = 'Brasil'
+order by post.codigo;
+
+-- Mostra os ranking de comentarios por post nos últimos 30 dias
+select post.codigo, pais.nome, count(*) qtdComentarios from post
+    join cidade on post.cidade = cidade.codigo
+    join estado on cidade.estado = estado.codigodaUF
+    join pais on estado.pais = pais.codigoISO
+    left join comentario on post.codigo = comentario.post
+where
+    date(comentario.datacomentario, 'localtime') between date('now', '-30 days', 'localtime') and date('now', 'localtime') and
+    pais.nome = 'Brasil'
+group by post.codigo
+order by qtdComentarios desc;
+
 --  d) Quais os 5 assuntos mais comentados por país nos últimos 30 dias?
+
 --  e) Quais os assuntos da postagem que mais recebeu a reação amei na última semana?
+select post.codigo, assunto.nome from post 
+    join assuntopost on post.codigo = assuntopost.post
+    join assunto on assuntopost.assunto = assunto.codigo
+where post.codigo in (
+    select post.codigo from post
+        join postreacao on post.codigo = postreacao.post
+        join reacao on postreacao.reacao = reacao.codigo
+    where 
+        date(postreacao.datapostreacao, 'localtime') between date('now', '-7 days', 'localtime') and date('now', 'localtime') and
+        reacao.nome = 'amei'
+    group by post.codigo
+    having count(*) = (
+        select count(*) as qtd from post
+            join postreacao on post.codigo = postreacao.post
+            join reacao on postreacao.reacao = reacao.codigo
+        where 
+            date(postreacao.datapostreacao, 'localtime') between date('now', '-7 days', 'localtime') and date('now', 'localtime') and
+            reacao.nome = 'amei'
+        group by post.codigo
+        order by count(*) desc
+        limit 1
+    )
+    order by count(*) desc
+);
+
 --  f) Qual o nome do usuário que postou a postagem que teve mais curtidas no Brasil nos últimos 60 dias?
+select usuario.nome from post 
+    join usuario on post.usuario = usuario.email
+where post.codigo in (
+    select post.codigo from post
+        join postreacao on post.codigo = postreacao.post
+        join reacao on postreacao.reacao = reacao.codigo
+    where 
+        date(postreacao.datapostreacao, 'localtime') between date('now', '-60 days', 'localtime') and date('now', 'localtime') and
+        reacao.nome = 'curtir'
+    group by post.codigo
+    having count(*) = (
+        select count(*) as qtd from post
+            join postreacao on post.codigo = postreacao.post
+            join reacao on postreacao.reacao = reacao.codigo
+        where 
+            date(postreacao.datapostreacao, 'localtime') between date('now', '-60 days', 'localtime') and date('now', 'localtime') and
+            reacao.nome = 'curtir'
+        group by post.codigo
+        order by count(*) desc
+        limit 1
+    )
+    order by count(*) desc
+);
+
 --  g) Qual faixa etária mais reagiu às postagens do grupo SQLite nos últimos 60 dias? Considere as faixas etárias: -18, 18-21, 21-25, 25-30, 30-36, 36-43, 43-51, 51-60 e 60-.
 --  h) Dos 5 assuntos mais comentados no Brasil no mês passado, quais também estavam entre os 5 assuntos mais comentados no Brasil no mês retrasado?
 --  i) Quais os nomes dos usuários que participam do grupo SQLite que tiveram a 1ª, 2ª e 3ª maior quantidade de comentários em uma postagem sobre o assunto select?

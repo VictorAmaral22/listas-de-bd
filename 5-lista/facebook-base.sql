@@ -380,3 +380,47 @@ insert into assuntopost(assunto, post) values(2, 37);
 insert into assuntopost(assunto, post) values(3, 37);
 insert into compartilhar(post, usuario, datadecompartilhamento, horariodecompartilhamento) values(36, 'joaosbras@mymail.com', '2021-06-25', '15:40:00');
 insert into compartilhar(post, usuario, datadecompartilhamento, horariodecompartilhamento) values(37, 'joaosbras@mymail.com', '2021-06-26', '15:40:00');
+
+
+--inserts da Lista 5
+
+--c)
+insert into assunto(nome) values ('Subselect');
+
+insert into assuntopost(assunto, post) values(4, 23);
+insert into assuntopost(assunto, post) values(5, 23);
+insert into assuntopost(assunto, post) values(5, 27);
+insert into assuntopost(assunto, post) values(1, 26);
+insert into assuntopost(assunto, post) values(5, 28);
+insert into assuntopost(assunto, post) values(5, 29);
+insert into assuntopost(assunto, post) values(2, 32);
+insert into assuntopost(assunto, post) values(4, 24);
+insert into assuntopost(assunto, post) values(4, 25);
+insert into assuntopost(assunto, post) values(5, 25);
+
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-15', '00:00:00', 'aninha@gmail.com', 23);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-15', '00:05:00', 'aninha@gmail.com', 23);
+
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:00:00', 'aninha@gmail.com', 25);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:05:00', 'aninha@gmail.com', 25);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:10:00', 'aninha@gmail.com', 25);
+
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:00:00', 'aninha@gmail.com', 26);
+
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:00:00', 'aninha@gmail.com', 27);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:05:00', 'aninha@gmail.com', 27);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:10:00', 'aninha@gmail.com', 27);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:15:00', 'aninha@gmail.com', 27);
+
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:00:00', 'aninha@gmail.com', 34);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:05:00', 'aninha@gmail.com', 34);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:10:00', 'aninha@gmail.com', 34);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:15:00', 'aninha@gmail.com', 34);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:20:00', 'aninha@gmail.com', 34);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:25:00', 'aninha@gmail.com', 34);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values ('Blablabla', '2021-07-14', '00:30:00', 'aninha@gmail.com', 34);
+
+--e)
+insert into assuntopost(assunto, post) values(1, 34);
+insert into assuntopost(assunto, post) values(2, 34);
+insert into assuntopost(assunto, post) values(4, 34);
