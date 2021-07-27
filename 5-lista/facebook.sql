@@ -42,42 +42,7 @@ having count(*) = (
     limit 1
 );
 
---  c) Quais os 5 assuntos mais comentados no Brasil nos últimos 30 dias? - em desenvolvimento ainda
-
---Mostra os assuntos dos posts dos últimos 30 dias
-select post.codigo, pais.nome, assunto.nome from post
-    join cidade on post.cidade = cidade.codigo
-    join estado on cidade.estado = estado.codigodaUF
-    join pais on estado.pais = pais.codigoISO
-    join assuntopost on post.codigo = assuntopost.post
-    join assunto on assuntopost.assunto = assunto.codigo
-where 
-    date(post.datadopost, 'localtime') between date('now', '-30 days', 'localtime') and date('now', 'localtime') and
-    pais.nome = 'Brasil'
-order by post.codigo;
-
--- Mostra todos os comentarios dos últimos 30 dias
-select post.codigo, pais.nome, comentario.conteudo from post
-    join cidade on post.cidade = cidade.codigo
-    join estado on cidade.estado = estado.codigodaUF
-    join pais on estado.pais = pais.codigoISO
-    join comentario on post.codigo = comentario.post
-where
-    date(comentario.datacomentario, 'localtime') between date('now', '-30 days', 'localtime') and date('now', 'localtime') and
-    pais.nome = 'Brasil'
-order by post.codigo;
-
--- Mostra os ranking de comentarios por post nos últimos 30 dias
-select post.codigo, pais.nome, count(*) qtdComentarios from post
-    join cidade on post.cidade = cidade.codigo
-    join estado on cidade.estado = estado.codigodaUF
-    join pais on estado.pais = pais.codigoISO
-    left join comentario on post.codigo = comentario.post
-where
-    date(comentario.datacomentario, 'localtime') between date('now', '-30 days', 'localtime') and date('now', 'localtime') and
-    pais.nome = 'Brasil'
-group by post.codigo
-order by qtdComentarios desc;
+--  c) Quais os 5 assuntos mais comentados no Brasil nos últimos 30 dias?
 
 --  d) Quais os 5 assuntos mais comentados por país nos últimos 30 dias?
 
