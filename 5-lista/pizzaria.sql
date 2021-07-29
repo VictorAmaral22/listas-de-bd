@@ -17,7 +17,7 @@ order by qtdIngredientes desc;
 
 --  b) Qual sabor tem menos ingredientes?
 
---  c) Qual sabor não foi pedido nos últimos 4 domingos?
+--  c) Qual sabor não foi pedido nos últimos 4 domingos? --Ver com o Betito
 insert into comanda (data, mesa, pago) values
     ('2021-07-04', 1, true),
     ('2021-07-11', 1, true),
@@ -135,15 +135,200 @@ except
 
 --  k) Quais foram os 5 ingredientes mais pedidos na última estação do ano?
 --Victor
+--select * from comanda where date(comanda.data) > date('2021-04-01') and date(comanda.data) < date('2021-06-01'); 
 
 --  l) Qual é o percentual atingido de arrecadação com venda de pizzas no ano atual em comparação com o total arrecadado no ano passado?
 
 --  m) Qual dia da semana teve maior arrecadação em pizzas nos últimos 60 dias?
---Victor
+select tmp.dia_semana, sum(tmp.total) as soma from (
+    select tmp.numero as comanda, comanda.data, 
+        case 
+            when strftime('%w', comanda.data) = '0' then 'Domingo'
+            when strftime('%w', comanda.data) = '1' then 'Segunda'
+            when strftime('%w', comanda.data) = '2' then 'Terça'
+            when strftime('%w', comanda.data) = '3' then 'Quarta'
+            when strftime('%w', comanda.data) = '4' then 'Quinta'
+            when strftime('%w', comanda.data) = '5' then 'Sexta'
+            when strftime('%w', comanda.data) = '6' then 'Sábado'
+        end as dia_semana, 
+        sum(tmp.preco) as total
+    from
+        (select comanda.numero, pizza.codigo,
+            max(case
+                    when borda.preco is null then 0
+                    else borda.preco
+                end+precoportamanho.preco) as preco
+        from comanda
+            join pizza on pizza.comanda = comanda.numero
+            join pizzasabor on pizzasabor.pizza = pizza.codigo
+            join sabor on pizzasabor.sabor = sabor.codigo
+            join precoportamanho on precoportamanho.tipo = sabor.tipo and precoportamanho.tamanho = pizza.tamanho
+            left join borda on pizza.borda = borda.codigo
+        where date(comanda.data, 'localtime') between date('now', '-60 days', 'localtime') and date('now', 'localtime')
+        group by comanda.numero, pizza.codigo) as tmp
+        join comanda on comanda.numero = tmp.numero
+    group by tmp.numero
+) as tmp
+group by tmp.dia_semana
+having soma in (
+    select sum(tmp.total) as soma from (
+        select tmp.numero as comanda, comanda.data, 
+            case 
+                when strftime('%w', comanda.data) = '0' then 'Domingo'
+                when strftime('%w', comanda.data) = '1' then 'Segunda'
+                when strftime('%w', comanda.data) = '2' then 'Terça'
+                when strftime('%w', comanda.data) = '3' then 'Quarta'
+                when strftime('%w', comanda.data) = '4' then 'Quinta'
+                when strftime('%w', comanda.data) = '5' then 'Sexta'
+                when strftime('%w', comanda.data) = '6' then 'Sábado'
+            end as dia_semana, 
+            sum(tmp.preco) as total
+        from
+            (select comanda.numero, pizza.codigo,
+                max(case
+                        when borda.preco is null then 0
+                        else borda.preco
+                    end+precoportamanho.preco) as preco
+            from comanda
+                join pizza on pizza.comanda = comanda.numero
+                join pizzasabor on pizzasabor.pizza = pizza.codigo
+                join sabor on pizzasabor.sabor = sabor.codigo
+                join precoportamanho on precoportamanho.tipo = sabor.tipo and precoportamanho.tamanho = pizza.tamanho
+                left join borda on pizza.borda = borda.codigo
+            where date(comanda.data, 'localtime') between date('now', '-60 days', 'localtime') and date('now', 'localtime')
+            group by comanda.numero, pizza.codigo) as tmp
+            join comanda on comanda.numero = tmp.numero
+        group by tmp.numero
+    ) as tmp
+    group by tmp.dia_semana
+    order by soma desc
+    limit 1
+)
+order by soma desc;
 
 --  n) Qual a combinação de 2 sabores mais pedida na mesma pizza nos últimos 3 meses?
 
 --  o) Qual a combinação de 3 sabores mais pedida na mesma pizza nos últimos 3 meses?
---Victor
+select tmp.combinacao, count(*) as qtd from (
+    select pizza.codigo, group_concat(sabor.nome, ', ') as combinacao from comanda
+        join pizza on comanda.numero = pizza.comanda
+        join pizzasabor on pizza.codigo = pizzasabor.pizza
+        join sabor on pizzasabor.sabor = sabor.codigo
+    where 
+        date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+        pizza.codigo in (
+            select pizza.codigo from comanda
+                join pizza on comanda.numero = pizza.comanda
+                join pizzasabor on pizza.codigo = pizzasabor.pizza
+                join sabor on pizzasabor.sabor = sabor.codigo
+            where 
+                date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+            group by pizza.codigo
+            having count(*) = 3
+        )
+    group by pizza.codigo
+    order by pizza.codigo, sabor.nome
+) as tmp 
+group by tmp.combinacao
+having qtd in (
+    select count(*) as qtd from (
+        select pizza.codigo, group_concat(sabor.nome, ', ') as combinacao from comanda
+            join pizza on comanda.numero = pizza.comanda
+            join pizzasabor on pizza.codigo = pizzasabor.pizza
+            join sabor on pizzasabor.sabor = sabor.codigo
+        where 
+            date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+            pizza.codigo in (
+                select pizza.codigo from comanda
+                    join pizza on comanda.numero = pizza.comanda
+                    join pizzasabor on pizza.codigo = pizzasabor.pizza
+                    join sabor on pizzasabor.sabor = sabor.codigo
+                where 
+                    date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                group by pizza.codigo
+                having count(*) = 3
+            )
+        group by pizza.codigo
+        order by pizza.codigo, sabor.nome
+    ) as tmp 
+    group by tmp.combinacao
+    order by qtd desc
+    limit 1    
+)
+order by qtd desc;
 
 --  p) Qual a combinação de sabor e borda mais pedida na mesma pizza nos últimos 3 meses?
+
+
+
+---Perguntar pro Betito
+
+--m)
+
+--Error: misuse of aggregate: sum()
+
+-- select tmp.dia_semana, sum(tmp.total) as soma from (
+--     select tmp.numero as comanda, comanda.data, 
+--         case 
+--             when strftime('%w', comanda.data) = '0' then 'Domingo'
+--             when strftime('%w', comanda.data) = '1' then 'Segunda'
+--             when strftime('%w', comanda.data) = '2' then 'Terça'
+--             when strftime('%w', comanda.data) = '3' then 'Quarta'
+--             when strftime('%w', comanda.data) = '4' then 'Quinta'
+--             when strftime('%w', comanda.data) = '5' then 'Sexta'
+--             when strftime('%w', comanda.data) = '6' then 'Sábado'
+--         end as dia_semana, 
+--         sum(tmp.preco) as total
+--     from
+--         (select comanda.numero, pizza.codigo,
+--             max(case
+--                     when borda.preco is null then 0
+--                     else borda.preco
+--                 end+precoportamanho.preco) as preco
+--         from comanda
+--             join pizza on pizza.comanda = comanda.numero
+--             join pizzasabor on pizzasabor.pizza = pizza.codigo
+--             join sabor on pizzasabor.sabor = sabor.codigo
+--             join precoportamanho on precoportamanho.tipo = sabor.tipo and precoportamanho.tamanho = pizza.tamanho
+--             left join borda on pizza.borda = borda.codigo
+--         where date(comanda.data, 'localtime') between date('now', '-60 days', 'localtime') and date('now', 'localtime')
+--         group by comanda.numero, pizza.codigo) as tmp
+--         join comanda on comanda.numero = tmp.numero
+--     group by tmp.numero
+-- ) as tmp
+-- where soma in (
+--     select sum(tmp.total) as soma from (
+--         select tmp.numero as comanda, comanda.data, 
+--             case 
+--                 when strftime('%w', comanda.data) = '0' then 'Domingo'
+--                 when strftime('%w', comanda.data) = '1' then 'Segunda'
+--                 when strftime('%w', comanda.data) = '2' then 'Terça'
+--                 when strftime('%w', comanda.data) = '3' then 'Quarta'
+--                 when strftime('%w', comanda.data) = '4' then 'Quinta'
+--                 when strftime('%w', comanda.data) = '5' then 'Sexta'
+--                 when strftime('%w', comanda.data) = '6' then 'Sábado'
+--             end as dia_semana, 
+--             sum(tmp.preco) as total
+--         from
+--             (select comanda.numero, pizza.codigo,
+--                 max(case
+--                         when borda.preco is null then 0
+--                         else borda.preco
+--                     end+precoportamanho.preco) as preco
+--             from comanda
+--                 join pizza on pizza.comanda = comanda.numero
+--                 join pizzasabor on pizzasabor.pizza = pizza.codigo
+--                 join sabor on pizzasabor.sabor = sabor.codigo
+--                 join precoportamanho on precoportamanho.tipo = sabor.tipo and precoportamanho.tamanho = pizza.tamanho
+--                 left join borda on pizza.borda = borda.codigo
+--             where date(comanda.data, 'localtime') between date('now', '-60 days', 'localtime') and date('now', 'localtime')
+--             group by comanda.numero, pizza.codigo) as tmp
+--             join comanda on comanda.numero = tmp.numero
+--         group by tmp.numero
+--     ) as tmp
+--     group by tmp.dia_semana
+--     order by soma desc
+--     limit 1
+-- )
+-- group by tmp.dia_semana
+-- order by soma desc;
