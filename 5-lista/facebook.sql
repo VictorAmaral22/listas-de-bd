@@ -102,7 +102,72 @@ where post.codigo in (
 --  h) Dos 5 assuntos mais comentados no Brasil no mês passado, quais também estavam entre os 5 assuntos mais comentados no Brasil no mês retrasado?
 
 --  i) Quais os nomes dos usuários que participam do grupo SQLite que tiveram a 1ª, 2ª e 3ª maior quantidade de comentários em uma postagem sobre o assunto select?
---Victor
+select usuario.nome, count(*) as qtdComentarios from usuario
+    join post on usuario.email = post.usuario
+    join comentario on post.codigo = comentario.post
+where 
+    usuario.nome in (
+        select usuario.nome from usuario
+            join membro on usuario.email = membro.usuario
+            join grupo on membro.grupo = grupo.codigo
+        where grupo.nome = 'SQLite'
+    ) and 
+    post.codigo in (
+        select distinct post.codigo from post
+        where 
+            post.codigo in (
+                select post.codigo from post
+                    join assuntopost on post.codigo = assuntopost.post
+                    join assunto on assuntopost.assunto = assunto.codigo
+                where assunto.nome = 'select'
+                group by post.codigo
+            ) or
+            post.codigo in (
+                select post.codigo from post
+                    join comentario on post.codigo = comentario.post
+                    join assuntocomentario on comentario.codigo = assuntocomentario.comentario
+                    join assunto on assuntocomentario.assunto = assunto.codigo
+                where assunto.nome = 'select'
+                group by post.codigo
+            )     
+    ) 
+group by usuario.nome
+having qtdComentarios in (
+    select distinct* from (
+        select count(*) as qtdComentarios from usuario
+            join post on usuario.email = post.usuario
+            join comentario on post.codigo = comentario.post
+        where 
+            usuario.nome in (
+                select usuario.nome from usuario
+                    join membro on usuario.email = membro.usuario
+                    join grupo on membro.grupo = grupo.codigo
+                where grupo.nome = 'SQLite'
+            ) and 
+            post.codigo in (
+                select distinct post.codigo from post
+                where 
+                    post.codigo in (
+                        select post.codigo from post
+                            join assuntopost on post.codigo = assuntopost.post
+                            join assunto on assuntopost.assunto = assunto.codigo
+                        where assunto.nome = 'select'
+                        group by post.codigo
+                    ) or
+                    post.codigo in (
+                        select post.codigo from post
+                            join comentario on post.codigo = comentario.post
+                            join assuntocomentario on comentario.codigo = assuntocomentario.comentario
+                            join assunto on assuntocomentario.assunto = assunto.codigo
+                        where assunto.nome = 'select'
+                        group by post.codigo
+                    )     
+            )
+        group by usuario.nome
+        order by qtdComentarios desc
+    )
+)
+order by qtdComentarios desc;
 
 --  j) Quais os nomes dos usuários dos grupos SQLite ou Banco de Dados-IFRS-2021 que possuem a maior quantidade de amigos?
 
@@ -114,4 +179,6 @@ where post.codigo in (
 
 -- 2) Descreva e justifique as adequações/alterações que foram realizadas nas tabelas criadas para uma rede social nas listas de exercícios anteriores para que o exercício 1 acima pudesse ser resolvido.
 
+--adicionamos alguns dados para testar os selects
 --trocamos o nome do grupo 'Banco de Dados-IFRS2021' para 'Banco de Dados-IFRS-2021'
+--adicionamos o assunto 'select'

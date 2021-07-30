@@ -424,3 +424,21 @@ insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) 
 insert into assuntopost(assunto, post) values(1, 34);
 insert into assuntopost(assunto, post) values(2, 34);
 insert into assuntopost(assunto, post) values(4, 34);
+
+--i)
+insert into assunto(nome) values('select');
+insert into assuntopost(assunto, post) values(6, 1);
+insert into assuntopost(assunto, post) values(6, 2);
+insert into assuntopost(assunto, post) values(6, 23);
+insert into assuntopost(assunto, post) values(6, 24);
+insert into assuntopost(assunto, post) values(6, 34);
+
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values('Putzzz', '2021-07-20', '10:00:00', 'jorosamed@mymail.com', 35);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values('Hummmm', '2021-07-30', '10:00:00', 'jorosamed@mymail.com', 35);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values('Doisss', '2021-07-30', '10:05:00', 'jorosamed@mymail.com', 35);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values('Trêssss', '2021-07-30', '10:10:00', 'jorosamed@mymail.com', 35);
+
+insert into assuntocomentario(assunto, comentario) values(6, 23);
+insert into assuntocomentario(assunto, comentario) values(6, 24);
+insert into assuntocomentario(assunto, comentario) values(6, 25);
+insert into assuntocomentario(assunto, comentario) values(6, 26);
