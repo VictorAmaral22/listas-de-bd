@@ -442,3 +442,7 @@ insert into assuntocomentario(assunto, comentario) values(6, 23);
 insert into assuntocomentario(assunto, comentario) values(6, 24);
 insert into assuntocomentario(assunto, comentario) values(6, 25);
 insert into assuntocomentario(assunto, comentario) values(6, 26);
+
+--k)
+insert into amigo(usuario1, usuario2, datadeamizade, horadeamizade) values('mariaclara1@gmail.com','giovanna@gmail.com', '2021-08-05', '10:00:00');
+insert into amigo(usuario1, usuario2, datadeamizade, horadeamizade) values('pxramos@mymail.com','giovanna@gmail.com', '2021-08-05', '10:00:00');

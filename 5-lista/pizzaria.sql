@@ -135,7 +135,144 @@ except
 
 --  k) Quais foram os 5 ingredientes mais pedidos na última estação do ano?
 --Victor
---select * from comanda where date(comanda.data) > date('2021-04-01') and date(comanda.data) < date('2021-06-01'); 
+
+select ingrediente.nome, count(*) as qtdPedidos from comanda
+    join pizza on comanda.numero = pizza.comanda
+    join pizzasabor on pizza.codigo = pizzasabor.pizza
+    join sabor on pizzasabor.sabor = sabor.codigo
+    join saboringrediente on sabor.codigo = saboringrediente.sabor
+    join ingrediente on saboringrediente.ingrediente = ingrediente.codigo
+where 
+    datetime(comanda.data, 'localtime') between (
+        select 
+            case
+                when datetime('now', 'localtime') between 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1) and 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                        then datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+265.2)
+                
+                when datetime('now', 'localtime') between 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8) and 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) 
+                        then datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1)
+                
+                when datetime('now', 'localtime') between 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) and
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) 
+                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                
+                when datetime('now', 'localtime') between 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) and
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1)
+                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6)
+                        
+                when datetime('now', 'localtime') between 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1) and
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', '+1 year', 'start of year')))+78.8)
+                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2)
+                end as comecoEstacao) and 
+        (
+        select 
+                case
+                    when datetime('now', 'localtime') between 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1) and 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                            then datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1)
+                    
+                    when datetime('now', 'localtime') between 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8) and 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) 
+                            then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                    
+                    when datetime('now', 'localtime') between 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) and
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) 
+                            then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6)
+                    
+                    when datetime('now', 'localtime') between 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) and
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1)
+                            then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2)
+                            
+                    when datetime('now', 'localtime') between 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1) and
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', '+1 year', 'start of year')))+78.8)
+                            then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1)
+                    end as fimEstacao
+        )
+group by ingrediente.nome
+having qtdPedidos in (
+    select distinct* from (
+        select count(*) as qtdPedidos from comanda
+            join pizza on comanda.numero = pizza.comanda
+            join pizzasabor on pizza.codigo = pizzasabor.pizza
+            join sabor on pizzasabor.sabor = sabor.codigo
+            join saboringrediente on sabor.codigo = saboringrediente.sabor
+            join ingrediente on saboringrediente.ingrediente = ingrediente.codigo
+        where 
+            datetime(comanda.data, 'localtime') between (
+                    select 
+                        case
+                            when datetime('now', 'localtime') between 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1) and 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                                    then datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+265.2)
+                            
+                            when datetime('now', 'localtime') between 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8) and 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) 
+                                    then datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1)
+                            
+                            when datetime('now', 'localtime') between 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) and
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) 
+                                    then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                            
+                            when datetime('now', 'localtime') between 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) and
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1)
+                                    then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6)
+                                    
+                            when datetime('now', 'localtime') between 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1) and
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', '+1 year', 'start of year')))+78.8)
+                                    then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2)
+                            end as comecoEstacao) and 
+                    (
+                    select 
+                            case
+                                when datetime('now', 'localtime') between 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1) and 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                                        then datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1)
+                                
+                                when datetime('now', 'localtime') between 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8) and 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) 
+                                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                                
+                                when datetime('now', 'localtime') between 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) and
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) 
+                                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6)
+                                
+                                when datetime('now', 'localtime') between 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) and
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1)
+                                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2)
+                                        
+                                when datetime('now', 'localtime') between 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1) and
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', '+1 year', 'start of year')))+78.8)
+                                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1)
+                                end as fimEstacao
+                    )
+        group by ingrediente.nome
+        order by qtdPedidos desc
+    )
+    limit 5
+)
+order by qtdPedidos desc;
 
 --  l) Qual é o percentual atingido de arrecadação com venda de pizzas no ano atual em comparação com o total arrecadado no ano passado?
 
@@ -208,7 +345,7 @@ order by soma desc;
 
 --  n) Qual a combinação de 2 sabores mais pedida na mesma pizza nos últimos 3 meses?
 
---  o) Qual a combinação de 3 sabores mais pedida na mesma pizza nos últimos 3 meses?
+--  o) Qual a combinação de 3 sabores mais pedida na mesma pizza nos últimos 3 meses? --refazer
 select tmp.combinacao, count(*) as qtd from (
     select pizza.codigo, group_concat(sabor.nome, ', ') as combinacao from comanda
         join pizza on comanda.numero = pizza.comanda
@@ -258,77 +395,3 @@ having qtd in (
 order by qtd desc;
 
 --  p) Qual a combinação de sabor e borda mais pedida na mesma pizza nos últimos 3 meses?
-
-
-
----Perguntar pro Betito
-
---m)
-
---Error: misuse of aggregate: sum()
-
--- select tmp.dia_semana, sum(tmp.total) as soma from (
---     select tmp.numero as comanda, comanda.data, 
---         case 
---             when strftime('%w', comanda.data) = '0' then 'Domingo'
---             when strftime('%w', comanda.data) = '1' then 'Segunda'
---             when strftime('%w', comanda.data) = '2' then 'Terça'
---             when strftime('%w', comanda.data) = '3' then 'Quarta'
---             when strftime('%w', comanda.data) = '4' then 'Quinta'
---             when strftime('%w', comanda.data) = '5' then 'Sexta'
---             when strftime('%w', comanda.data) = '6' then 'Sábado'
---         end as dia_semana, 
---         sum(tmp.preco) as total
---     from
---         (select comanda.numero, pizza.codigo,
---             max(case
---                     when borda.preco is null then 0
---                     else borda.preco
---                 end+precoportamanho.preco) as preco
---         from comanda
---             join pizza on pizza.comanda = comanda.numero
---             join pizzasabor on pizzasabor.pizza = pizza.codigo
---             join sabor on pizzasabor.sabor = sabor.codigo
---             join precoportamanho on precoportamanho.tipo = sabor.tipo and precoportamanho.tamanho = pizza.tamanho
---             left join borda on pizza.borda = borda.codigo
---         where date(comanda.data, 'localtime') between date('now', '-60 days', 'localtime') and date('now', 'localtime')
---         group by comanda.numero, pizza.codigo) as tmp
---         join comanda on comanda.numero = tmp.numero
---     group by tmp.numero
--- ) as tmp
--- where soma in (
---     select sum(tmp.total) as soma from (
---         select tmp.numero as comanda, comanda.data, 
---             case 
---                 when strftime('%w', comanda.data) = '0' then 'Domingo'
---                 when strftime('%w', comanda.data) = '1' then 'Segunda'
---                 when strftime('%w', comanda.data) = '2' then 'Terça'
---                 when strftime('%w', comanda.data) = '3' then 'Quarta'
---                 when strftime('%w', comanda.data) = '4' then 'Quinta'
---                 when strftime('%w', comanda.data) = '5' then 'Sexta'
---                 when strftime('%w', comanda.data) = '6' then 'Sábado'
---             end as dia_semana, 
---             sum(tmp.preco) as total
---         from
---             (select comanda.numero, pizza.codigo,
---                 max(case
---                         when borda.preco is null then 0
---                         else borda.preco
---                     end+precoportamanho.preco) as preco
---             from comanda
---                 join pizza on pizza.comanda = comanda.numero
---                 join pizzasabor on pizzasabor.pizza = pizza.codigo
---                 join sabor on pizzasabor.sabor = sabor.codigo
---                 join precoportamanho on precoportamanho.tipo = sabor.tipo and precoportamanho.tamanho = pizza.tamanho
---                 left join borda on pizza.borda = borda.codigo
---             where date(comanda.data, 'localtime') between date('now', '-60 days', 'localtime') and date('now', 'localtime')
---             group by comanda.numero, pizza.codigo) as tmp
---             join comanda on comanda.numero = tmp.numero
---         group by tmp.numero
---     ) as tmp
---     group by tmp.dia_semana
---     order by soma desc
---     limit 1
--- )
--- group by tmp.dia_semana
--- order by soma desc;

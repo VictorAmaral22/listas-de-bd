@@ -173,6 +173,76 @@ order by qtdComentarios desc;
 
 --  k) Quais os nomes dos usuários dos grupos SQLite ou Banco de Dados-IFRS-2021 que possuem a maior quantidade de amigos em comum?
 --Victor
+select tmp.nome as pessoa, count(*) as qtdComuns from (
+    select usuario.nome, 
+        case
+            when amigo.usuario1 = usuario.email then amigo.usuario2
+            when amigo.usuario2 = usuario.email then amigo.usuario1
+        end as amigoEmail
+    from usuario
+        join amigo on usuario.email = amigo.usuario1 or usuario.email = amigo.usuario2
+) as tmp
+    join usuario on tmp.amigoEmail = usuario.email
+where usuario.nome in (
+    select usuario.nome as amigo from (
+        select usuario.nome, 
+            case
+                when amigo.usuario1 = usuario.email then amigo.usuario2
+                when amigo.usuario2 = usuario.email then amigo.usuario1
+            end as amigoEmail
+        from usuario
+            join amigo on usuario.email = amigo.usuario1 or usuario.email = amigo.usuario2
+    ) as tmp
+        join usuario on tmp.amigoEmail = usuario.email
+    group by amigo
+    having count(*) > 1
+    order by tmp.nome
+)
+group by pessoa
+having 
+    tmp.nome in (
+        select usuario.nome from usuario
+            join membro on usuario.email = membro.usuario
+            join grupo on membro.grupo = grupo.codigo
+        where grupo.nome = 'SQLite' or grupo.nome = 'Banco de Dados-IFRS-2021'
+    ) and 
+    qtdComuns in (
+        select count(*) as qtdComuns from (
+            select usuario.nome, 
+                case
+                    when amigo.usuario1 = usuario.email then amigo.usuario2
+                    when amigo.usuario2 = usuario.email then amigo.usuario1
+                end as amigoEmail
+            from usuario
+                join amigo on usuario.email = amigo.usuario1 or usuario.email = amigo.usuario2
+        ) as tmp
+            join usuario on tmp.amigoEmail = usuario.email
+        where usuario.nome in (
+            select usuario.nome as amigo from (
+                select usuario.nome, 
+                    case
+                        when amigo.usuario1 = usuario.email then amigo.usuario2
+                        when amigo.usuario2 = usuario.email then amigo.usuario1
+                    end as amigoEmail
+                from usuario
+                    join amigo on usuario.email = amigo.usuario1 or usuario.email = amigo.usuario2
+            ) as tmp
+                join usuario on tmp.amigoEmail = usuario.email
+            group by amigo
+            having count(*) > 1
+            order by tmp.nome
+        )
+        group by tmp.nome
+        having tmp.nome in (
+            select usuario.nome from usuario
+                join membro on usuario.email = membro.usuario
+                join grupo on membro.grupo = grupo.codigo
+            where grupo.nome = 'SQLite' or grupo.nome = 'Banco de Dados-IFRS-2021'
+        )
+        order by qtdComuns desc
+        limit 1
+    )
+order by qtdComuns desc;
 
 --  l) Quais os nomes dos usuários que devem ser sugeridos como amigos para um dado usuário? Considere que, se A e B não são amigos mas possuem no mínimo 5 assuntos em comum entre os 10 assuntos mais comentados por cada um nos últimos 3 meses, B deve ser sugerido como amigo de A.
 
