@@ -134,8 +134,6 @@ except
 --  j) Quais foram os 3 sabores mais pedidos na última estação do ano?
 
 --  k) Quais foram os 5 ingredientes mais pedidos na última estação do ano?
---Victor
-
 select ingrediente.nome, count(*) as qtdPedidos from comanda
     join pizza on comanda.numero = pizza.comanda
     join pizzasabor on pizza.codigo = pizzasabor.pizza
@@ -275,6 +273,49 @@ having qtdPedidos in (
 order by qtdPedidos desc;
 
 --  l) Qual é o percentual atingido de arrecadação com venda de pizzas no ano atual em comparação com o total arrecadado no ano passado?
+select (tmp1.totalAtual*100)/(tmp2.totalPassado) as percentual from (
+    select tmp1.ano, sum(tmp1.total) as totalAtual from (
+        select tmp.numero as comanda, strftime('%Y', comanda.data, 'localtime') as ano, sum(tmp.preco) as total
+        from
+            (select comanda.numero, pizza.codigo,
+                max(case
+                        when borda.preco is null then 0
+                        else borda.preco
+                    end+precoportamanho.preco) as preco
+            from comanda
+                join pizza on pizza.comanda = comanda.numero
+                join pizzasabor on pizzasabor.pizza = pizza.codigo
+                join sabor on pizzasabor.sabor = sabor.codigo
+                join precoportamanho on precoportamanho.tipo = sabor.tipo and precoportamanho.tamanho = pizza.tamanho
+                left join borda on pizza.borda = borda.codigo
+            where strftime('%Y', comanda.data, 'localtime') == strftime('%Y', 'now', 'localtime')
+            group by comanda.numero, pizza.codigo) as tmp
+            join comanda on comanda.numero = tmp.numero
+        group by tmp.numero
+    ) as tmp1
+    group by tmp1.ano
+) as tmp1, (
+    select tmp2.ano, sum(tmp2.total) as totalPassado from (
+        select tmp.numero as comanda, strftime('%Y', comanda.data, 'localtime') as ano, sum(tmp.preco) as total
+        from
+            (select comanda.numero, pizza.codigo,
+                max(case
+                        when borda.preco is null then 0
+                        else borda.preco
+                    end+precoportamanho.preco) as preco
+            from comanda
+                join pizza on pizza.comanda = comanda.numero
+                join pizzasabor on pizzasabor.pizza = pizza.codigo
+                join sabor on pizzasabor.sabor = sabor.codigo
+                join precoportamanho on precoportamanho.tipo = sabor.tipo and precoportamanho.tamanho = pizza.tamanho
+                left join borda on pizza.borda = borda.codigo
+            where strftime('%Y', comanda.data, 'localtime') == strftime('%Y', 'now', '-1 year', 'localtime')
+            group by comanda.numero, pizza.codigo) as tmp
+            join comanda on comanda.numero = tmp.numero
+        group by tmp.numero
+    ) as tmp2
+    group by tmp2.ano 
+) as tmp2;
 
 --  m) Qual dia da semana teve maior arrecadação em pizzas nos últimos 60 dias?
 select tmp.dia_semana, sum(tmp.total) as soma from (
