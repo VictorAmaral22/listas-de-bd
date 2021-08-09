@@ -14,10 +14,21 @@ having qtdIngredientes in (
 )
 order by qtdIngredientes desc;
 
-
 --  b) Qual sabor tem menos ingredientes?
+select sabor.nome as Sabor from sabor 
+    join saboringrediente on sabor.codigo = saboringrediente.sabor
+    join ingrediente on saboringrediente.ingrediente = ingrediente.codigo
+group by sabor.nome
+having count(*) = ( 
+    select count(*) as qtdIngredientes from sabor
+        join saboringrediente on sabor.codigo = saboringrediente.sabor
+        join ingrediente on saboringrediente.ingrediente = ingrediente.codigo
+    group by sabor.nome
+    order by qtdIngredientes asc
+    limit 1
+);
 
---  c) Qual sabor não foi pedido nos últimos 4 domingos? --Ver com o Betito
+--  c) Qual sabor não foi pedido nos últimos 4 domingos?
 insert into comanda (data, mesa, pago) values
     ('2021-07-04', 1, true),
     ('2021-07-11', 1, true),
@@ -43,6 +54,20 @@ except
     group by sabor.nome
 
 --  d) Qual mesa foi mais utilizada nos últimos 60 dias?
+select mesa.nome as Mesa from mesa 
+    join comanda on comanda.mesa = mesa.codigo
+where 
+    date(comanda.data, 'localtime') between date('now', '-60 days', 'localtime') and date('now', 'localtime')
+group by mesa.nome
+having count(*) = (
+    select count(*) from mesa 
+        join comanda on comanda.mesa = mesa.codigo
+    where 
+        date(comanda.data, 'localtime') between date('now', '-60 days', 'localtime') and date('now', 'localtime')
+    group by mesa.nome
+    order by count(*) desc
+    limit 1
+);
 
 --  e) Qual mesa foi menos utilizada nos últimos 60 dias?
 select mesa.nome, count(*) as qtdMesa from comanda 
@@ -62,6 +87,17 @@ having qtdMesa in (
 order by qtdMesa asc;
 
 --  f) Quais mesas foram utilizadas mais de 2 vezes a média de utilização de todas as mesas nos últimos 60 dias?
+select mesa.nome as Mesas, count(*) from comanda 
+    join mesa on comanda.mesa = mesa.codigo
+where date(comanda.data, 'localtime') between date('now', '-60 days', 'localtime') and date('now', 'localtime') 
+group by mesa.nome
+having count(*) > 2*(
+    select avg(tmp.quantidade) from (
+        select count(*) as quantidade from comanda 
+            join mesa on comanda.mesa = mesa.codigo
+        where date(comanda.data, 'localtime') between date('now', '-60 days', 'localtime') and date('now', 'localtime') group by mesa.nome
+    ) as tmp
+);
 
 --  g) Quais sabores estão entre os 10 mais pedidos no último mês e também no penúltimo mês?
 select sabor.nome from sabor
@@ -113,6 +149,53 @@ where sabor.nome in (
     );
 
 --  h) Quais sabores estão entre os 10 mais pedidos no último mês mas não no penúltimo mês?
+select sabor.nome from sabor
+where sabor.nome in (
+    select sabor.nome from comanda
+        join pizza on comanda.numero = pizza.comanda
+        join pizzasabor on pizza.codigo = pizzasabor.pizza
+        join sabor on pizzasabor.sabor = sabor.codigo
+    where
+        strftime('%m', comanda.data, 'localtime') = strftime('%m', 'now', '-1 month', 'localtime')
+    group by sabor.nome
+    having count(*) in (
+        select distinct* from (
+            select count(*) as qtdPedidos from comanda
+                join pizza on comanda.numero = pizza.comanda
+                join pizzasabor on pizza.codigo = pizzasabor.pizza
+                join sabor on pizzasabor.sabor = sabor.codigo
+            where
+                strftime('%m', comanda.data, 'localtime') = strftime('%m', 'now', '-1 month', 'localtime')
+            group by sabor.nome
+            order by qtdPedidos desc
+        ) 
+        limit 10
+    )
+    order by count(*) desc
+    ) and
+    sabor.nome not in (
+        select sabor.nome from comanda
+            join pizza on comanda.numero = pizza.comanda
+            join pizzasabor on pizza.codigo = pizzasabor.pizza
+            join sabor on pizzasabor.sabor = sabor.codigo
+        where
+            strftime('%m', comanda.data, 'localtime') = strftime('%m', 'now', '-2 month', 'localtime')
+        group by sabor.nome
+        having count(*) in (
+            select distinct* from (
+                select count(*) as qtdPedidos from comanda
+                    join pizza on comanda.numero = pizza.comanda
+                    join pizzasabor on pizza.codigo = pizzasabor.pizza
+                    join sabor on pizzasabor.sabor = sabor.codigo
+                where
+                    strftime('%m', comanda.data, 'localtime') = strftime('%m', 'now', '-2 month', 'localtime')
+                group by sabor.nome
+                order by qtdPedidos desc
+            ) 
+            limit 10
+        )
+        order by count(*) desc
+    );
 
 --  i) Quais sabores não foram pedidos nos últimos 3 meses?
     select sabor.nome from sabor
@@ -132,6 +215,143 @@ except
     group by sabor.nome;
 
 --  j) Quais foram os 3 sabores mais pedidos na última estação do ano?
+select sabor.nome, count(*) as qtdPedidos from comanda
+    join pizza on comanda.numero = pizza.comanda
+    join pizzasabor on pizza.codigo = pizzasabor.pizza
+    join sabor on pizzasabor.sabor = sabor.codigo
+    join saboringrediente on sabor.codigo = saboringrediente.sabor
+    join ingrediente on saboringrediente.ingrediente = ingrediente.codigo
+where 
+    datetime(comanda.data, 'localtime') between (
+        select 
+            case
+                when datetime('now', 'localtime') between 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1) and 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                        then datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+265.2)
+                
+                when datetime('now', 'localtime') between 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8) and 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) 
+                        then datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1)
+                
+                when datetime('now', 'localtime') between 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) and
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) 
+                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                
+                when datetime('now', 'localtime') between 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) and
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1)
+                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6)
+                        
+                when datetime('now', 'localtime') between 
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1) and
+                    datetime(julianday(date(strftime('%Y-%m-%d','now', '+1 year', 'start of year')))+78.8)
+                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2)
+                end as comecoEstacao) and 
+        (
+        select 
+                case
+                    when datetime('now', 'localtime') between 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1) and 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                            then datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1)
+                    
+                    when datetime('now', 'localtime') between 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8) and 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) 
+                            then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                    
+                    when datetime('now', 'localtime') between 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) and
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) 
+                            then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6)
+                    
+                    when datetime('now', 'localtime') between 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) and
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1)
+                            then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2)
+                            
+                    when datetime('now', 'localtime') between 
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1) and
+                        datetime(julianday(date(strftime('%Y-%m-%d','now', '+1 year', 'start of year')))+78.8)
+                            then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1)
+                    end as fimEstacao
+        )
+group by sabor.nome
+having qtdPedidos in (
+    select distinct * from (
+        select count(*) as qtdPedidos from comanda
+            join pizza on comanda.numero = pizza.comanda
+            join pizzasabor on pizza.codigo = pizzasabor.pizza
+            join sabor on pizzasabor.sabor = sabor.codigo
+            join saboringrediente on sabor.codigo = saboringrediente.sabor
+            join ingrediente on saboringrediente.ingrediente = ingrediente.codigo
+        where 
+            datetime(comanda.data, 'localtime') between (
+                    select 
+                        case
+                            when datetime('now', 'localtime') between 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1) and 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                                    then datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+265.2)
+                            
+                            when datetime('now', 'localtime') between 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8) and 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) 
+                                    then datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1)
+                            
+                            when datetime('now', 'localtime') between 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) and
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) 
+                                    then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                            
+                            when datetime('now', 'localtime') between 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) and
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1)
+                                    then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6)
+                                    
+                            when datetime('now', 'localtime') between 
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1) and
+                                datetime(julianday(date(strftime('%Y-%m-%d','now', '+1 year', 'start of year')))+78.8)
+                                    then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2)
+                            end as comecoEstacao) and 
+                    (
+                    select 
+                            case
+                                when datetime('now', 'localtime') between 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1) and 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                                        then datetime(julianday(date(strftime('%Y-%m-%d','now', '-1 year', 'start of year')))+355.1)
+                                
+                                when datetime('now', 'localtime') between 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8) and 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) 
+                                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+78.8)
+                                
+                                when datetime('now', 'localtime') between 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6) and
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) 
+                                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+171.6)
+                                
+                                when datetime('now', 'localtime') between 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2) and
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1)
+                                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+265.2)
+                                        
+                                when datetime('now', 'localtime') between 
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1) and
+                                    datetime(julianday(date(strftime('%Y-%m-%d','now', '+1 year', 'start of year')))+78.8)
+                                        then datetime(julianday(date(strftime('%Y-%m-%d','now', 'start of year')))+355.1)
+                                end as fimEstacao
+                    )
+        group by sabor.nome
+        order by qtdPedidos desc
+    )
+    limit 3
+)
+order by qtdPedidos desc;
 
 --  k) Quais foram os 5 ingredientes mais pedidos na última estação do ano?
 select ingrediente.nome, count(*) as qtdPedidos from comanda
@@ -385,54 +605,301 @@ having soma in (
 order by soma desc;
 
 --  n) Qual a combinação de 2 sabores mais pedida na mesma pizza nos últimos 3 meses?
-
---  o) Qual a combinação de 3 sabores mais pedida na mesma pizza nos últimos 3 meses? --refazer
-select tmp.combinacao, count(*) as qtd from (
-    select pizza.codigo, group_concat(sabor.nome, ', ') as combinacao from comanda
-        join pizza on comanda.numero = pizza.comanda
-        join pizzasabor on pizza.codigo = pizzasabor.pizza
-        join sabor on pizzasabor.sabor = sabor.codigo
-    where 
-        date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
-        pizza.codigo in (
-            select pizza.codigo from comanda
-                join pizza on comanda.numero = pizza.comanda
-                join pizzasabor on pizza.codigo = pizzasabor.pizza
-                join sabor on pizzasabor.sabor = sabor.codigo
-            where 
-                date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
-            group by pizza.codigo
-            having count(*) = 3
-        )
-    group by pizza.codigo
-    order by pizza.codigo, sabor.nome
-) as tmp 
-group by tmp.combinacao
-having qtd in (
-    select count(*) as qtd from (
-        select pizza.codigo, group_concat(sabor.nome, ', ') as combinacao from comanda
+select Sabor1, Sabor2, count(*) as qtd from (
+    select Pizzas.codigo, Sabor1.sabor as Sabor1, Sabor2.sabor as Sabor2 from (
+        select pizza.codigo from comanda
             join pizza on comanda.numero = pizza.comanda
-            join pizzasabor on pizza.codigo = pizzasabor.pizza
-            join sabor on pizzasabor.sabor = sabor.codigo
-        where 
-            date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+        where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
             pizza.codigo in (
                 select pizza.codigo from comanda
                     join pizza on comanda.numero = pizza.comanda
                     join pizzasabor on pizza.codigo = pizzasabor.pizza
                     join sabor on pizzasabor.sabor = sabor.codigo
-                where 
-                    date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                group by pizza.codigo
+                having count(*) = 2
+                order by comanda.data desc
+            )
+        order by comanda.data desc
+    ) as Pizzas, (
+        select pizza.codigo as pizza, sabor.nome as sabor from comanda
+            join pizza on comanda.numero = pizza.comanda
+            join pizzasabor on pizza.codigo = pizzasabor.pizza
+            join sabor on pizzasabor.sabor = sabor.codigo
+        where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+            pizza.codigo in (
+                select pizza.codigo from comanda
+                    join pizza on comanda.numero = pizza.comanda
+                    join pizzasabor on pizza.codigo = pizzasabor.pizza
+                    join sabor on pizzasabor.sabor = sabor.codigo
+                where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                group by pizza.codigo
+                having count(*) = 2
+                order by comanda.data desc
+            )
+        order by pizza.codigo, sabor.nome   
+    ) as Sabor1, (
+        select pizza.codigo as pizza, sabor.nome as sabor from comanda
+            join pizza on comanda.numero = pizza.comanda
+            join pizzasabor on pizza.codigo = pizzasabor.pizza
+            join sabor on pizzasabor.sabor = sabor.codigo
+        where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+            pizza.codigo in (
+                select pizza.codigo from comanda
+                    join pizza on comanda.numero = pizza.comanda
+                    join pizzasabor on pizza.codigo = pizzasabor.pizza
+                    join sabor on pizzasabor.sabor = sabor.codigo
+                where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                group by pizza.codigo
+                having count(*) = 2
+                order by comanda.data desc
+            )
+        order by pizza.codigo, sabor.nome   
+    ) as Sabor2
+    where 
+        Pizzas.codigo = Sabor1.pizza and 
+        Pizzas.codigo = Sabor2.pizza and
+        Sabor1.sabor != Sabor2.sabor
+    group by Pizzas.codigo
+)
+group by Sabor1, Sabor2
+having qtd = (
+    select count(*) as qtd from (
+        select Pizzas.codigo, Sabor1.sabor as Sabor1, Sabor2.sabor as Sabor2 from (
+            select pizza.codigo from comanda
+                join pizza on comanda.numero = pizza.comanda
+            where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+                pizza.codigo in (
+                    select pizza.codigo from comanda
+                        join pizza on comanda.numero = pizza.comanda
+                        join pizzasabor on pizza.codigo = pizzasabor.pizza
+                        join sabor on pizzasabor.sabor = sabor.codigo
+                    where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                    group by pizza.codigo
+                    having count(*) = 2
+                    order by comanda.data desc
+                )
+            order by comanda.data desc
+        ) as Pizzas, (
+            select pizza.codigo as pizza, sabor.nome as sabor from comanda
+                join pizza on comanda.numero = pizza.comanda
+                join pizzasabor on pizza.codigo = pizzasabor.pizza
+                join sabor on pizzasabor.sabor = sabor.codigo
+            where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+                pizza.codigo in (
+                    select pizza.codigo from comanda
+                        join pizza on comanda.numero = pizza.comanda
+                        join pizzasabor on pizza.codigo = pizzasabor.pizza
+                        join sabor on pizzasabor.sabor = sabor.codigo
+                    where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                    group by pizza.codigo
+                    having count(*) = 2
+                    order by comanda.data desc
+                )
+            order by pizza.codigo, sabor.nome   
+        ) as Sabor1, (
+            select pizza.codigo as pizza, sabor.nome as sabor from comanda
+                join pizza on comanda.numero = pizza.comanda
+                join pizzasabor on pizza.codigo = pizzasabor.pizza
+                join sabor on pizzasabor.sabor = sabor.codigo
+            where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+                pizza.codigo in (
+                    select pizza.codigo from comanda
+                        join pizza on comanda.numero = pizza.comanda
+                        join pizzasabor on pizza.codigo = pizzasabor.pizza
+                        join sabor on pizzasabor.sabor = sabor.codigo
+                    where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                    group by pizza.codigo
+                    having count(*) = 2
+                    order by comanda.data desc
+                )
+            order by pizza.codigo, sabor.nome   
+        ) as Sabor2
+        where 
+            Pizzas.codigo = Sabor1.pizza and 
+            Pizzas.codigo = Sabor2.pizza and
+            Sabor1.sabor != Sabor2.sabor
+        group by Pizzas.codigo
+    )
+    group by Sabor1, Sabor2
+    order by qtd desc
+    limit 1
+)
+order by qtd desc;
+
+--  o) Qual a combinação de 3 sabores mais pedida na mesma pizza nos últimos 3 meses?
+select Sabor1, Sabor2, Sabor3, count(*) as qtd from (
+    select Pizzas.codigo, Sabor1.sabor as Sabor1, Sabor2.sabor as Sabor2, Sabor3.sabor as Sabor3 from (
+        select pizza.codigo from comanda
+            join pizza on comanda.numero = pizza.comanda
+        where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+            pizza.codigo in (
+                select pizza.codigo from comanda
+                    join pizza on comanda.numero = pizza.comanda
+                    join pizzasabor on pizza.codigo = pizzasabor.pizza
+                    join sabor on pizzasabor.sabor = sabor.codigo
+                where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
                 group by pizza.codigo
                 having count(*) = 3
             )
-        group by pizza.codigo
-        order by pizza.codigo, sabor.nome
-    ) as tmp 
-    group by tmp.combinacao
+    ) as Pizzas, (
+        select pizza.codigo as pizza, sabor.nome as sabor from comanda
+            join pizza on comanda.numero = pizza.comanda
+            join pizzasabor on pizza.codigo = pizzasabor.pizza
+            join sabor on pizzasabor.sabor = sabor.codigo
+        where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+            pizza.codigo in (
+                select pizza.codigo from comanda
+                    join pizza on comanda.numero = pizza.comanda
+                    join pizzasabor on pizza.codigo = pizzasabor.pizza
+                    join sabor on pizzasabor.sabor = sabor.codigo
+                where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                group by pizza.codigo
+                having count(*) = 3
+            )
+        order by pizza.codigo, sabor.nome   
+    ) as Sabor1, (
+        select pizza.codigo as pizza, sabor.nome as sabor from comanda
+            join pizza on comanda.numero = pizza.comanda
+            join pizzasabor on pizza.codigo = pizzasabor.pizza
+            join sabor on pizzasabor.sabor = sabor.codigo
+        where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+            pizza.codigo in (
+                select pizza.codigo from comanda
+                    join pizza on comanda.numero = pizza.comanda
+                    join pizzasabor on pizza.codigo = pizzasabor.pizza
+                    join sabor on pizzasabor.sabor = sabor.codigo
+                where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                group by pizza.codigo
+                having count(*) = 3
+            )
+        order by pizza.codigo, sabor.nome   
+    ) as Sabor2, (
+        select pizza.codigo as pizza, sabor.nome as sabor from comanda
+            join pizza on comanda.numero = pizza.comanda
+            join pizzasabor on pizza.codigo = pizzasabor.pizza
+            join sabor on pizzasabor.sabor = sabor.codigo
+        where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+            pizza.codigo in (
+                select pizza.codigo from comanda
+                    join pizza on comanda.numero = pizza.comanda
+                    join pizzasabor on pizza.codigo = pizzasabor.pizza
+                    join sabor on pizzasabor.sabor = sabor.codigo
+                where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                group by pizza.codigo
+                having count(*) = 3
+            )
+        order by pizza.codigo, sabor.nome   
+    ) as Sabor3
+    where 
+        Pizzas.codigo = Sabor1.pizza and 
+        Pizzas.codigo = Sabor2.pizza and
+        Pizzas.codigo = Sabor3.pizza and
+        Sabor1.sabor != Sabor2.sabor and
+        Sabor1.sabor != Sabor3.sabor and
+        Sabor2.sabor != Sabor3.sabor
+    group by Pizzas.codigo
+)
+group by Sabor1, Sabor2, Sabor2
+having qtd = (
+    select count(*) as qtd from (
+        select Pizzas.codigo, Sabor1.sabor as Sabor1, Sabor2.sabor as Sabor2, Sabor3.sabor as Sabor3 from (
+            select pizza.codigo from comanda
+                join pizza on comanda.numero = pizza.comanda
+            where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+                pizza.codigo in (
+                    select pizza.codigo from comanda
+                        join pizza on comanda.numero = pizza.comanda
+                        join pizzasabor on pizza.codigo = pizzasabor.pizza
+                        join sabor on pizzasabor.sabor = sabor.codigo
+                    where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                    group by pizza.codigo
+                    having count(*) = 3
+                )
+        ) as Pizzas, (
+            select pizza.codigo as pizza, sabor.nome as sabor from comanda
+                join pizza on comanda.numero = pizza.comanda
+                join pizzasabor on pizza.codigo = pizzasabor.pizza
+                join sabor on pizzasabor.sabor = sabor.codigo
+            where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+                pizza.codigo in (
+                    select pizza.codigo from comanda
+                        join pizza on comanda.numero = pizza.comanda
+                        join pizzasabor on pizza.codigo = pizzasabor.pizza
+                        join sabor on pizzasabor.sabor = sabor.codigo
+                    where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                    group by pizza.codigo
+                    having count(*) = 3
+                )
+            order by pizza.codigo, sabor.nome   
+        ) as Sabor1, (
+            select pizza.codigo as pizza, sabor.nome as sabor from comanda
+                join pizza on comanda.numero = pizza.comanda
+                join pizzasabor on pizza.codigo = pizzasabor.pizza
+                join sabor on pizzasabor.sabor = sabor.codigo
+            where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+                pizza.codigo in (
+                    select pizza.codigo from comanda
+                        join pizza on comanda.numero = pizza.comanda
+                        join pizzasabor on pizza.codigo = pizzasabor.pizza
+                        join sabor on pizzasabor.sabor = sabor.codigo
+                    where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                    group by pizza.codigo
+                    having count(*) = 3
+                )
+            order by pizza.codigo, sabor.nome   
+        ) as Sabor2, (
+            select pizza.codigo as pizza, sabor.nome as sabor from comanda
+                join pizza on comanda.numero = pizza.comanda
+                join pizzasabor on pizza.codigo = pizzasabor.pizza
+                join sabor on pizzasabor.sabor = sabor.codigo
+            where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime') and
+                pizza.codigo in (
+                    select pizza.codigo from comanda
+                        join pizza on comanda.numero = pizza.comanda
+                        join pizzasabor on pizza.codigo = pizzasabor.pizza
+                        join sabor on pizzasabor.sabor = sabor.codigo
+                    where date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+                    group by pizza.codigo
+                    having count(*) = 3
+                )
+            order by pizza.codigo, sabor.nome   
+        ) as Sabor3
+        where 
+            Pizzas.codigo = Sabor1.pizza and 
+            Pizzas.codigo = Sabor2.pizza and
+            Pizzas.codigo = Sabor3.pizza and
+            Sabor1.sabor != Sabor2.sabor and
+            Sabor1.sabor != Sabor3.sabor and
+            Sabor2.sabor != Sabor3.sabor
+        group by Pizzas.codigo
+    )
+    group by Sabor1, Sabor2, Sabor2
     order by qtd desc
-    limit 1    
+    limit 1
 )
 order by qtd desc;
 
 --  p) Qual a combinação de sabor e borda mais pedida na mesma pizza nos últimos 3 meses?
+--levando em conta que é a combinação de um sabor e uma borda
+select borda.nome, sabor.nome, count(*) as qtd from comanda
+    join pizza on comanda.numero = pizza.comanda
+    join borda on pizza.borda = borda.codigo
+    join pizzasabor on pizza.codigo = pizzasabor.pizza
+    join sabor on pizzasabor.sabor = sabor.codigo
+where 
+    date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+group by borda.nome, sabor.nome
+having qtd = (
+    select count(*) as qtd from comanda
+        join pizza on comanda.numero = pizza.comanda
+        join borda on pizza.borda = borda.codigo
+        join pizzasabor on pizza.codigo = pizzasabor.pizza
+        join sabor on pizzasabor.sabor = sabor.codigo
+    where 
+        date(comanda.data, 'localtime') between date('now', '-3 months', 'localtime') and date('now', 'localtime')
+    group by borda.nome, sabor.nome
+    order by qtd desc
+    limit 1
+)
+order by qtd desc;

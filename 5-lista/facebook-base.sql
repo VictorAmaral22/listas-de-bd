@@ -437,11 +437,18 @@ insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) 
 insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values('Hummmm', '2021-07-30', '10:00:00', 'jorosamed@mymail.com', 35);
 insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values('Doisss', '2021-07-30', '10:05:00', 'jorosamed@mymail.com', 35);
 insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values('Trêssss', '2021-07-30', '10:10:00', 'jorosamed@mymail.com', 35);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values('Trêssss', '2021-07-30', '10:10:00', 'professordebd@gmail.com', 35);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values('Trêssss', '2021-07-30', '10:10:00', 'professordebd@gmail.com', 35);
+insert into comentario(conteudo, datacomentario, horacomentario, usuario, post) values('Trêssss', '2021-07-30', '10:10:00', 'professordebd@gmail.com', 35);
 
 insert into assuntocomentario(assunto, comentario) values(6, 23);
 insert into assuntocomentario(assunto, comentario) values(6, 24);
 insert into assuntocomentario(assunto, comentario) values(6, 25);
 insert into assuntocomentario(assunto, comentario) values(6, 26);
+
+insert into assuntocomentario(assunto, comentario) values(5, 27);
+insert into assuntocomentario(assunto, comentario) values(4, 28);
+insert into assuntocomentario(assunto, comentario) values(3, 29);
 
 --k)
 insert into amigo(usuario1, usuario2, datadeamizade, horadeamizade) values('mariaclara1@gmail.com','giovanna@gmail.com', '2021-08-05', '10:00:00');
