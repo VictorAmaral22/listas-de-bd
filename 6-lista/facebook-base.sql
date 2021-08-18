@@ -49,6 +49,7 @@ create table usuario(
    datadecadastro date not null, --default current_date
    horadecadastro time not null, --default current_timestamp
    cidade integer not null, 
+   isAtivo boolean not null default true,
    foreign key(cidade) references cidade(codigo),
    primary key(email),
    check(genero = 'm' or genero = 'f')
