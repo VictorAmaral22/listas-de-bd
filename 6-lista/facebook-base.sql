@@ -9,8 +9,8 @@ drop table reacao;
 drop table compartilhar;
 drop table citacao;
 drop table post;
-drop table selo;
 drop table membro;
+drop table selo;
 drop table grupo;
 drop table seguidor;
 drop table pagina;
@@ -111,7 +111,9 @@ create table post(
     conteudo varchar(300),
     cidade integer not null,
     grupo integer, 
-    pagina integer, 
+    pagina integer,
+    isAtivo boolean not null default true,
+    motivo varchar(250), 
     foreign key(cidade) references cidade(codigo),
     foreign key(grupo) references grupo(codigo),
     foreign key(pagina) references pagina(codigo),
@@ -471,55 +473,65 @@ insert into post (usuario, datadopost, horadopost, conteudo, cidade) values('pel
 insert into post (usuario, datadopost, horadopost, conteudo, cidade) values('pele@cbf.com.br', '2021-08-11', '22:00:00', 'E o Messi que foi pro PSG?', 1);
 insert into post (usuario, datadopost, horadopost, conteudo, cidade) values('pele@cbf.com.br', '2021-08-11', '22:05:00', 'Brasil: 20 medalhas nas Olimpíadas 2020/2021 em Tóquio', 1);
 
+-- b)
+insert into post (usuario, datadopost, horadopost, conteudo, cidade, grupo) values('aninha@gmail.com', '2021-08-11', '22:00:00', 'Eh brabo', 1, 1);
+insert into post (usuario, datadopost, horadopost, conteudo, cidade, grupo) values('aninha@gmail.com', '2021-08-11', '22:05:00', 'Eh brabo', 1, 1);
+insert into post (usuario, datadopost, horadopost, conteudo, cidade, grupo) values('aninha@gmail.com', '2021-08-11', '22:10:00', 'Eh brabo', 1, 1);
+
+insert into postreacao (post, reacao, usuario, datapostreacao, horapostreacao) values
+    (42, 1, 'pxramos@mymail.com', '2021-08-19', '15:00:00'),
+    (43, 2, 'pxramos@mymail.com', '2021-08-19', '15:05:00'),
+    (44, 3, 'pxramos@mymail.com', '2021-08-19', '15:10:00');
+
 --e)
 insert into grupo(nome) values ('IFRS-Campus Rio Grande');
 insert into membro(grupo, usuario) values (3, 'pmartinssilva90@mymail.com'), (3, 'pele@cbf.com.br'), (3, 'giovanna@gmail.com'), (3, 'aninha@gmail.com');
 insert into post (usuario, datadopost, horadopost, conteudo, cidade, grupo) values 
-    ('pmartinssilva90@mymail.com', '2021-08-08', '11:00:00', '...', 1, 3),  --42
-    ('pmartinssilva90@mymail.com', '2021-08-08', '11:05:00', '...', 1, 3),  --43
-    ('pmartinssilva90@mymail.com', '2021-08-08', '11:10:00', '...', 1, 3),  --44
-    ('pele@cbf.com.br', '2021-08-09', '11:15:00', '...', 1, 3),             --45
-    ('pele@cbf.com.br', '2021-08-09', '11:20:00', '...', 1, 3),             --46
-    ('pele@cbf.com.br', '2021-08-09', '11:25:00', '...', 1, 3),             --47
-    ('giovanna@gmail.com', '2021-08-10', '11:30:00', '...', 1, 3),          --48
-    ('giovanna@gmail.com', '2021-08-10', '11:35:00', '...', 1, 3),          --49
-    ('giovanna@gmail.com', '2021-08-10', '11:40:00', '...', 1, 3),          --50
-    ('aninha@gmail.com', '2021-08-11', '11:45:00', '...', 1, 3),            --51
-    ('aninha@gmail.com', '2021-08-11', '11:50:00', '...', 1, 3),            --52
-    ('aninha@gmail.com', '2021-08-11', '11:55:00', '...', 1, 3);            --53
+    ('pmartinssilva90@mymail.com', '2021-08-08', '11:00:00', '...', 1, 3),  --45
+    ('pmartinssilva90@mymail.com', '2021-08-08', '11:05:00', '...', 1, 3),  --46
+    ('pmartinssilva90@mymail.com', '2021-08-08', '11:10:00', '...', 1, 3),  --47
+    ('pele@cbf.com.br', '2021-08-09', '11:15:00', '...', 1, 3),             --48
+    ('pele@cbf.com.br', '2021-08-09', '11:20:00', '...', 1, 3),             --49
+    ('pele@cbf.com.br', '2021-08-09', '11:25:00', '...', 1, 3),             --50
+    ('giovanna@gmail.com', '2021-08-10', '11:30:00', '...', 1, 3),          --51
+    ('giovanna@gmail.com', '2021-08-10', '11:35:00', '...', 1, 3),          --52
+    ('giovanna@gmail.com', '2021-08-10', '11:40:00', '...', 1, 3),          --53
+    ('aninha@gmail.com', '2021-08-11', '11:45:00', '...', 1, 3),            --54
+    ('aninha@gmail.com', '2021-08-11', '11:50:00', '...', 1, 3),            --55
+    ('aninha@gmail.com', '2021-08-11', '11:55:00', '...', 1, 3);            --56
 
 -- 9, 6, 3
 insert into postreacao (post, usuario, reacao, datapostreacao, horapostreacao) values
-    (42,'pele@cbf.com.br', 1, '2021-08-08', '11:05:00'),
-    (42,'giovanna@gmail.com', 1, '2021-08-08', '11:05:00'),
-    (45,'pmartinssilva90@mymail.com', 1, '2021-08-09', '11:20:00'),
-    (45,'pele@cbf.com.br', 1, '2021-08-09', '11:20:00'),
-    (45,'giovanna@gmail.com', 1, '2021-08-09', '11:20:00'),
-    (46,'pmartinssilva90@mymail.com', 1, '2021-08-09', '11:25:00'),
-    (46,'pele@cbf.com.br', 1, '2021-08-09', '11:25:00'),
-    (46,'giovanna@gmail.com', 1, '2021-08-09', '11:25:00'),
-    (47,'pmartinssilva90@mymail.com', 1, '2021-08-09', '11:30:00'),
-    (47,'pele@cbf.com.br', 1, '2021-08-09', '11:30:00'),
-    (48,'pmartinssilva90@mymail.com', 1, '2021-08-10', '11:35:00'),
-    (48,'pele@cbf.com.br', 1, '2021-08-10', '11:35:00'),
-    (49,'pmartinssilva90@mymail.com', 1, '2021-08-10', '11:40:00'),
-    (49,'pele@cbf.com.br', 1, '2021-08-10', '11:40:00'),
-    (50,'pmartinssilva90@mymail.com', 1, '2021-08-10', '11:45:00'),
-    (51,'pmartinssilva90@mymail.com', 1, '2021-08-11', '11:50:00'),
-    (52,'pmartinssilva90@mymail.com', 1, '2021-08-11', '11:55:00'),
-    (53,'pmartinssilva90@mymail.com', 1, '2021-08-11', '12:00:00');
+    (45,'pele@cbf.com.br', 1, '2021-08-08', '11:05:00'),
+    (45,'giovanna@gmail.com', 1, '2021-08-08', '11:05:00'),
+    (46,'pmartinssilva90@mymail.com', 1, '2021-08-09', '11:20:00'),
+    (46,'pele@cbf.com.br', 1, '2021-08-09', '11:20:00'),
+    (46,'giovanna@gmail.com', 1, '2021-08-09', '11:20:00'),
+    (47,'pmartinssilva90@mymail.com', 1, '2021-08-09', '11:25:00'),
+    (47,'pele@cbf.com.br', 1, '2021-08-09', '11:25:00'),
+    (47,'giovanna@gmail.com', 1, '2021-08-09', '11:25:00'),
+    (48,'pmartinssilva90@mymail.com', 1, '2021-08-09', '11:30:00'),
+    (48,'pele@cbf.com.br', 1, '2021-08-09', '11:30:00'),
+    (49,'pmartinssilva90@mymail.com', 1, '2021-08-10', '11:35:00'),
+    (49,'pele@cbf.com.br', 1, '2021-08-10', '11:35:00'),
+    (50,'pmartinssilva90@mymail.com', 1, '2021-08-10', '11:40:00'),
+    (50,'pele@cbf.com.br', 1, '2021-08-10', '11:40:00'),
+    (51,'pmartinssilva90@mymail.com', 1, '2021-08-10', '11:45:00'),
+    (52,'pmartinssilva90@mymail.com', 1, '2021-08-11', '11:50:00'),
+    (53,'pmartinssilva90@mymail.com', 1, '2021-08-11', '11:55:00'),
+    (54,'pmartinssilva90@mymail.com', 1, '2021-08-11', '12:00:00');
 
 --4, 3, 2
 insert into comentario (post, usuario, datacomentario, horacomentario, conteudo) values
-    (42, 'pmartinssilva90@mymail.com', '2021-08-08', '11:05:00', '...'),
-    (42, 'pele@cbf.com.br', '2021-08-08', '11:05:00', '...'),
-    (42, 'giovanna@gmail.com', '2021-08-08', '11:05:00', '...'),
-    (43, 'pmartinssilva90@mymail.com', '2021-08-08', '11:10:00', '...'),
-    (43, 'pele@cbf.com.br', '2021-08-08', '11:10:00', '...'),
-    (43, 'giovanna@gmail.com', '2021-08-08', '11:10:00', '...'),
-    (44, 'pmartinssilva90@mymail.com', '2021-08-08', '11:15:00', '...'),
-    (44, 'pele@cbf.com.br', '2021-08-08', '11:15:00', '...'),
-    (44, 'pele@cbf.com.br', '2021-08-08', '11:20:00', '...'),
-    (45, 'pmartinssilva90@mymail.com', '2021-08-09', '11:20:00', '...');
+    (45, 'pmartinssilva90@mymail.com', '2021-08-08', '11:05:00', '...'),
+    (45, 'pele@cbf.com.br', '2021-08-08', '11:05:00', '...'),
+    (45, 'giovanna@gmail.com', '2021-08-08', '11:05:00', '...'),
+    (46, 'pmartinssilva90@mymail.com', '2021-08-08', '11:10:00', '...'),
+    (46, 'pele@cbf.com.br', '2021-08-08', '11:10:00', '...'),
+    (46, 'giovanna@gmail.com', '2021-08-08', '11:10:00', '...'),
+    (47, 'pmartinssilva90@mymail.com', '2021-08-08', '11:15:00', '...'),
+    (47, 'pele@cbf.com.br', '2021-08-08', '11:15:00', '...'),
+    (47, 'pele@cbf.com.br', '2021-08-08', '11:20:00', '...'),
+    (48, 'pmartinssilva90@mymail.com', '2021-08-09', '11:20:00', '...');
 
 insert into selo (nome) values ('ultra-fã'),('super-fã'),('fã');
