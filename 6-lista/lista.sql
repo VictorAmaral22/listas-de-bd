@@ -23,7 +23,59 @@ where
     
 -- c) Desativar temporariamente as contas dos usuários do Brasil que não possuem qualquer atividade na rede social há mais de 5 anos.
 --testar desativando mcalbuq que nao é ativa há 2 meses
+update usuario set isAtivo =  false
+where usuario.email not in
+(select usuario.email from usuario 
+                join post on usuario.email = post.usuario
+                join cidade on usuario.cidade= cidade.codigo
+                join estado on cidade.estado = estado.codigodaUF
+                join pais on estado.pais = pais.codigoISO
+                where date(datadopost) between date('now', '-5 years') and date('now') and pais.codigoISO='BRA'
+                group by post.usuario
+ union  select usuario.email from usuario 
+                join postreacao on usuario.email = postreacao.usuario
+                join cidade on usuario.cidade= cidade.codigo
+                join estado on cidade.estado = estado.codigodaUF
+                join pais on estado.pais = pais.codigoISO
+                where date(datapostreacao) between date('now', '-5 years') and date('now') and pais.codigoISO='BRA'
+                group by postreacao.usuario
+union select amigo.usuario1 from amigo
+             join usuario on amigo.usuario1=usuario.email
+              join cidade on usuario.cidade= cidade.codigo
+                join estado on cidade.estado = estado.codigodaUF
+                join pais on estado.pais = pais.codigoISO
+             where datadeamizade between date('now', '-5 years') and date('now') and pais.codigoISO='BRA'
+union select amigo.usuario2 from amigo
+             join usuario on amigo.usuario1=usuario.email
+              join cidade on usuario.cidade= cidade.codigo
+                join estado on cidade.estado = estado.codigodaUF
+                join pais on estado.pais = pais.codigoISO
+             where datadeamizade between date('now', '-5 years') and date('now') and pais.codigoISO='BRA'
 
+union select usuario.email from usuario 
+                join cidade on usuario.cidade= cidade.codigo
+                join estado on cidade.estado = estado.codigodaUF
+                join pais on estado.pais = pais.codigoISO
+             where datadecadastro between date('now', '-5 years') and date('now') and pais.codigoISO='BRA'
+
+union select comentario.usuario from comentario
+ join usuario on comentario.usuario=usuario.email join cidade on usuario.cidade= cidade.codigo
+                join estado on cidade.estado = estado.codigodaUF
+                join pais on estado.pais = pais.codigoISO
+           where datacomentario between date('now', '-5 years') and date('now') and pais.codigoISO='BRA'
+
+union select comentarioreacao.usuario from comentarioreacao
+join usuario on comentarioreacao.usuario=usuario.email join cidade on usuario.cidade= cidade.codigo
+                join estado on cidade.estado = estado.codigodaUF
+                join pais on estado.pais = pais.codigoISO
+           where datacomentarioreacao between date('now', '-5 years') and date('now') and pais.codigoISO='BRA'
+
+union select compartilhar.usuario from compartilhar 
+ join usuario on compartilhar.usuario=usuario.email join cidade on usuario.cidade= cidade.codigo
+                join estado on cidade.estado = estado.codigodaUF
+                join pais on estado.pais = pais.codigoISO
+                where datadecompartilhamento between date('now', '-5 years') and date('now') and pais.codigoISO='BRA'
+);
 
 -- d) Excluir a última postagem no grupo IFRS-Campus Rio Grande, classificada como postagem que incita ódio.
 update post set isAtivo = false, motivo = 'Esta postagem incita ódio' where post.codigo = (
