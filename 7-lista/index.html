@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Lista 7</title>
+</head>
+<body>
+    <h1><b>Lista de exercícios - HTML/JS e PHP</b></h1>
+    
+    <h4>1) Validar um CPF</h4> 
+        <form id="form1" name="formCpf" action="cpf.php" method="POST">
+            <table>
+                <tr>
+                    <td>
+                        CPF: <input id="cpf" name="cpf" type="int" pattern="[0-9]{11}" placeholder="xxx.xxx.xxx-xx" required onclick="unSetError('cpf')" maxlength="11">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" id="buttonCpf" onclick="valid(1)" value="Enviar">
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+    <h4>2) Somar uma quantidade de dias úteis a uma data</h4>
+        <form id="form2" name="formDate" action="data.php" method="POST">
+            <table>
+                <tr>
+                    <td>
+                        Data: <input id="data" name="data" type="int" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" placeholder="dd/mm/yyyy" required onclick="unSetError('data')" maxlength="10">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Dias úteis: <input id="dataUtil" name="dataUtil" type="int" pattern="[0-9]" placeholder="..." required onclick="unSetError('dataUtil')">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" id="buttonData" onclick="valid(2)" value="Enviar">
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+    <h4>3) Transcrever um valor monetário</h4>
+        <form id="form3" name="formValor" action="valor.php" method="POST">
+            <table>
+                <tr>
+                    <td>
+                        Valor: <input id="valor" name="valor" type="int">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="buttonValor" type="button" value="Enviar" onclick="">
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+    <h4>4) Calculadora com números por extenso</h4>
+        <form id="form4" name="formCalExt" action="calExt.php" method="POST">
+            <table>
+                <tr>
+                    <td>
+                        Operando 1 <input type="text" name="op1" id="op1">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <select name="selectOp" id="selectOp">
+                            <option value="mais">+</option>
+                            <option value="menos">-</option>
+                            <option value="mult">*</option>
+                            <option value="divd">/</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Operando 1 <input type="text" name="op2" id="op2">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="buttonFormCalExt" type="button" value="=" onclick="">
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+    <h4>5) Calculadora com números romanos</h4>
+
+    <script src="script.js"></script>
+</body>
+</html>
