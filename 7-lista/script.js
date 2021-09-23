@@ -2,7 +2,17 @@ var array = [
     ['cpf'], 
     ['data', 'dataUtil'],
     ['valor'],
-    ['op1','selectOp','op2']];
+    ['op1','selectOp','op2']
+];
+
+// function insere() {
+//     var table = document.getElementById("tableAddRomanos");
+//     console.log(table.children.length);
+//     if (table.children.length < 100) {
+//         // row.innerHTML +=  "<td> <input id=\"romanoOp"+row.length+"\" type=\"int\" name=\"romanoOp" + row.length + "\" required></td>";         
+//         table.insertRow(-1).innerHTML =  `<td> <p>Bah ${table.children.length}</p> </td>`;         
+//     }
+// }
 
 function valid(value) {
     var errors = 0;
@@ -36,29 +46,13 @@ function valid(value) {
 }
 
 function validateCpf(){
-    var invalidCPF = [
-        '11111111111',
-        '22222222222',
-        '33333333333',
-        '44444444444',
-        '55555555555',
-        '66666666666',
-        '77777777777',
-        '88888888888',
-        '99999999999',
-        '00000000000',
-        '12345678912',
-    ];
+    var invalidCPF = ['11111111111','22222222222','33333333333','44444444444','55555555555','66666666666','77777777777','88888888888','99999999999','00000000000','12345678912'];
     var cpf = document.getElementById('cpf').value;
     console.log('Validando CPF: '+cpf);
     if(invalidCPF.includes(cpf)){
         console.log('CPF inválido!')
         return null;
     } else{
-        // usando um CPF fictício "52998224725".
-        // 5 * 10 + 2 * 9 + 9 * 8 + 9 * 7 + 8 * 6 + 2 * 5 + 2 * 4 + 4 * 3 + 7 * 2
-        // 295 * 10 / 11
-        
         cpf = cpf.split('');
         var calculo = 0;
         let i = 10;
@@ -70,9 +64,6 @@ function validateCpf(){
         });
         var calculo2 = 0;
         if((calculo*10)%11 == cpf[cpf.length-2]){
-            // 5 * 11 + 2 * 10 + 9 * 9 + 9 * 8 + 8 * 7 + 2 * 6 + 2 * 5 + 4 * 4 + 7 * 3 + 2 * 2
-            // 347 * 10 / 11
-            
             let i = 11;
             cpf.forEach(element => {
                 if(i>=2){

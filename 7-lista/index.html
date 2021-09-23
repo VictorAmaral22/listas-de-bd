@@ -76,7 +76,7 @@
                         <select name="selectOp" id="selectOp">
                             <option value="mais">+</option>
                             <option value="menos">-</option>
-                            <option value="mult">*</option>
+                            <option value="mult">x</option>
                             <option value="divd">/</option>
                         </select>
                     </td>
@@ -95,6 +95,27 @@
         </form>
 
     <h4>5) Calculadora com números romanos</h4>
+    <table id="tableAddRomanos">
+        <tr>
+            <td>
+                <input id="romanoOp1" name="romanoOp1" type="int" placeholder="Digite um número em romano..." required>                
+            </td>
+            <td>
+                <select name="selectRom" id="selectRom">
+                    <option value="mais">+</option>
+                    <option value="menos">-</option>
+                    <option value="mult">x</option>
+                    <option value="divd">/</option>
+                </select>
+            </td>
+            <td>
+                <input id="romanoOp2" name="romanoOp2" type="int" placeholder="Digite um número em romano..." required>
+            </td>
+            <td>
+                <input type="button" id="adiciona" value="+" style="width: 20px;" onclick="insere();">
+            </td>
+        </tr>
+    </table>
 
     <script src="script.js"></script>
 </body>
