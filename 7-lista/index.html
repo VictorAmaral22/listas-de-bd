@@ -52,12 +52,12 @@
             <table>
                 <tr>
                     <td>
-                        Valor: <input id="valor" name="valor" type="int">
+                        Valor: <input id="valor" name="valor" type="int" pattern="^\d{1,9},\d{2}$" onclick="unSetError('valor')">
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <input id="buttonValor" type="button" value="Enviar" onclick="">
+                        <input id="buttonValor" type="button" value="Enviar" onclick="valid(3)">
                     </td>
                 </tr>
             </table>

@@ -1,0 +1,77 @@
+/*  MESES   */
+janeiro
+fevereiro
+março
+abril
+maio
+junho
+julho
+agosto
+setembro
+outubro
+novembro
+dezembro
+
+/*  NUMEROS ALGARISMO  */
+
+RegExp -> ^\d{1,9},\d{2}$
+
+0,01
+1,00
+101059,99
+999999999,99
+
+/*  NUMEROS EXTENSO  */
+
+RegExp -> ^([a-zêã,])+([ a-zêã,]?)+[^ ]$
+
+zero
+um
+dois
+três
+quatro
+cinco
+seis
+sete
+oito
+nove
+dez
+onze
+doze
+treze
+quatorze  ou catorze
+quinze
+dezesseis
+dezessete
+dezoito
+dezenove
+vinte
+trinta
+quarenta
+cinquenta
+sessenta
+setenta
+oitenta
+noventa
+cem
+duzentos
+trezentos
+quatrocentos
+quinhentos
+seiscentos
+setecentos
+oitocentos
+novecentos
+mil
+dois mil
+três mil
+quatro mil
+cinco mil
+seis mil
+sete mil
+oito mil
+nove mil
+dez mil
+cem mil
+um milhão
+um bilhão, trezentos mil e três
