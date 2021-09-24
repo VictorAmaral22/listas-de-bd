@@ -12,6 +12,16 @@ outubro
 novembro
 dezembro
 
+123456789111
+
+/*  dias uteis  */
+33/22/2222
+11
+1
+1a
+ 1
+
+
 /*  NUMEROS ALGARISMO  */
 
 RegExp -> ^\d{1,9},\d{2}$

@@ -14,6 +14,7 @@ var array = [
 //     }
 // }
 
+
 function valid(value) {
     var errors = 0;
     console.log('Recebendo de: '+array[value-1]);
@@ -37,9 +38,21 @@ function valid(value) {
                         errors++;
                     }
                 }
-
+                
                 // VALIDANDO EXERCICIO 2
-                // ...
+                if(value == 2){   
+                    console.log('I: '+i);
+                    var ok = dataValida(i);
+                    if(ok){
+                        console.log('Sucesso!');
+                        // document.getElementById('form'+value).submit();
+                    } else {
+                        console.log('Erro em '+input.id+': '+input.value);
+                        input.value = '';
+                        input.classList.add('erro');
+                        errors++;
+                    }
+                }
 
                 // VALIDANDO EXERCICIO 3
                 if(value == 3){
@@ -110,6 +123,73 @@ function validateCpf(){
     }    
 }
 
+function dataValida(value){
+    if(value == 0){
+        // data
+        var data = document.getElementById('data').value.split('/');
+        parseInt(data[0]);
+        parseInt(data[1]);
+        parseInt(data[2]);
+        console.log('Data: '+data);
+
+        function leapYear(year){
+            return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
+        }
+        var meses = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var mesesBi = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        console.log(data[2]);
+        console.log(data[1]);
+        console.log(data[0]);
+        if(data[2] != '0000' && data[1] != '00' && data[0] != '00'){
+            if(data[1] >= 1 && data[1] <= 12){
+                var bi = leapYear(data[2]);
+                if(bi){
+                    // é bissexto
+                    console.log('Bissexto');
+                    if((data[0] >= 1) && (data[0] <= mesesBi[data[1]-1])){
+                        console.log('Ok!');
+                    } else {
+                        console.log('Erro!');
+                        return null;
+                    }
+                } else {
+                    // não é bissexto
+                    console.log('Não bissexto');
+                    if((data[0] >= 1) && (data[0] <= meses[data[1]-1])){
+                        console.log('Ok!');                
+                    } else {
+                        console.log('Erro!');
+                        return null;
+                    }
+                }                
+            }
+        } else {
+            console.log('Erro!');
+            return null;
+        }
+    } 
+    if(value == 1) {
+        // dia util
+        var dataUtil = document.getElementById('dataUtil').value;
+        dataUtil = parseInt(dataUtil);
+        if(Number.isInteger(dataUtil) && (Math.sign(dataUtil) != -1)){
+            if(dataUtil !== 0){
+                console.log('Sucesso!');
+                return true;
+            } else {
+                console.log('Erro: É zero');
+                return null;
+            }
+        } else {
+            console.log('Erro: n inteiro ou negativo');
+            return null;
+        }
+    }
+    
+}
+
+
+
 function validateMoney(){
     var numExt = [
         ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 
@@ -150,6 +230,21 @@ function validateMoney(){
             }
         }        
 
+        function geralMoney(reais){
+            var casas = reais.length;
+            var newText = [];
+            for(let i = 0; i < casas ; i++){
+                if(reais[i++]){
+                    if(reais[i++] == '0'){
+                        
+                    } else {
+                        // tem mais números diferentes de 0
+                    }
+                } else {
+                    //fim do número
+                }
+            }
+        }
         // console.log(texto);
         return true;
         // continua
