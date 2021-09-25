@@ -18,12 +18,13 @@ var array = [
 function valid(value) {
     var errors = 0;
     console.log('Recebendo de: '+array[value-1]);
-    for(let i=0; i < array[value-1].length ;i++){
+    for(let i = 0; i <= array[value-1].length-1 ; i++){
         let input = document.getElementById(array[value-1][i]);
         let regExp = new RegExp(input.pattern);
         if(regExp.test(input.value)){
-            if(i == (array[value-1].length-1) && errors == 0){
-                console.log('RegExp ok!');
+            console.log('I: '+i);
+            if(errors == 0){
+                console.log(`RegExp ${i} ok!`);
                 // VALIDANDO EXERCICIO 1
                 if(value == 1){
                     console.log('Exercício 1');
@@ -41,7 +42,6 @@ function valid(value) {
                 
                 // VALIDANDO EXERCICIO 2
                 if(value == 2){   
-                    console.log('I: '+i);
                     var ok = dataValida(i);
                     if(ok){
                         console.log('Sucesso!');
@@ -56,7 +56,6 @@ function valid(value) {
 
                 // VALIDANDO EXERCICIO 3
                 if(value == 3){
-                    console.log('Exercício 3');
                     var ok = validateMoney();
                     if(ok){
                         console.log('Sucesso!');
@@ -125,7 +124,7 @@ function validateCpf(){
 
 function dataValida(value){
     if(value == 0){
-        // data
+        // DATA
         var data = document.getElementById('data').value.split('/');
         parseInt(data[0]);
         parseInt(data[1]);
@@ -137,10 +136,10 @@ function dataValida(value){
         }
         var meses = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
         var mesesBi = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-        console.log(data[2]);
-        console.log(data[1]);
-        console.log(data[0]);
-        if(data[2] != '0000' && data[1] != '00' && data[0] != '00'){
+        // console.log(data[2]);
+        // console.log(data[1]);
+        // console.log(data[0]);
+        if(data[2] != 0 && data[1] != 0 && data[0] != 0){
             if(data[1] >= 1 && data[1] <= 12){
                 var bi = leapYear(data[2]);
                 if(bi){
@@ -148,6 +147,7 @@ function dataValida(value){
                     console.log('Bissexto');
                     if((data[0] >= 1) && (data[0] <= mesesBi[data[1]-1])){
                         console.log('Ok!');
+                        return true;
                     } else {
                         console.log('Erro!');
                         return null;
@@ -156,7 +156,8 @@ function dataValida(value){
                     // não é bissexto
                     console.log('Não bissexto');
                     if((data[0] >= 1) && (data[0] <= meses[data[1]-1])){
-                        console.log('Ok!');                
+                        console.log('Ok!');
+                        return true;                
                     } else {
                         console.log('Erro!');
                         return null;
@@ -169,7 +170,7 @@ function dataValida(value){
         }
     } 
     if(value == 1) {
-        // dia util
+        // DIA UTIL
         var dataUtil = document.getElementById('dataUtil').value;
         dataUtil = parseInt(dataUtil);
         if(Number.isInteger(dataUtil) && (Math.sign(dataUtil) != -1)){
@@ -187,8 +188,6 @@ function dataValida(value){
     }
     
 }
-
-
 
 function validateMoney(){
     var numExt = [
