@@ -45,7 +45,7 @@ function valid(value) {
                     var ok = dataValida(i);
                     if(ok){
                         console.log('Sucesso!');
-                        // document.getElementById('form'+value).submit();
+                        document.getElementById('form'+value).submit();
                     } else {
                         console.log('Erro em '+input.id+': '+input.value);
                         input.value = '';
@@ -59,7 +59,7 @@ function valid(value) {
                     var ok = validateMoney();
                     if(ok){
                         console.log('Sucesso!');
-                        // document.getElementById('form'+value).submit();
+                        document.getElementById('form'+value).submit();
                     } else {
                         console.log('Erro em '+input.id+': '+input.value);
                         input.value = '';
@@ -190,62 +190,19 @@ function dataValida(value){
 }
 
 function validateMoney(){
-    var numExt = [
-        ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez', 
-        'onze', 'doze', 'treze', 'quatorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'],
-        ['vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'],
-        ['cem', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos']
-    ];
     var valor = document.getElementById('valor').value;
-    valor.toString();
+    console.log(valor);
     valor = valor.split(',');
-    // console.log(valor);
-    var reais = valor[0];
-    var cents = valor[1];
-    var texto = '';
-
-    if(reais[0] == '0' && reais.length > 1){
+    if(valor[0].charAt(0) == '0' && valor[0].length > 1){
+        console.log('Erro!');
         return null;
-    } else{
-        var casas = reais.length;
-        console.log(casas);
-        if(casas == 9){
-            if(reais[1] == '0'){
-                if(reais[2] == '0'){
-                    texto += numExt[2][parseInt(reais[0])-1]+' milhões';
-                } else {
-                    texto += numExt[2][parseInt(reais[0])-1]+' e '+numExt[0][parseInt(reais[2])]+' milhões';
-                }    
-            } else {
-                if(parseInt(reais[1]) == 1){
-                    texto += numExt[2][parseInt(reais[0])-1]+' e '+numExt[0][parseInt(reais[1]+reais[2])]+' milhões';
-                } else {
-                    if(parseInt(reais[2]) == 0){
-                        texto += numExt[2][parseInt(reais[0])-1]+' e '+numExt[1][parseInt(reais[1])-2]+' milhões';
-                    } else {
-                        texto += numExt[2][parseInt(reais[0])-1]+' e '+numExt[1][parseInt(reais[1])-2]+' e '+numExt[0][parseInt(reais[2])] +' milhões';                        
-                    }
-                }
-            }
-        }        
-
-        function geralMoney(reais){
-            var casas = reais.length;
-            var newText = [];
-            for(let i = 0; i < casas ; i++){
-                if(reais[i++]){
-                    if(reais[i++] == '0'){
-                        
-                    } else {
-                        // tem mais números diferentes de 0
-                    }
-                } else {
-                    //fim do número
-                }
-            }
+    } else {
+        if(valor[1] == '00' && parseInt(valor[0]) == 0){
+            console.log('Erro!');
+            return null;
+        } else {
+            console.log('Sucesso!');
+            return true;
         }
-        // console.log(texto);
-        return true;
-        // continua
-    }
+    }   
 }
