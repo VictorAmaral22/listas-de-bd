@@ -7,7 +7,9 @@ echo "<h3>Transcrição de Valor Monetário...</h3><br>";
 
 if(!isset($_POST["valor"])){
     echo "VALOR NÃO INFORMADO";
-} else {
+} elseif(!preg_match("#^[0-9]{1,9},[0-9]{2}$#", $_POST["valor"])){
+    echo "VALOR INVÁLIDO";
+} else{
     $valor = $_POST["valor"];
     $numExt1 = array(
         0=>'',
@@ -66,23 +68,215 @@ if(!isset($_POST["valor"])){
     //         return true;
     //     }
     // } 
-    $valor.str_split(',');
+    echo 'R$ '.$valor.'<br>';
+    $valor = explode(',', $valor);
+    $text = '';
+    $text2 = '';
     // if(valor[0].strpos('0') != -1)
     if(substr($valor[0], 0) == '0' && strlen($valor[0]) > 1){
-        echo 'Valor inválido';
+        echo "VALOR INVÁLIDO";
     } elseif($valor[1] == '00' && (int)$valor[0] == 0) {
-        echo 'Valor inválido';       
+        echo "VALOR INVÁLIDO";       
     } else {
-        echo 'R$ '.$valor.'<br>';
         $casasRe = strlen($valor[0]);        
         $casasCents = strlen($valor[1]);
-        $text = '';
-        if(substr($valor[1], 0) == '0'){
-            echo substr($valor[1], 1);
-            // echo array_search(, $numExt1);
+
+        // CENTS
+        if((int)$valor[1] != 0){
+            if($valor[1][0] == '0'){
+                $text = $text.$numExt1[(int)$valor[1][1]];
+            } elseif((int)$valor[1] < 20) {
+                $text = $text.$numExt1[(int)$valor[1]];
+            } elseif($valor[1][1] == '0') {
+                $text = $text.$numExt2[(int)$valor[1][0]];
+            } else {
+                $text = $text.$numExt2[(int)$valor[1][0]].' e '.$numExt1[(int)$valor[1][1]];
+            }
+        }
+
+        // REAIS
+        if($valor[0][0] != '0'){
+            for($i = 0, $c = $casasRe; $i < $casasRe; $i++, $c--){
+                // MILHÃO
+                if($c == 9){
+                    $text2 = $text2.$numExt3[(int)$valor[0][$i]];
+                }
+                if($c == 8){
+                    if($i != 0){
+                        if((int)$valor[0][$i] != 0){
+                            if((int)$valor[0][$i] < 2){
+                                $text2 = $text2.' e '.$numExt1[(int)($valor[0][$i].$valor[0][$i+1])];
+                            } else {
+                                $text2 = $text2.' e '.$numExt2[(int)$valor[0][$i]];
+                            }
+                        }
+                    } else {
+                        if((int)$valor[0][$i] < 2){
+                            $text2 = $text2.$numExt1[(int)($valor[0][$i].$valor[0][$i+1])];
+                        } else {
+                            $text2 = $text2.$numExt2[(int)$valor[0][$i]];
+                        }
+                    }
+                }
+                if($c == 7){
+                    if($i != 0){
+                        if((int)$valor[0][$i] != 0){
+                            if((int)$valor[0][$i-1] == 0){
+                                $text2 = $text2.' e '.$numExt1[(int)$valor[0][$i]];
+                            } elseif((int)$valor[0][$i-1] != 1) {
+                                $text2 = $text2.' e '.$numExt1[(int)$valor[0][$i]];
+                            }
+                        }
+                    } else {
+                        $text2 = $text2.$numExt1[(int)$valor[0][$i]];
+                    }                    
+                    if((int)$valor[0][$i+1] == 0 && (int)$valor[0][$i+2] == 0 && (int)$valor[0][$i+3] == 0 && (int)$valor[0][$i+4] == 0 && (int)$valor[0][$i+5] == 0 && (int)$valor[0][$i+6] == 0 && (int)$valor[0][$i+7] == 0){
+                        $text2 = $text2.' milhão(ões) de';
+                    } else {
+                        $text2 = $text2.' milhão(ões),';
+                    }
+                }
+                // MILHAR
+                if($c == 6){
+                    if($i != 0){
+                        if((int)$valor[0][$i] != 0){
+                            if((int)$valor[0][$i+1] != 0){
+                                if((int)$valor[0][$i] == 1){
+                                    $text2 = $text2.' cento';
+                                } else {
+                                    $text2 = $text2.' '.$numExt3[(int)$valor[0][$i]];
+                                }
+                            } else {
+                                if((int)$valor[0][$i] == 1){
+                                    $text2 = $text2.' e cem';
+                                } else {
+                                    $text2 = $text2.' e '.$numExt3[(int)$valor[0][$i]];
+                                }
+                            }
+                        }
+                    } else {
+                        $text2 = $text2.$numExt3[(int)$valor[0][$i]];
+                    }
+                }
+                if($c == 5){
+                    if($i != 0){
+                        if((int)$valor[0][$i] != 0){
+                            if((int)$valor[0][$i] < 2){
+                                $text2 = $text2.' e '.$numExt1[(int)($valor[0][$i].$valor[0][$i+1])];
+                            } else {
+                                $text2 = $text2.' e '.$numExt2[(int)$valor[0][$i]];
+                            }
+                        }
+                    } else {
+                        if((int)$valor[0][$i] < 2){
+                            $text2 = $text2.$numExt1[(int)($valor[0][$i].$valor[0][$i+1])];
+                        } else {
+                            $text2 = $text2.$numExt2[(int)$valor[0][$i]];
+                        }
+                    }
+                }
+                if($c == 4){
+                    if($i != 0){
+                        if((int)$valor[0][$i] != 0){
+                            if((int)$valor[0][$i-1] == 0){
+                                $text2 = $text2.' e '.$numExt1[(int)$valor[0][$i]];
+                            } elseif((int)$valor[0][$i-1] != 1) {
+                                $text2 = $text2.' e '.$numExt1[(int)$valor[0][$i]];
+                            }
+                        }
+                    } else {
+                        if((int)$valor[0][$i] != 1){
+                            $text2 = $text2.$numExt1[(int)$valor[0][$i]];
+                        }
+                    } 
+                    
+                    if((int)$valor[0][$i-1] != 0 && (int)$valor[0][$i+2] != 0 && (int)$valor[0][$i+3] != 0){
+                        if((int)$valor[0][$i+1] == 0 && (int)$valor[0][$i+2] == 0 && (int)$valor[0][$i+3] == 0){
+                            $text2 = $text2.' mil';
+                        } else {
+                            if((int)$valor[0][$i+1] == 0){
+                                $text2 = $text2.' mil';
+                            } else {
+                                $text2 = $text2.' mil,';
+                            }
+                        }
+                    } else {
+                        if((int)$valor[0][$i+1] == 0 && (int)$valor[0][$i+2] == 0 && (int)$valor[0][$i+3] == 0){
+                            $text2 = $text2.' mil';
+                        } else {
+                            if((int)$valor[0][$i+1] == 0){
+                                $text2 = $text2.' mil';
+                            } else {
+                                $text2 = $text2.' mil,';
+                            }
+                        }
+                    }
+                }
+                // CENTENA
+                if($c == 3){
+                    if($i != 0){
+                        if((int)$valor[0][$i] != 0){
+                            if((int)$valor[0][$i+1] != 0){
+                                if((int)$valor[0][$i] == 1){
+                                    $text2 = $text2.' cento';
+                                } else {
+                                    $text2 = $text2.' '.$numExt3[(int)$valor[0][$i]];
+                                }
+                            } else {
+                                if((int)$valor[0][$i] == 1){
+                                    $text2 = $text2.' e cem';
+                                } else {
+                                    $text2 = $text2.' e '.$numExt3[(int)$valor[0][$i]];
+                                }
+                            }
+                        }
+                    } else {
+                        $text2 = $text2.$numExt3[(int)$valor[0][$i]];
+                    }
+                }
+                if($c == 2){
+                    if($i != 0){
+                        if((int)$valor[0][$i] != 0){
+                            if((int)$valor[0][$i] < 2){
+                                $text2 = $text2.' e '.$numExt1[(int)($valor[0][$i].$valor[0][$i+1])];
+                            } else {
+                                $text2 = $text2.' e '.$numExt2[(int)$valor[0][$i]];
+                            }
+                        }
+                    } else {
+                        if((int)$valor[0][$i] < 2){
+                            $text2 = $text2.$numExt1[(int)($valor[0][$i].$valor[0][$i+1])];
+                        } else {
+                            $text2 = $text2.$numExt2[(int)$valor[0][$i]];
+                        }
+                    }
+                }
+                if($c == 1){
+                    if($i != 0){
+                        if((int)$valor[0][$i] != 0){
+                            if((int)$valor[0][$i-1] == 0){
+                                $text2 = $text2.' e '.$numExt1[(int)$valor[0][$i]];
+                            } elseif((int)$valor[0][$i-1] != 1) {
+                                $text2 = $text2.' e '.$numExt1[(int)$valor[0][$i]];
+                            }
+                        }
+                    } else {
+                        if((int)$valor[0][$i-1] = 1){
+                            $text2 = $text2.$numExt1[(int)$valor[0][$i]];
+                        }
+                    } 
+                }
+            }
         }
     }
-    // echo array_search(0, $numExt1);
+    if($text2 == ''){
+        echo 'Por extenso: '.$text.' centavo(s)';
+    }
+    elseif($text == ''){
+        echo 'Por extenso: '.$text2.' real(ais)';        
+    } else{
+        echo 'Por extenso: '.$text2.' reais com '.$text.' centavo(s)';
+    }
 }
 
 ?>
