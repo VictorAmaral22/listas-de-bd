@@ -35,11 +35,15 @@ RegExp -> ^\d{1,9},\d{2}$
 
 RegExp -> ^([a-zêã,])+([ a-zêã,]?)+[^ ]$
 
-zero
-um
-dois
+RegExt Nova ->
+^(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?( )?(milh(ão|ões))?( )?(e |, )?(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?( )?(mil)?( )?(e |, )?(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?$
+
+duzentos e vinte e um milhões, cento e quarenta e dois mil, seiscentos e cinquenta e dois
+duzentos
+um milhão 
+dois mil e quatrocentos
 três
-quatro
+vinte e quatro
 cinco
 seis
 sete
@@ -49,23 +53,24 @@ dez
 onze
 doze
 treze
-quatorze  ou catorze
+quatorze
+catorze
 quinze
 dezesseis
 dezessete
 dezoito
 dezenove
-vinte
-trinta
-quarenta
-cinquenta
-sessenta
-setenta
-oitenta
-noventa
-cem
+vinte 
+trinta 
+quarenta 
+cinquenta 
+sessenta 
+setenta 
+oitenta 
+noventa 
+cem 
 duzentos
-trezentos
+trezentos 
 quatrocentos
 quinhentos
 seiscentos
@@ -84,4 +89,4 @@ nove mil
 dez mil
 cem mil
 um milhão
-um bilhão, trezentos mil e três
+trezentos e vinte e quatro milhões, cento e trinta e três

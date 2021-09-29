@@ -14,15 +14,18 @@ var array = [
 //     }
 // }
 
-
 function valid(value) {
     var errors = 0;
-    console.log('Recebendo de: '+array[value-1]);
+    function invalid(input, errors){
+        console.log('Erro em '+input.id+': '+input.value);
+        input.value = '';
+        input.classList.add('erro');
+        errors++;
+    }
     for(let i = 0; i <= array[value-1].length-1 ; i++){
         let input = document.getElementById(array[value-1][i]);
         let regExp = new RegExp(input.pattern);
         if(regExp.test(input.value)){
-            console.log('I: '+i);
             if(errors == 0){
                 console.log(`RegExp ${i} ok!`);
                 // VALIDANDO EXERCICIO 1
@@ -31,12 +34,11 @@ function valid(value) {
                     var ok = validateCpf();
                     if(ok){
                         console.log('Sucesso!');
-                        document.getElementById('form'+value).submit();
+                        if(i == array[value-1].length-1){
+                            document.getElementById('form'+value).submit();
+                        }
                     } else {
-                        console.log('Erro em '+input.id+': '+input.value);
-                        input.value = '';
-                        input.classList.add('erro');
-                        errors++;
+                        invalid(input, errors);
                     }
                 }
                 
@@ -45,12 +47,11 @@ function valid(value) {
                     var ok = dataValida(i);
                     if(ok){
                         console.log('Sucesso!');
-                        document.getElementById('form'+value).submit();
+                        if(i == array[value-1].length-1){
+                            document.getElementById('form'+value).submit();
+                        }
                     } else {
-                        console.log('Erro em '+input.id+': '+input.value);
-                        input.value = '';
-                        input.classList.add('erro');
-                        errors++;
+                        invalid(input, errors);
                     }
                 }
 
@@ -58,21 +59,29 @@ function valid(value) {
                 if(value == 3){
                     var ok = validateMoney();
                     if(ok){
-                        console.log('Sucesso!');
-                        document.getElementById('form'+value).submit();
+                        if(i == array[value-1].length-1){
+                            document.getElementById('form'+value).submit();
+                        }
                     } else {
-                        console.log('Erro em '+input.id+': '+input.value);
-                        input.value = '';
-                        input.classList.add('erro');
-                        errors++;
+                        invalid(input, errors);
+                    }
+                }
+
+                // VALIDANDO EXERCICIO 4
+                if(value == 4){
+                    var ok = numExtValid(i);
+                    if(ok){
+                        console.log('Sucesso!');
+                        if(i == array[value-1].length-1){
+                            // document.getElementById('form'+value).submit();
+                        }
+                    } else {
+                        invalid(input, errors);
                     }
                 }
             }
         } else {
-            console.log('Erro em '+input.id+': '+input.value);
-            input.value = '';
-            input.classList.add('erro');
-            errors++;
+            invalid(input, errors);
         }
     }
 }
@@ -116,7 +125,7 @@ function validateCpf(){
             console.log('CPF válido!');
             return true;
         } else {
-            console.log('CPF iválido!');
+            console.log('CPF inválido!');
             return null;
         }
     }    
@@ -205,4 +214,61 @@ function validateMoney(){
             return true;
         }
     }   
+}
+
+function numExtValid(index){
+    var numExt = [
+        ['um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'],
+        ['dez', 'onze', 'doze', 'treze', 'quatorze', 'catorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'],
+        ['vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'],
+        ['cem', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'],
+        ['mil', 'milhão', 'milhões'],
+        ['e', ',']
+    ];
+    function checkNumber(value){
+        let regExp = new RegExp('^(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?( )?(milh(ão|ões))?( )?(e |, )?(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?( )?(mil)?( )?(e |, )?(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?$');
+        if(regExp.test(value)){
+            console.log('Número válido');
+            return true;
+        }
+    }
+    
+    if(index == 0){
+        // OPERDADOR 1
+        var op1 = document.getElementById('op1').value;
+        console.log(op1);
+        if(checkNumber(op1)){
+            console.log('Sucesso!');
+            return true;
+        } else {
+            console.log('Erro: operador 1 inválido!');
+            return null;
+        }
+    }
+    if(index == 1){
+        // OPERAÇÃO
+        var selectOp = document.getElementById('selectOp').value;
+        console.log(selectOp);
+        const operations = ['mais', 'menos', 'mult', 'divd'];
+        if(operations.includes(selectOp)){
+            console.log('Operação válida!');
+            return true;
+        } else {
+            console.log('Operação inválida!');
+            return null;
+        }
+    }
+    if(index == 2){
+        // OPERDADOR 2
+        var op2 = document.getElementById('op2').value;
+        console.log(op2);
+        if(checkNumber(op2)){
+            console.log('Sucesso!');
+            return true;
+        } else {
+            console.log('Erro: operador 2 inválido!');
+            return null;
+        }
+    }
+    return true;
 }
