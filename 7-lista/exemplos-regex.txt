@@ -36,7 +36,28 @@ RegExp -> ^\d{1,9},\d{2}$
 RegExp -> ^([a-zêã,])+([ a-zêã,]?)+[^ ]$
 
 RegExt Nova ->
-^(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?( )?(milh(ão|ões))?( )?(e |, )?(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?( )?(mil)?( )?(e |, )?(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?$
+^(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?
+(?:(?=\se\s[a-z]) e |(?:(?=\s(milhões|milhão),\s[a-z]),\s|$))?
+(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?
+(?:(?=\se\s[a-z]) e |(?:(?=\s(milhões|milhão),\s[a-z]),\s|$))?
+(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?
+(?:(?=\smilh(ões|ão)\se\s[a-z])\smilh(ões|ão)\se\s[a-z])?
+(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?
+(\se\s)?
+(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?
+(\se\s)?
+(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?
+(\se\s)?
+(mil)?
+(\se\s)?
+(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?
+(\se\s)?
+(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?
+(\se\s)?
+(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?$
+(\se\s)?
+
+^[A-Za-z]{3}(?:(?=.*&)".*"|(?!.*&).*)$
 
 duzentos e vinte e um milhões, cento e quarenta e dois mil, seiscentos e cinquenta e dois
 duzentos

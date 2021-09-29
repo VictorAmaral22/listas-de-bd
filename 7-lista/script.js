@@ -25,7 +25,7 @@ function valid(value) {
     for(let i = 0; i <= array[value-1].length-1 ; i++){
         let input = document.getElementById(array[value-1][i]);
         let regExp = new RegExp(input.pattern);
-        if(regExp.test(input.value)){
+        if(regExp.test(input.value.toLowerCase())){
             if(errors == 0){
                 console.log(`RegExp ${i} ok!`);
                 // VALIDANDO EXERCICIO 1
@@ -217,14 +217,6 @@ function validateMoney(){
 }
 
 function numExtValid(index){
-    var numExt = [
-        ['um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove'],
-        ['dez', 'onze', 'doze', 'treze', 'quatorze', 'catorze', 'quinze', 'dezesseis', 'dezessete', 'dezoito', 'dezenove'],
-        ['vinte', 'trinta', 'quarenta', 'cinquenta', 'sessenta', 'setenta', 'oitenta', 'noventa'],
-        ['cem', 'cento', 'duzentos', 'trezentos', 'quatrocentos', 'quinhentos', 'seiscentos', 'setecentos', 'oitocentos', 'novecentos'],
-        ['mil', 'milhão', 'milhões'],
-        ['e', ',']
-    ];
     function checkNumber(value){
         let regExp = new RegExp('^(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?( )?(milh(ão|ões))?( )?(e |, )?(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?( )?(mil)?( )?(e |, )?(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?$');
         if(regExp.test(value)){
@@ -232,11 +224,13 @@ function numExtValid(index){
             return true;
         }
     }
-    
+    function checkNumberAgain(value){
+        var num = value.split(' ');
+    }
+    // OPERDADOR 1
     if(index == 0){
-        // OPERDADOR 1
         var op1 = document.getElementById('op1').value;
-        console.log(op1);
+        op1 = op1.toLowerCase();
         if(checkNumber(op1)){
             console.log('Sucesso!');
             return true;
@@ -245,10 +239,9 @@ function numExtValid(index){
             return null;
         }
     }
+    // OPERAÇÃO
     if(index == 1){
-        // OPERAÇÃO
         var selectOp = document.getElementById('selectOp').value;
-        console.log(selectOp);
         const operations = ['mais', 'menos', 'mult', 'divd'];
         if(operations.includes(selectOp)){
             console.log('Operação válida!');
@@ -258,10 +251,10 @@ function numExtValid(index){
             return null;
         }
     }
+    // OPERDADOR 2
     if(index == 2){
-        // OPERDADOR 2
         var op2 = document.getElementById('op2').value;
-        console.log(op2);
+        op2 = op2.toLowerCase();
         if(checkNumber(op2)){
             console.log('Sucesso!');
             return true;
