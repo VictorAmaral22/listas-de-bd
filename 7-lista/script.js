@@ -91,6 +91,7 @@ function unSetError(value){
     input.classList.remove('erro');
 }
 
+// EXRC 1
 function validateCpf(){
     var invalidCPF = ['11111111111','22222222222','33333333333','44444444444','55555555555','66666666666','77777777777','88888888888','99999999999','00000000000','12345678912'];
     var cpf = document.getElementById('cpf').value;
@@ -131,6 +132,7 @@ function validateCpf(){
     }    
 }
 
+// EXRC 2
 function dataValida(value){
     if(value == 0){
         // DATA
@@ -198,6 +200,7 @@ function dataValida(value){
     
 }
 
+// EXRC 3
 function validateMoney(){
     var valor = document.getElementById('valor').value;
     console.log(valor);
@@ -216,9 +219,10 @@ function validateMoney(){
     }   
 }
 
+// EXRC 4
 function numExtValid(index){
     function checkNumber(value){
-        let regExp = new RegExp('^(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?( )?(milh(ão|ões))?( )?(e |, )?(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?( )?(mil)?( )?(e |, )?(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?( )?(e )?(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?( )?(e )?(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?$');
+        var regExp = new RegExp('^(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e | milh(ão|ões), | milh(ão|ões)$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e | milhões, | milhões e | milhões$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ão|ões), | milh(ão|ões) e | milh(ão|ões)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e | mil, | mil e | mil$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e | mil, | mil e | mil$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( e |mil, |mil e |mil$| mil, | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e |$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$');
         if(regExp.test(value)){
             console.log('Número válido');
             return true;
@@ -226,6 +230,7 @@ function numExtValid(index){
     }
     function checkNumberAgain(value){
         var num = value.split(' ');
+        console.log('Numero: '+num);
     }
     // OPERDADOR 1
     if(index == 0){
@@ -233,6 +238,7 @@ function numExtValid(index){
         op1 = op1.toLowerCase();
         if(checkNumber(op1)){
             console.log('Sucesso!');
+            checkNumberAgain(op1);
             return true;
         } else {
             console.log('Erro: operador 1 inválido!');
@@ -257,6 +263,7 @@ function numExtValid(index){
         op2 = op2.toLowerCase();
         if(checkNumber(op2)){
             console.log('Sucesso!');
+            checkNumberAgain(op2);
             return true;
         } else {
             console.log('Erro: operador 2 inválido!');
@@ -264,4 +271,8 @@ function numExtValid(index){
         }
     }
     return true;
+}
+
+function insere(){
+
 }

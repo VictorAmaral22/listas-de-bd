@@ -33,35 +33,15 @@ RegExp -> ^\d{1,9},\d{2}$
 
 /*  NUMEROS EXTENSO  */
 
-RegExp -> ^([a-zêã,])+([ a-zêã,]?)+[^ ]$
+RegExp -> ^([a-zêãõ,])+([ a-zêãõ,]?)+[^ ]$
 
 RegExt Nova ->
-^(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?
-(?:(?=\se\s[a-z]) e |(?:(?=\s(milhões|milhão),\s[a-z]),\s|$))?
-(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?
-(?:(?=\se\s[a-z]) e |(?:(?=\s(milhões|milhão),\s[a-z]),\s|$))?
-(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?
-(?:(?=\smilh(ões|ão)\se\s[a-z])\smilh(ões|ão)\se\s[a-z])?
-(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?
-(\se\s)?
-(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?
-(\se\s)?
-(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?
-(\se\s)?
-(mil)?
-(\se\s)?
-(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos)?
-(\se\s)?
-(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa)?
-(\se\s)?
-(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove)?$
-(\se\s)?
+^(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e | milh(ão|ões), | milh(ão|ões)$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e | milhões, | milhões e | milhões$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ão|ões), | milh(ão|ões) e | milh(ão|ões)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e | mil, | mil e | mil$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e | mil, | mil e | mil$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( e |mil, |mil e |mil$| mil, | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e |$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$
 
-^[A-Za-z]{3}(?:(?=.*&)".*"|(?!.*&).*)$
 
 duzentos e vinte e um milhões, cento e quarenta e dois mil, seiscentos e cinquenta e dois
 duzentos
-um milhão 
+um milhão
 dois mil e quatrocentos
 três
 vinte e quatro
@@ -81,17 +61,16 @@ dezesseis
 dezessete
 dezoito
 dezenove
-vinte 
-trinta 
-quarenta 
-cinquenta 
-sessenta 
-setenta 
-oitenta 
-noventa 
-cem 
-duzentos
-trezentos 
+vinte
+trinta
+quarenta
+cinquenta
+sessenta
+setenta
+oitenta
+noventa
+cem mil e duzentos
+trezentos e quarenta milhões, cento e um
 quatrocentos
 quinhentos
 seiscentos
