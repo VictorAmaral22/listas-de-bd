@@ -231,7 +231,11 @@ if(!isset($_POST["valor"])){
                             }
                         }
                     } else {
-                        $text2 = $text2.$numExt3[(int)$valor[0][$i]];
+                        if((int)$valor[0][$i] == 1){
+                            $text2 = $text2.' cento';
+                        } else {
+                            $text2 = $text2.' '.$numExt3[(int)$valor[0][$i]];
+                        }
                     }
                 }
                 if($c == 2){
