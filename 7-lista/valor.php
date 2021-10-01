@@ -55,24 +55,10 @@ if(!isset($_POST["valor"])){
         9=>'novecentos'        
     );
 
-    // valor = valor.split(',');
-    // if(valor[0].charAt(0) == '0' && valor[0].length > 1){
-    //     console.log('Erro!');
-    //     return null;
-    // } else {
-    //     if(valor[1] == '00' && parseInt(valor[0]) == 0){
-    //         console.log('Erro!');
-    //         return null;
-    //     } else {
-    //         console.log('Sucesso!');
-    //         return true;
-    //     }
-    // } 
     echo 'R$ '.$valor.'<br>';
     $valor = explode(',', $valor);
     $text = '';
     $text2 = '';
-    // if(valor[0].strpos('0') != -1)
     if(substr($valor[0], 0) == '0' && strlen($valor[0]) > 1){
         echo "VALOR INVÁLIDO";
     } elseif($valor[1] == '00' && (int)$valor[0] == 0) {
@@ -98,9 +84,23 @@ if(!isset($_POST["valor"])){
         if($valor[0][0] != '0'){
             for($i = 0, $c = $casasRe; $i < $casasRe; $i++, $c--){
                 // MILHÃO
+                // 000.000.000,00
                 if($c == 9){
-                    $text2 = $text2.$numExt3[(int)$valor[0][$i]];
+                    if((int)$valor[0][$i+1] != 0 || (int)$valor[0][$i+2] != 0){
+                        if((int)$valor[0][$i] == 1){
+                            $text2 = $text2.'cento';
+                        } else {
+                            $text2 = $text2.$numExt3[(int)$valor[0][$i]];
+                        }
+                    } else {
+                        if((int)$valor[0][$i] == 1){
+                            $text2 = $text2.'cem';
+                        } else {
+                            $text2 = $text2.$numExt3[(int)$valor[0][$i]];
+                        }
+                    }
                 }
+                // 00.000.000,00
                 if($c == 8){
                     if($i != 0){
                         if((int)$valor[0][$i] != 0){
@@ -118,6 +118,7 @@ if(!isset($_POST["valor"])){
                         }
                     }
                 }
+                // 0.000.000,00
                 if($c == 7){
                     if($i != 0){
                         if((int)$valor[0][$i] != 0){
@@ -127,20 +128,23 @@ if(!isset($_POST["valor"])){
                                 $text2 = $text2.' e '.$numExt1[(int)$valor[0][$i]];
                             }
                         }
+                        $text2 = $text2.' milhões';
                     } else {
                         $text2 = $text2.$numExt1[(int)$valor[0][$i]];
-                    }                    
-                    if((int)$valor[0][$i+1] == 0 && (int)$valor[0][$i+2] == 0 && (int)$valor[0][$i+3] == 0 && (int)$valor[0][$i+4] == 0 && (int)$valor[0][$i+5] == 0 && (int)$valor[0][$i+6] == 0 && (int)$valor[0][$i+7] == 0){
-                        $text2 = $text2.' milhão(ões) de';
-                    } else {
-                        $text2 = $text2.' milhão(ões),';
+                        if((int)$valor[0][$i] == 1){
+                            $text2 = $text2.' milhão';
+                        } else {
+                            $text2 = $text2.' milhões';
+
+                        }
                     }
                 }
                 // MILHAR
+                // 000.000,00
                 if($c == 6){
                     if($i != 0){
                         if((int)$valor[0][$i] != 0){
-                            if((int)$valor[0][$i+1] != 0){
+                            if((int)$valor[0][$i+1] != 0 || (int)$valor[0][$i+2] != 0){
                                 if((int)$valor[0][$i] == 1){
                                     $text2 = $text2.' cento';
                                 } else {
@@ -155,9 +159,22 @@ if(!isset($_POST["valor"])){
                             }
                         }
                     } else {
-                        $text2 = $text2.$numExt3[(int)$valor[0][$i]];
+                        if((int)$valor[0][$i+1] != 0 || (int)$valor[0][$i+2] != 0){
+                            if((int)$valor[0][$i] == 1){
+                                $text2 = $text2.'cento';
+                            } else {
+                                $text2 = $text2.$numExt3[(int)$valor[0][$i]];
+                            }
+                        } else {
+                            if((int)$valor[0][$i] == 1){
+                                $text2 = $text2.'cem';
+                            } else {
+                                $text2 = $text2.$numExt3[(int)$valor[0][$i]];
+                            }
+                        }
                     }
                 }
+                // 00.000,00
                 if($c == 5){
                     if($i != 0){
                         if((int)$valor[0][$i] != 0){
@@ -175,6 +192,7 @@ if(!isset($_POST["valor"])){
                         }
                     }
                 }
+                // 0.000,00
                 if($c == 4){
                     if($i != 0){
                         if((int)$valor[0][$i] != 0){
@@ -188,35 +206,27 @@ if(!isset($_POST["valor"])){
                         if((int)$valor[0][$i] != 1){
                             $text2 = $text2.$numExt1[(int)$valor[0][$i]];
                         }
-                    } 
-                    
-                    if((int)$valor[0][$i-1] != 0 && (int)$valor[0][$i+2] != 0 && (int)$valor[0][$i+3] != 0){
-                        if((int)$valor[0][$i+1] == 0 && (int)$valor[0][$i+2] == 0 && (int)$valor[0][$i+3] == 0){
-                            $text2 = $text2.' mil';
+                    }
+                    if(strlen($valor[0]) > 6){
+                        if((int)$valor[0][$i] == 0 && (int)$valor[0][$i-1] == 0 && (int)$valor[0][$i-2] == 0){
+                            $text2 = $text2.'';
                         } else {
-                            if((int)$valor[0][$i+1] == 0){
-                                $text2 = $text2.' mil';
-                            } else {
-                                $text2 = $text2.' mil,';
-                            }
+                            $text2 = $text2.' mil';
                         }
                     } else {
-                        if((int)$valor[0][$i+1] == 0 && (int)$valor[0][$i+2] == 0 && (int)$valor[0][$i+3] == 0){
+                        if($i != 0){
                             $text2 = $text2.' mil';
                         } else {
-                            if((int)$valor[0][$i+1] == 0){
-                                $text2 = $text2.' mil';
-                            } else {
-                                $text2 = $text2.' mil,';
-                            }
+                            $text2 = $text2.' mil';
                         }
-                    }
+                    };
                 }
                 // CENTENA
+                // 000,00
                 if($c == 3){
                     if($i != 0){
                         if((int)$valor[0][$i] != 0){
-                            if((int)$valor[0][$i+1] != 0){
+                            if((int)$valor[0][$i+1] != 0 || (int)$valor[0][$i+2] != 0){
                                 if((int)$valor[0][$i] == 1){
                                     $text2 = $text2.' cento';
                                 } else {
@@ -238,6 +248,7 @@ if(!isset($_POST["valor"])){
                         }
                     }
                 }
+                // 00,00
                 if($c == 2){
                     if($i != 0){
                         if((int)$valor[0][$i] != 0){
@@ -255,6 +266,7 @@ if(!isset($_POST["valor"])){
                         }
                     }
                 }
+                // 0,00
                 if($c == 1){
                     if($i != 0){
                         if((int)$valor[0][$i] != 0){
@@ -268,18 +280,23 @@ if(!isset($_POST["valor"])){
                         if((int)$valor[0][$i-1] = 1){
                             $text2 = $text2.$numExt1[(int)$valor[0][$i]];
                         }
-                    } 
+                    }
+                     
                 }
             }
         }
     }
+
+    $realText = ($text2 == 'um') ? 'real' : 'reais';
+    $centsText = ($text == 'um') ? 'centavo' : 'centavos';
+
     if($text2 == ''){
-        echo 'Por extenso: '.$text.' centavo(s)';
+        echo "Por extenso: $text $centsText";
     }
     elseif($text == ''){
-        echo 'Por extenso: '.$text2.' real(ais)';        
+        echo "Por extenso: $text2 $realText";
     } else{
-        echo 'Por extenso: '.$text2.' reais com '.$text.' centavo(s)';
+        echo "Por extenso: $text2 $realText com $text $centsText";
     }
 }
 
