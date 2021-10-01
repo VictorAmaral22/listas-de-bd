@@ -35,11 +35,11 @@ RegExp -> ^\d{1,9},\d{2}$
 
 RegExp -> ^([a-zêãõ,])+([ a-zêãõ,]?)+[^ ]$
 
-RegExt Nova ->
-^(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e | milh(ão|ões), | milh(ão|ões)$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e | milhões, | milhões e | milhões$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ão|ões), | milh(ão|ões) e | milh(ão|ões)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e | mil, | mil e | mil$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e | mil, | mil e | mil$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( e |mil, |mil e |mil$| mil, | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e |$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$
+RegExt Nova -> ^
+(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ão|ões) | milh(ão|ões) e | milh(ão|ões)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}(mil |mil e |mil$| mil | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( | e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( | e |$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$
 
-
-duzentos e vinte e um milhões, cento e quarenta e dois mil, seiscentos e cinquenta e dois
+dois mil seiscentos e setenta e dois
+duzentos e vinte e um milhões
 duzentos
 um milhão
 dois mil e quatrocentos
@@ -70,13 +70,13 @@ setenta
 oitenta
 noventa
 cem mil e duzentos
-trezentos e quarenta milhões, cento e um
+trezentos e quarenta milhões cento e um
 quatrocentos
 quinhentos
 seiscentos
 setecentos
 oitocentos
-novecentos mil, duzentos e trinta e um
+novecentos mil duzentos e trinta e um
 mil
 dois mil
 três mil
@@ -89,4 +89,4 @@ nove mil
 dez mil
 cem mil
 um milhão
-trezentos e vinte e quatro milhões, cento e trinta e três
+trezentos e vinte e quatro milhões cento e trinta e três

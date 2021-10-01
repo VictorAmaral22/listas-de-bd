@@ -222,15 +222,34 @@ function validateMoney(){
 // EXRC 4
 function numExtValid(index){
     function checkNumber(value){
-        var regExp = new RegExp('^(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e | milh(ão|ões), | milh(ão|ões)$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e | milhões, | milhões e | milhões$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ão|ões), | milh(ão|ões) e | milh(ão|ões)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e | mil, | mil e | mil$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e | mil, | mil e | mil$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( e |mil, |mil e |mil$| mil, | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e |$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$');
+        var numExt1 = ['um','dois','três','quatro','cinco','seis','sete','oito','nove','dez','onze','doze','treze','quatorze','quinze','dezesseis','dezessete','dezoito','dezenove'];
+        var numExt2 = ['vinte','trinta','quarenta','cinquenta','sessenta','setenta','oitenta','noventa'];
+        var numExt3 = ['cem','cento','duzentos','trezentos','quatrocentos','quinhentos','seiscentos','setecentos','oitocentos','novecentos'];
+
+        var regExp = new RegExp('(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ão|ões) | milh(ão|ões) e | milh(ão|ões)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}(mil |mil e |mil$| mil | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( | e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( | e |$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$');
+
         if(regExp.test(value)){
             console.log('Número válido');
-            return true;
+            var num = value.split(' ');
+            if(num.indexOf('') != -1){
+                console.log('Erro');
+                return false;              
+            } else {
+                // Continua a validação
+                // console.log('Array '+num);
+                // for (let i = 0; i < num.length; i++) {
+                //     if(num[i] != 'mil' && num[i] != 'milhão' && num[i] != 'milhões'){
+                //         if(numExt1.includes(num[i])){
+
+                //         }
+                //     }                    
+                // }
+                return true;
+            }
+        } else {
+            console.log('Erro');
+            return false;
         }
-    }
-    function checkNumberAgain(value){
-        var num = value.split(' ');
-        console.log('Numero: '+num);
     }
     // OPERDADOR 1
     if(index == 0){
@@ -238,7 +257,6 @@ function numExtValid(index){
         op1 = op1.toLowerCase();
         if(checkNumber(op1)){
             console.log('Sucesso!');
-            checkNumberAgain(op1);
             return true;
         } else {
             console.log('Erro: operador 1 inválido!');
@@ -263,7 +281,6 @@ function numExtValid(index){
         op2 = op2.toLowerCase();
         if(checkNumber(op2)){
             console.log('Sucesso!');
-            checkNumberAgain(op2);
             return true;
         } else {
             console.log('Erro: operador 2 inválido!');
