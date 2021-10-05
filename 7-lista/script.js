@@ -73,7 +73,7 @@ function valid(value) {
                     if(ok){
                         console.log('Sucesso!');
                         if(i == array[value-1].length-1){
-                            // document.getElementById('form'+value).submit();
+                            document.getElementById('form'+value).submit();
                         }
                     } else {
                         invalid(input, errors);
@@ -222,32 +222,42 @@ function validateMoney(){
 // EXRC 4
 function numExtValid(index){
     function checkNumber(value){
-        var numExt1 = ['um','dois','três','quatro','cinco','seis','sete','oito','nove','dez','onze','doze','treze','quatorze','quinze','dezesseis','dezessete','dezoito','dezenove'];
-        var numExt2 = ['vinte','trinta','quarenta','cinquenta','sessenta','setenta','oitenta','noventa'];
-        var numExt3 = ['cem','cento','duzentos','trezentos','quatrocentos','quinhentos','seiscentos','setecentos','oitocentos','novecentos'];
-
-        var regExp = new RegExp('(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ão|ões) | milh(ão|ões) e | milh(ão|ões)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}(mil |mil e |mil$| mil | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( | e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( | e |$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$');
+        var numExt = [
+            ['um','dois','três','quatro','cinco','seis','sete','oito','nove','dez','onze','doze','treze','quatorze','quinze','dezesseis','dezessete','dezoito','dezenove'], 
+            ['vinte','trinta','quarenta','cinquenta','sessenta','setenta','oitenta','noventa'], 
+            ['cem','cento','duzentos','trezentos','quatrocentos','quinhentos','seiscentos','setecentos','oitocentos','novecentos']
+        ];
+        var regExp = new RegExp('^(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ão|ões) | milh(ão|ões) e | milh(ão|ões)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}(mil |mil e |mil$| mil | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( | e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( | e |$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$');
 
         if(regExp.test(value)){
             console.log('Número válido');
             var num = value.split(' ');
             if(num.indexOf('') != -1){
-                console.log('Erro');
                 return false;              
             } else {
                 // Continua a validação
-                // console.log('Array '+num);
-                // for (let i = 0; i < num.length; i++) {
-                //     if(num[i] != 'mil' && num[i] != 'milhão' && num[i] != 'milhões'){
-                //         if(numExt1.includes(num[i])){
-
-                //         }
-                //     }                    
-                // }
-                return true;
+                console.log('Array '+num);
+                var m = 0, k = 0;
+                for(let i = 0; i < num.length; i++){
+                    if(num[i] == 'mil'){
+                        k++;
+                    }
+                    if(num[i] == 'milhão' || num[i] == 'milhões'){
+                        m++;
+                    }
+                }
+                if(m > 1 || k > 1){
+                    return false
+                } else {
+                    // for (let i = 0; i < num.length; i++) {
+                    //     if(num[i] != 'mil' && num[i] != 'milhão' && num[i] != 'milhões'){
+                            
+                    //     }
+                    // }
+                    return true;
+                }                
             }
         } else {
-            console.log('Erro');
             return false;
         }
     }
