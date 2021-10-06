@@ -2,17 +2,9 @@ var array = [
     ['cpf'], 
     ['data', 'dataUtil'],
     ['valor'],
-    ['op1','selectOp','op2']
+    ['op1','selectOp','op2'],
+    ['romanoOp1', 'selectRom1', 'romanoOp2']
 ];
-
-// function insere() {
-//     var table = document.getElementById("tableAddRomanos");
-//     console.log(table.children.length);
-//     if (table.children.length < 100) {
-//         // row.innerHTML +=  "<td> <input id=\"romanoOp"+row.length+"\" type=\"int\" name=\"romanoOp" + row.length + "\" required></td>";         
-//         table.insertRow(-1).innerHTML =  `<td> <p>Bah ${table.children.length}</p> </td>`;         
-//     }
-// }
 
 function valid(value) {
     var errors = 0;
@@ -24,8 +16,11 @@ function valid(value) {
     }
     for(let i = 0; i <= array[value-1].length-1 ; i++){
         let input = document.getElementById(array[value-1][i]);
+        if(value != 5){
+            input.value = input.value.toLowerCase();
+        }
         let regExp = new RegExp(input.pattern);
-        if(regExp.test(input.value.toLowerCase())){
+        if(regExp.test(input.value)){
             if(errors == 0){
                 console.log(`RegExp ${i} ok!`);
                 // VALIDANDO EXERCICIO 1
@@ -67,9 +62,22 @@ function valid(value) {
                     }
                 }
 
-                // VALIDANDO EXERCICIO 4
+                // VALIDANDO EXERCICIO 4 TODO:
                 if(value == 4){
                     var ok = numExtValid(i);
+                    if(ok){
+                        console.log('Sucesso!');
+                        if(i == array[value-1].length-1){
+                            // document.getElementById('form'+value).submit();
+                        }
+                    } else {
+                        invalid(input, errors);
+                    }
+                }
+                
+                // VALIDANDO EXERCICIO 5
+                if(value == 5){
+                    var ok = validRoman(i);
                     if(ok){
                         console.log('Sucesso!');
                         if(i == array[value-1].length-1){
@@ -227,40 +235,28 @@ function numExtValid(index){
             ['vinte','trinta','quarenta','cinquenta','sessenta','setenta','oitenta','noventa'], 
             ['cem','cento','duzentos','trezentos','quatrocentos','quinhentos','seiscentos','setecentos','oitocentos','novecentos']
         ];
-        var regExp = new RegExp('^(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ão|ões) | milh(ão|ões) e | milh(ão|ões)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}(mil |mil e |mil$| mil | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( | e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( | e |$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$');
+        var regExp = new RegExp('^(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ão|ões) | milh(ão|ões) e | milh(ão|ões)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}(mil |mil e | mil | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( | e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( | e |$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$');
 
         if(regExp.test(value)){
-            console.log('Número válido');
+            console.log('RegExp números ok!');
             var num = value.split(' ');
             if(num.indexOf('') != -1){
                 return false;              
             } else {
-                // Continua a validação
                 console.log('Array '+num);
-                var m = 0, k = 0;
-                for(let i = 0; i < num.length; i++){
-                    if(num[i] == 'mil'){
-                        k++;
-                    }
-                    if(num[i] == 'milhão' || num[i] == 'milhões'){
-                        m++;
-                    }
-                }
-                if(m > 1 || k > 1){
-                    return false
-                } else {
-                    // for (let i = 0; i < num.length; i++) {
-                    //     if(num[i] != 'mil' && num[i] != 'milhão' && num[i] != 'milhões'){
-                            
-                    //     }
-                    // }
-                    return true;
-                }                
+                // Continua a validação TODO:
+                /*  Possíveis erros  */
+                // dois milhão
+                // vinte e dezenove
+                // cem e um
+
+                return true;         
             }
         } else {
             return false;
         }
     }
+
     // OPERDADOR 1
     if(index == 0){
         var op1 = document.getElementById('op1').value;
@@ -300,6 +296,50 @@ function numExtValid(index){
     return true;
 }
 
-function insere(){
 
+//EXRC 5
+let numero = 2;
+function insere() {
+    numero++;
+    var table = document.getElementById("tableAddRomanos");
+    var row = document.getElementById("rowRoman");
+    if (numero <= 10) {
+        row.insertCell(-1).innerHTML =  `
+        <td> 
+            <select name='selectRom${numero-1}' id='selectRom${numero-1}'> 
+                <option value='mais'>+</option> 
+                <option value='menos'>-</option>
+                <option value='mult'>x</option> 
+                <option value='divd'>/</option> 
+            </select> 
+        </td> 
+        <td> 
+            <input id='romanoOp${numero}' name='romanoOp${numero}' type='int' pattern='^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$' placeholder='Digite um número em romano...' required onclick="unSetError('romanoOp${numero}')"> 
+        </td> 
+        <td> 
+            <input type='button' id='adiciona' value='+' style='width: 20px;' onclick='insere()'> 
+        </td>`;
+        array[4][array[4].length] = 'selectRom'+(numero-1);        
+        array[4][array[4].length] = 'romanoOp'+numero;        
+    }
 }
+function validRoman(index){
+    var regExp = new RegExp('^(selectRom)');
+    if(regExp.test(array[4][index])){
+        var input;
+        if(index != 1){
+            input = document.getElementById('selectRom'+(index-1));
+        } else {
+            input = document.getElementById('selectRom'+index);
+        }
+        var operations = ['mais', 'menos', 'mult', 'divd'];
+        if(operations.includes(input.value)){
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return true;
+    }
+}
+

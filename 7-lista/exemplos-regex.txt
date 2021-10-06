@@ -89,3 +89,17 @@ dez mil
 cem mil
 um milhão
 trezentos e vinte e quatro milhões cento e trinta e três
+
+/*    ROMANOS     */
+
+RegExp -> ^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$
+
+(1 - 5 - 10 - 50 - 100 - 500 - 1.000 - 3.999)
+I
+V
+X
+L
+C
+D
+M
+MMMCMXCIX

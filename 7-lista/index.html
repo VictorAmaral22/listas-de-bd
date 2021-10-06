@@ -95,28 +95,34 @@
         </form>
 
     <h4>5) Calculadora com números romanos</h4>
-    <table id="tableAddRomanos">
-        <tr>
-            <td>
-                <input id="romanoOp1" name="romanoOp1" type="int" placeholder="Digite um número em romano..." required>                
-            </td>
-            <td>
-                <select name="selectRom" id="selectRom">
-                    <option value="mais">+</option>
-                    <option value="menos">-</option>
-                    <option value="mult">x</option>
-                    <option value="divd">/</option>
-                </select>
-            </td>
-            <td>
-                <input id="romanoOp2" name="romanoOp2" type="int" placeholder="Digite um número em romano..." required>
-            </td>
-            <td>
-                <input type="button" id="adiciona" value="+" style="width: 20px;" onclick="insere()">
-            </td>
-        </tr>
-    </table>
-
+    <form id="form5" name="formRomanos" action="romanos.php" method="POST">
+        <table id="tableAddRomanos">
+            <tr id="rowRoman">
+                <td>
+                    <input id="romanoOp1" name="romanoOp1" type="int" placeholder="Digite um número em romano..." pattern="^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$" required onclick="unSetError('romanoOp1')">                
+                </td>
+                <td>
+                    <select name="selectRom1" id="selectRom1">
+                        <option value="mais">+</option>
+                        <option value="menos">-</option>
+                        <option value="mult">x</option>
+                        <option value="divd">/</option>
+                    </select>
+                </td>
+                <td>
+                    <input id="romanoOp2" name="romanoOp2" type="int" placeholder="Digite um número em romano..." pattern="^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$" required onclick="unSetError('romanoOp2')">
+                </td>
+                <td>
+                    <input type="button" id="adiciona" value="+" style="width: 20px;" onclick="insere()">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="button" value="=" onclick="valid(5)">
+                </td>
+            </tr>
+        </table>
+    </form>
     <script src="script.js" type="application/javascript"></script>
 </body>
 </html>
