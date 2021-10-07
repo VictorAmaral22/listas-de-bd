@@ -155,9 +155,7 @@ function dataValida(value){
         }
         var meses = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
         var mesesBi = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-        // console.log(data[2]);
-        // console.log(data[1]);
-        // console.log(data[0]);
+        
         if(data[2] != 0 && data[1] != 0 && data[0] != 0){
             if(data[1] >= 1 && data[1] <= 12){
                 var bi = leapYear(data[2]);
@@ -192,7 +190,8 @@ function dataValida(value){
         // DIA UTIL
         var dataUtil = document.getElementById('dataUtil').value;
         dataUtil = parseInt(dataUtil);
-        if(Number.isInteger(dataUtil) && (Math.sign(dataUtil) != -1)){
+        var regExp = new RegExp('^[1-9]+$');
+        if(regExp.test(dataUtil) && (Math.sign(dataUtil) != -1)){
             if(dataUtil !== 0){
                 console.log('Sucesso!');
                 return true;
@@ -297,7 +296,7 @@ function numExtValid(index){
 }
 
 
-//EXRC 5
+// EXRC 5
 let numero = 2;
 function insere() {
     numero++;
