@@ -10,6 +10,8 @@
 
 <?php
 
+echo '<h1>Calculadora</h1><br>';
+
 if(!isset($_POST["op1"]) || !isset($_POST["op2"]) || !isset($_POST["selectOp"])){
     echo "DADOS INVÁLIDOS";
 } else {
@@ -138,9 +140,7 @@ if(!isset($_POST["op1"]) || !isset($_POST["op2"]) || !isset($_POST["selectOp"]))
         $symbol = '/';
     }
    
-    echo '<h1>Calculadora</h1>';
     echo $valor1.' '.$symbol.' '.$valor2.' = '.(int)$result;
-
 }
 
 ?>

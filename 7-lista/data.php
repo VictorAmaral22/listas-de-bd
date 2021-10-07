@@ -9,20 +9,9 @@
 <body>
 
 <?php 
-/*
-Somar uma quantidade de dias úteis a uma data
-    front-end HTML/JS
-        input text data, deve ser uma data dd/mm/aaaa válida
-        input text dias úteis, deve ser um número inteiro positivo válido
-        button Enviar, só deve enviar se data e dias úteis forem válidos
-    back-end PHP
-        mostra uma mensagem de erro se data ou dias úteis forem inválidos
-        só calcula se data e dias úteis forem válidos
-        soma a quantidade de dias úteis à data e mostra a data resultante
-* dias úteis são os dias da semana de segunda a sexta que não são feriados nacionais
-(Confraternização Universal, Carnaval, Sexta-feira Santa, Páscoa, Tiradentes, Dia Mundial do Trabalho, Corpus Christi,
-Independência do Brasil, Nossa Senhora Aparecida, Finados, Proclamação da República e Natal)
-*/
+
+echo '<h1>Somando dias úteis a datas</h1><br>';
+
 if(!isset($_POST["data"]) || !isset($_POST["dataUtil"])){
     echo "DATA OU DIAS ÚTEIS NÃO INFORMADOS <br>";
 } else {
@@ -120,7 +109,7 @@ if(!isset($_POST["data"]) || !isset($_POST["dataUtil"])){
             $daysToAdd++;
 
         };
-        
+
         echo date('d/m/Y', mktime(0,0,0, $datamonth, $dataday+$daysToAdd, $data[2]));
     } else {
         echo "DATA OU DIAS ÚTEIS INVÁLIDOS";

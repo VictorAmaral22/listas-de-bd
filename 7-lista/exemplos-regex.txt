@@ -103,3 +103,10 @@ C
 D
 M
 MMMCMXCIX
+
+RegExp -> ^(mais|menos|mult|divd)$
+
+mais
+menos
+mult
+divd

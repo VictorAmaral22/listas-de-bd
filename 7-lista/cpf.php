@@ -10,7 +10,7 @@
 
 <?php 
 
-echo "<h3>Validação de CPF...</h3><br>";
+echo "<h3>Validação de CPF</h3><br>";
 
 if(!isset($_POST["cpf"])){
     echo "CPF NÃO INFORMADO";
