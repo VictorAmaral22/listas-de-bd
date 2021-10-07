@@ -10,7 +10,7 @@
 
 <?php 
 
-echo "<h3>Números Romanos</h3><br>";
+echo "<h1>Números Romanos</h1><br>";
 
 if(!isset($_POST["romanoOp1"]) || !isset($_POST["selectRom1"]) || !isset($_POST["romanoOp2"])){
     echo "NÚMEROS ROMANOS INVÁLIDOS";
@@ -36,12 +36,11 @@ if(!isset($_POST["romanoOp1"]) || !isset($_POST["selectRom1"]) || !isset($_POST[
         if($erros === 0){
             return ['valid' => true, 'array' => $op];
         } else {
-            return ['valid' => true];            
+            return ['valid' => false];            
         }
     }
     $ok = validFields();
     if($ok['valid']){
-        // TODO:
         function validRoman($array){ 
             $fields = [];
             foreach ($array as $key) {
@@ -66,11 +65,13 @@ if(!isset($_POST["romanoOp1"]) || !isset($_POST["selectRom1"]) || !isset($_POST[
                 return ['valid' => false];                
             }
         }
-
-        $okAgain = validRoman($ok['array']);
-        if($okAgain['valid']){
+        
+        $romanos = validRoman($ok['array']);
+        if($romanos['valid']){
             // AQUI RODA O RESTO DO PROGRAMA
-            // A $okAgain tem no $okAgain['fields'] todos os campos que a pessoa colocou e os valores deles validados
+            // A $romanos tem no $romanos['fields'] todos os campos que a pessoa colocou e os valores deles validados
+            print_r($romanos['fields']);
+            echo '<br>';
             romanos();
         } else {
             echo "NÚMEROS ROMANOS IVÁLIDOS!";

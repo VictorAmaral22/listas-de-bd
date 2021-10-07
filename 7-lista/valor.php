@@ -10,7 +10,7 @@
 
 <?php 
 
-echo "<h3>Transcrição de Valor Monetário</h3><br>";
+echo "<h1>Transcrição de Valor Monetário</h1><br>";
 
 if(!isset($_POST["valor"])){
     echo "VALOR NÃO INFORMADO";
