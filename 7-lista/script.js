@@ -1,3 +1,4 @@
+// FORMS
 var array = [
     ['cpf'], 
     ['data', 'dataUtil'],
@@ -6,6 +7,7 @@ var array = [
     ['romanoOp1', 'selectRom1', 'romanoOp2']
 ];
 
+// VALIDAÇÃO GERAL
 function valid(value) {
     var errors = 0;
     function invalid(input, errors){
@@ -14,7 +16,8 @@ function valid(value) {
         input.classList.add('erro');
         errors++;
     }
-    for(let i = 0; i <= array[value-1].length-1 ; i++){
+    
+    for(let i = 0, countRoman = 0; i <= array[value-1].length-1 ; i++){
         let input = document.getElementById(array[value-1][i]);
         if(value != 5){
             input.value = input.value.toLowerCase();
@@ -22,7 +25,6 @@ function valid(value) {
         let regExp = new RegExp(input.pattern);
         if(regExp.test(input.value)){
             if(errors == 0){
-                console.log(`RegExp ${i} ok!`);
                 // VALIDANDO EXERCICIO 1
                 if(value == 1){
                     console.log('Exercício 1');
@@ -66,7 +68,7 @@ function valid(value) {
                 if(value == 4){
                     var ok = numExtValid(i);
                     if(ok){
-                        console.log('Sucesso!');
+                        // console.log('Sucesso!');
                         if(i == array[value-1].length-1){
                             // document.getElementById('form'+value).submit();
                         }
@@ -77,14 +79,18 @@ function valid(value) {
                 
                 // VALIDANDO EXERCICIO 5
                 if(value == 5){
-                    var ok = validRoman(i);
-                    if(ok){
-                        console.log('Sucesso!');
-                        if(i == array[value-1].length-1){
-                            document.getElementById('form'+value).submit();
+                    var regExp2 = new RegExp('^(selectRom)');
+                    if(regExp2.test(array[4][i])){
+                        countRoman++;
+                        var ok = validRoman(i, countRoman);
+                        if(ok){
+                            console.log('Sucesso!');
+                            if(i == array[value-1].length-1){
+                                document.getElementById('form'+value).submit();
+                            }
+                        } else {
+                            invalid(input, errors);
                         }
-                    } else {
-                        invalid(input, errors);
                     }
                 }
             }
@@ -237,19 +243,115 @@ function numExtValid(index){
         var regExp = new RegExp('^(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ão|ões) | milh(ão|ões) e | milh(ão|ões)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}(mil |mil e | mil | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( | e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( | e |$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$');
 
         if(regExp.test(value)){
-            console.log('RegExp números ok!');
             var num = value.split(' ');
             if(num.indexOf('') != -1){
                 return false;              
             } else {
-                console.log('Array '+num);
                 // Continua a validação TODO:
-                /*  Possíveis erros  */
-                // dois milhão
-                // vinte e dezenove
-                // cem e um
+                var erroMilhao = 0;
+                var regExp1 = new RegExp(' mil | mil$');
+                var regExp2 = new RegExp(' milhão| milhões');
+                var mil = '', milhao = '', centena = '';
 
-                return true;         
+                if(regExp1.test(value) && regExp2.test(value)){
+                    centena = value.slice(value.search(regExp1)+5);
+                    mil = value.slice(value.search(regExp2)+8, value.search(regExp1));
+                    milhao = value.slice(0, value.search(regExp2));
+                    if(milhao == 'um' && value.indexOf('milhões') != -1){
+                        erroMilhao++;
+                    } 
+                    if(milhao != 'um' && value.indexOf('milhão') != -1){
+                        erroMilhao++;
+                    }
+                } 
+                if(!regExp1.test(value) && regExp2.test(value)){
+                    centena = value.slice(value.search(regExp2)+8);
+                    milhao = value.slice(0, value.search(regExp2));
+                    if(milhao == 'um' && value.indexOf('milhões') != -1){
+                        console.log('aqui?');
+                        erroMilhao++;
+                    } 
+                    if(milhao != 'um' && value.indexOf('milhão') != -1){
+                        erroMilhao++;
+                    }
+                }
+                if(regExp1.test(value) && !regExp2.test(value)){
+                    centena = value.slice(value.search(regExp1)+5);
+                    mil = value.slice(0, value.search(regExp1));
+                }
+                if(!regExp1.test(value) && !regExp2.test(value)){
+                    centena = value;
+                }
+
+                if(erroMilhao != 0){
+                    return false;
+                }
+
+                centena = centena.trim();
+                mil = mil.trim();
+                milhao = milhao.trim();
+                function casasOk(){
+                    var regExp = new RegExp('^(e )?(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$');
+                    var erro = 0;
+                    if(centena != ''){
+                        // console.log('Centena: '+centena);
+                        if(!regExp.test(centena)) erro++;
+                    }
+                    if(mil != ''){
+                        // console.log('Mil: '+mil);
+                        if(!regExp.test(mil)) erro++;
+                    };
+                    if(milhao != ''){
+                        // console.log('Milhão: '+milhao);
+                        if(!regExp.test(milhao)) erro++;
+                    };
+                    return erro == 0 ? true : false;
+                }
+                var ok = casasOk();
+                if(ok){
+                    function incongr(array){
+                        // FIXME:
+                        var erro = 0;
+                        for (let i = 0; i <= array.length-1; i++) {
+                            if(array[i] != 'e'){
+                                if(numExt[1].includes(array[i])){
+                                    var c = array[i+1] ? (array[i+1] == 'e' ? (array[i+2] ? 2 : false) : 1) : false;
+                                    if(c && array[i+c]){
+                                        if(numExt[0].indexOf(array[i+c]) > 8){
+                                            erro++;
+                                        }
+                                    }
+                                }
+                                if(numExt[2].includes(array[i])){
+                                    var c = array[i+1] ? (array[i+1] == 'e' ? (array[i+2] ? true : false) : false) : false;
+                                    if(c && array[i] == 'cem') erro++;
+                                    if(!c && array[i] == 'cento') erro++;
+                                }
+                            }                            
+                        }
+                        return erro === 0 ? true : false;
+                    }
+                    var erro = 0;
+                    if(centena != ''){
+                        centena = centena.split(' ');
+                        console.log('Centena: '+centena);
+                        !incongr(centena) ? erro++ : "";
+                    }
+                    if(mil != ''){
+                        mil = mil.split(' ');
+                        console.log('Mil: '+mil);
+                        !incongr(mil) ? erro++ : "";
+                    };
+                    if(milhao != ''){
+                        milhao = milhao.split(' ');
+                        console.log('Milhão: '+milhao);
+                        !incongr(milhao) ? erro++ : "";
+                    };
+                    
+                    return erro === 0 ? true : false;
+                } else {
+                    return false;
+                }
             }
         } else {
             return false;
@@ -261,7 +363,7 @@ function numExtValid(index){
         var op1 = document.getElementById('op1').value;
         op1 = op1.toLowerCase();
         if(checkNumber(op1)){
-            console.log('Sucesso!');
+            // console.log('Sucesso!');
             return true;
         } else {
             console.log('Erro: operador 1 inválido!');
@@ -285,22 +387,20 @@ function numExtValid(index){
         var op2 = document.getElementById('op2').value;
         op2 = op2.toLowerCase();
         if(checkNumber(op2)){
-            console.log('Sucesso!');
+            // console.log('Sucesso!');
             return true;
         } else {
             console.log('Erro: operador 2 inválido!');
             return null;
         }
     }
-    return true;
 }
 
-
 // EXRC 5
-let numero = 2;
+var numero = 2;
 function insere() {
     numero++;
-    var table = document.getElementById("tableAddRomanos");
+    // var table = document.getElementById("tableAddRomanos");
     var row = document.getElementById("rowRoman");
     if (numero <= 10) {
         row.insertCell(-1).innerHTML =  `
@@ -311,34 +411,29 @@ function insere() {
                 <option value='mult'>x</option> 
                 <option value='divd'>/</option> 
             </select> 
-        </td> 
+        </td>`;
+        row.insertCell(-1).innerHTML = `
         <td> 
             <input id='romanoOp${numero}' name='romanoOp${numero}' type='int' pattern='^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$' placeholder='Digite um número em romano...' required onclick="unSetError('romanoOp${numero}')"> 
-        </td> 
+        </td>`;
+        row.insertCell(-1).innerHTML = `
         <td> 
             <input type='button' id='adiciona' value='+' style='width: 20px;' onclick='insere()'> 
         </td>`;
+        
         array[4][array[4].length] = 'selectRom'+(numero-1);        
-        array[4][array[4].length] = 'romanoOp'+numero;        
+        array[4][array[4].length] = 'romanoOp'+numero;
+        console.log(array[4]);
     }
 }
-function validRoman(index){
-    var regExp = new RegExp('^(selectRom)');
-    if(regExp.test(array[4][index])){
-        var input;
-        if(index != 1){
-            input = document.getElementById('selectRom'+(index-1));
-        } else {
-            input = document.getElementById('selectRom'+index);
-        }
-        var operations = ['mais', 'menos', 'mult', 'divd'];
-        if(operations.includes(input.value)){
-            return true;
-        } else {
-            return false;
-        }
-    } else {
+function validRoman(index, c){
+    var input;
+    input = document.getElementById('selectRom'+(c));
+    var operations = ['mais', 'menos', 'mult', 'divd'];
+    if(operations.includes(input.value)){
         return true;
+    } else {
+        return false;
     }
 }
 

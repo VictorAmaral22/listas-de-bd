@@ -284,9 +284,7 @@ if(!isset($_POST["valor"])){
                             }
                         }
                     } else {
-                        if((int)$valor[0][$i-1] = 1){
-                            $text2 = $text2.$numExt1[(int)$valor[0][$i]];
-                        }
+                        $text2 = $text2.$numExt1[(int)$valor[0][$i]];                        
                     }
                      
                 }

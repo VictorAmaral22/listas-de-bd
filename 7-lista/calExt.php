@@ -79,7 +79,7 @@ if(!isset($_POST["op1"]) || !isset($_POST["op2"]) || !isset($_POST["selectOp"]))
             }
         } 
         if($milhExists1 === false && $milhExists2 === false) {
-            $milExists = strpos($operador, 'mil', 3);
+            $milExists = strpos($operador, 'mil', 2);
             $k = substr($operador, 0, $milExists);
             $c = substr($operador, $milExists+3);
         } 
