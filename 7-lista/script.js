@@ -64,13 +64,13 @@ function valid(value) {
                     }
                 }
 
-                // VALIDANDO EXERCICIO 4 TODO:
+                // VALIDANDO EXERCICIO 4
                 if(value == 4){
                     var ok = numExtValid(i);
                     if(ok){
                         // console.log('Sucesso!');
                         if(i == array[value-1].length-1){
-                            // document.getElementById('form'+value).submit();
+                            document.getElementById('form'+value).submit();
                         }
                     } else {
                         invalid(input, errors);
@@ -247,7 +247,6 @@ function numExtValid(index){
             if(num.indexOf('') != -1){
                 return false;              
             } else {
-                // Continua a validação TODO:
                 var erroMilhao = 0;
                 var regExp1 = new RegExp(' mil | mil$');
                 var regExp2 = new RegExp(' milhão| milhões');
@@ -310,7 +309,6 @@ function numExtValid(index){
                 var ok = casasOk();
                 if(ok){
                     function incongr(array){
-                        // FIXME:
                         var erro = 0;
                         for (let i = 0; i <= array.length-1; i++) {
                             if(array[i] != 'e'){
@@ -335,11 +333,19 @@ function numExtValid(index){
                     if(centena != ''){
                         centena = centena.split(' ');
                         console.log('Centena: '+centena);
+                        if(mil != '' || milhao != ''){
+                            if(centena.length <= 2 && centena[0] != 'e') erro++;
+                            if(centena.length > 2 && centena[0] == 'e') erro++;
+                        }
                         !incongr(centena) ? erro++ : "";
                     }
                     if(mil != ''){
                         mil = mil.split(' ');
                         console.log('Mil: '+mil);
+                        if(milhao != ''){
+                            if(mil.length <= 2 && mil[0] != 'e') erro++;
+                            if(mil.length > 2 && mil[0] == 'e') erro++;
+                        }
                         !incongr(mil) ? erro++ : "";
                     };
                     if(milhao != ''){
