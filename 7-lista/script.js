@@ -267,7 +267,6 @@ function numExtValid(index){
                     centena = value.slice(value.search(regExp2)+8);
                     milhao = value.slice(0, value.search(regExp2));
                     if(milhao == 'um' && value.indexOf('milhões') != -1){
-                        console.log('aqui?');
                         erroMilhao++;
                     } 
                     if(milhao != 'um' && value.indexOf('milhão') != -1){
