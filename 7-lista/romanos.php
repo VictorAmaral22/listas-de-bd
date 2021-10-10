@@ -27,8 +27,8 @@ if(!isset($_POST["romanoOp1"]) || !isset($_POST["selectRom1"]) || !isset($_POST[
                     $erros++;
                 } else {
                     if(isset($_POST["romanoOp".($i+1)]) && isset($_POST["selectRom".($i)])){
-                        $op[] = "romanoOp".($i+1);
                         $op[] = "selectRom".($i);
+                        $op[] = "romanoOp".($i+1);
                     }
                 }
             }
@@ -52,6 +52,9 @@ if(!isset($_POST["romanoOp1"]) || !isset($_POST["selectRom1"]) || !isset($_POST[
                     if(!preg_match("#^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$#", $fields[$arr[$c]])){
                         $err++;
                     }
+                    if($fields[$arr[$c]] == ""){
+                        $err++;
+                    }
                 }
                 if(preg_match("#^(selectRom)[0-9]{1}$#", $arr[$c])){
                     if(!preg_match("#^(mais|menos|mult|divd)$#", $fields[$arr[$c]])){
@@ -68,11 +71,10 @@ if(!isset($_POST["romanoOp1"]) || !isset($_POST["selectRom1"]) || !isset($_POST[
         
         $romanos = validRoman($ok['array']);
         if($romanos['valid']){
-            // AQUI RODA O RESTO DO PROGRAMA
-            // A $romanos tem no $romanos['fields'] todos os campos que a pessoa colocou e os valores deles validados
-            print_r($romanos['fields']);
-            echo '<br>';
-            romanos();
+            $romanos = $romanos['fields'];
+            // print_r($romanos);
+            // echo "<br>";
+            romanos($romanos);
         } else {
             echo "NÚMEROS ROMANOS IVÁLIDOS!";
         }
@@ -81,59 +83,95 @@ if(!isset($_POST["romanoOp1"]) || !isset($_POST["selectRom1"]) || !isset($_POST[
     }
 }
 
-function romanos(){
-    $romanoOp1 = $_POST["romanoOp1"];
+function traducao($variavel){
+    $numerosromanos = array(
+        1000 =>'M',
+        900 => 'CM',
+        500 =>'D',
+        400 => 'CD',
+        100 => 'C',
+        90 => 'XC',
+        50 => 'L',
+        40 => 'XL',
+        10 => 'X',
+        9 => 'IX',
+        5 => 'V',
+        4 => 'IV',
+        1 => 'I',
+    );
 
-    $operador1= $_POST["selectRom1"];
-
-    $romanoOp2= $_POST["romanoOp2"];
-
-    $numeroRomano = "XLIX";
-    $numeroRomano2 = "XXI";
-    $tempnRomano = $numeroRomano;
-
-    function traducao($variavel){
-        $numerosromanos = array(
-            1000 =>'M',
-            900 => 'CM',
-            500 =>'D',
-            400 => 'CD',
-            100 => 'C',
-            90 => 'XC',
-            50 => 'L',
-            40 => 'XL',
-            10 => 'X',
-            9 => 'IX',
-            5 => 'V',
-            4 => 'IV',
-            1 => 'I',
-        );
-
-        $value=0;
-        for($i=0; $i<(strlen($variavel));$i++){ 
-            //echo $variavel[$i].$variavel[$i+1]; //XL LI IX
-            //XL tem no $numerosromanos então cortaremos XL
+    $value=0;
+    
+    if(strlen($variavel)==1){
+        $value+= array_search($variavel, $numerosromanos);
+    }
+    for($i=0; $i < (strlen($variavel)-1);$i++){ 
+        if(strlen($variavel)!==1){
             $part = $variavel[$i].$variavel[$i+1];
-                
-            //echo $part.'<br>'; // XL LI IX
-            //echo array_search($part, $numerosromanos); //
-            
-            if(array_search($part, $numerosromanos) !== false){
-                $value+= array_search($part, $numerosromanos);
+        } else{
+            $part = $variavel[$i];
+        }
+       
+        if(array_search($part, $numerosromanos) !== false){
+            $value+= array_search($part, $numerosromanos);
+            if(strlen($variavel)!==1){
                 $variavel = substr($variavel,2);
-                $i=0;
-                //echo $variavel; //IX
-            } else {
-                $part = $variavel[$i];
-                $value+= array_search($part, $numerosromanos);
-                $variavel = substr($variavel, 1);
-                $i=0;    
-            };
-            
+            } else{
+                $variavel = '';
+            }
+            $i= -1;
+        } else {  
+            $part = $variavel[$i];
+            $variavel = substr($variavel, strlen($variavel) != 1 ? 1 : "");
+            $value+= array_search($part, $numerosromanos);
+            $i= -1;
         };
-        echo $value.'<br>'; // 50
+        if(strlen($variavel)==1){
+            $value+= array_search($variavel, $numerosromanos);
+        }
     };
-    echo traducao($numeroRomano).'<br>';
+    return $value;
+};
+
+function romanos($romanos){
+    $resultado = 0;
+    for($i=0; $i < count($romanos); $i++){
+        $romanoOp1 = $romanos["romanoOp".($i+1)];
+        $operador = $romanos["selectRom".($i+1)];
+        $romanoOp2 = $romanos["romanoOp".($i+2)];
+
+        if($romanoOp1 && $operador && $romanoOp2){
+            if($i == 0){
+                $resultado = traducao($romanoOp1);
+                echo $romanos["romanoOp".($i+1)];
+            } 
+            
+            switch ($operador) {
+                case 'mais':
+                    $resultado +=  traducao($romanoOp2);
+                    echo " + ";                
+                    echo $romanos["romanoOp".($i+2)];
+                    break;
+                case 'menos':
+                    $resultado -=  traducao($romanoOp2);
+                    echo " - ";
+                    echo $romanos["romanoOp".($i+2)];
+                    break;
+                case 'mult':
+                    $resultado *=  traducao($romanoOp2);
+                    echo " * ";
+                    echo $romanos["romanoOp".($i+2)];
+                    break;
+                case 'divd':
+                    $resultado /=  traducao($romanoOp2);
+                    echo " / ";
+                    echo $romanos["romanoOp".($i+2)];
+                    break;
+            }
+        }
+    };      
+
+   echo " = ".$resultado;
 }
 
 ?>

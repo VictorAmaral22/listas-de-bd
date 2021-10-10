@@ -78,19 +78,16 @@ function valid(value) {
                     }
                 }
                 
-                // VALIDANDO EXERCICIO 5
+                // VALIDANDO EXERCICIO 5 FIXME:
                 if(value == 5){
-                    var regExp2 = new RegExp('^(selectRom)');
-                    if(regExp2.test(array[4][i])){
-                        countRoman++;
-                        var ok = validRoman(i, countRoman);
-                        if(ok){
-                            console.log('Sucesso!');
-                            document.getElementById('form'+value).submit();
-                        } else {
-                            invalid(input, errors);
-                        }
+                    var ok = validRoman(i);
+                    if(!ok){
+                        invalid(input, errors);
                     }
+                    if((i == array[value-1].length-1) && errors == 0){
+                        console.log('Sucesso!');
+                        // document.getElementById('form'+value).submit();
+                    } 
                 }
             }
         } else {
@@ -452,14 +449,21 @@ function insere() {
         console.log(array[4]);
     }
 }
-function validRoman(index, c){
-    var input;
-    input = document.getElementById('selectRom'+(c));
-    var operations = ['mais', 'menos', 'mult', 'divd'];
-    if(operations.includes(input.value)){
-        return true;
-    } else {
-        return false;
+function validRoman(i){
+    var regExp1 = new RegExp('^(romanoOp)[0-9]{1,2}$');
+    var regExp2 = new RegExp('^(selectRom)[1-9]{1}$');
+    var err = 0;
+
+    console.log(array[4][i]);
+    if(regExp1.test(array[4][i])){
+        var input = document.getElementById(array[4][i]).value;
+        if(input == '') err++;
     }
+    if(regExp2.test(array[4][i])){
+        var input = document.getElementById(array[4][i]);
+        var operations = ['mais', 'menos', 'mult', 'divd'];
+        if(!operations.includes(input.value)) err++;
+    }
+    return err == 0 ? true : false;
 }
 
