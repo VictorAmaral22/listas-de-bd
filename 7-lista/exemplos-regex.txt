@@ -114,7 +114,7 @@ L
 C
 D
 M
-MMMCMXCIX
+MMMCXCIX
 
 RegExp -> ^(mais|menos|mult|divd)$
 

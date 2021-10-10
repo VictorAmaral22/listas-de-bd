@@ -70,7 +70,8 @@ function valid(value) {
                     if(ok){
                         // console.log('Sucesso!');
                         if(i == array[value-1].length-1){
-                            document.getElementById('form'+value).submit();
+                            fixValues();
+                            // document.getElementById('form'+value).submit();
                         }
                     } else {
                         invalid(input, errors);
@@ -85,9 +86,7 @@ function valid(value) {
                         var ok = validRoman(i, countRoman);
                         if(ok){
                             console.log('Sucesso!');
-                            if(i == array[value-1].length-1){
-                                document.getElementById('form'+value).submit();
-                            }
+                            document.getElementById('form'+value).submit();
                         } else {
                             invalid(input, errors);
                         }
@@ -352,7 +351,6 @@ function numExtValid(index){
                         console.log('Milhão: '+milhao);
                         !incongr(milhao) ? erro++ : "";
                     };
-                    
                     return erro === 0 ? true : false;
                 } else {
                     return false;
@@ -369,6 +367,10 @@ function numExtValid(index){
         op1 = op1.toLowerCase();
         if(checkNumber(op1)){
             // console.log('Sucesso!');
+            op1 = op1.replace(/(ê)/g, 'e');
+            op1 = op1.replace(/(ã)/g, 'a');
+            op1 = op1.replace(/(õ)/g, 'o');
+            console.log(op1);
             return true;
         } else {
             console.log('Erro: operador 1 inválido!');
@@ -393,12 +395,31 @@ function numExtValid(index){
         op2 = op2.toLowerCase();
         if(checkNumber(op2)){
             // console.log('Sucesso!');
+            op2 = op2.replace(/(ê)/g, 'e');
+            op2 = op2.replace(/(ã)/g, 'a');
+            op2 = op2.replace(/(õ)/g, 'o');
+            console.log(op2);
             return true;
         } else {
             console.log('Erro: operador 2 inválido!');
             return null;
         }
     }
+}
+function fixValues(){
+    var op1 = document.getElementById('op1').value;
+    op1 = op1.replace(/(ê)/g, 'e');
+    op1 = op1.replace(/(ã)/g, 'a');
+    op1 = op1.replace(/(õ)/g, 'o');
+    document.getElementById('op1').value = op1;
+
+    var op2 = document.getElementById('op2').value;
+    op2 = op2.replace(/(ê)/g, 'e');
+    op2 = op2.replace(/(ã)/g, 'a');
+    op2 = op2.replace(/(õ)/g, 'o');
+    document.getElementById('op2').value = op2;
+
+    return true;
 }
 
 // EXRC 5
