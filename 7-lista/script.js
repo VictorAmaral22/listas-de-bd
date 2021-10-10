@@ -71,7 +71,7 @@ function valid(value) {
                         // console.log('Sucesso!');
                         if(i == array[value-1].length-1){
                             fixValues();
-                            // document.getElementById('form'+value).submit();
+                            document.getElementById('form'+value).submit();
                         }
                     } else {
                         invalid(input, errors);

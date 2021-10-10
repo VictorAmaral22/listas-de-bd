@@ -302,7 +302,7 @@ function calculadora(){
         $symbol = '/';
     }
    
-    echo $valor1.' '.$symbol.' '.$valor2.' = '.(int)$result;
+    echo number_format($valor1, 0, ",", ".").' '.$symbol.' '.number_format($valor2, 0, ",", ".").' = '.number_format((int)$result, 0, ",", ".");
 }
 
 ?>
