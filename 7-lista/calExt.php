@@ -17,7 +17,7 @@ if(!isset($_POST["op1"]) || !isset($_POST["op2"]) || !isset($_POST["selectOp"]))
 }
 
 function casasOk(){
-    $regExp = '^(e )?(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$/';
+    $regExp = '^(e )?(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|tres|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$/';
     $erro = 0;
     if($centena != ''){
         if(preg_match($regExp, $centena)){$erro++;}
@@ -55,11 +55,11 @@ function incongr($array, $numExt){
 
 function checkNumber($value){
     $numExt = [
-        ['um','dois','três','quatro','cinco','seis','sete','oito','nove','dez','onze','doze','treze','quatorze','quinze','dezesseis','dezessete','dezoito','dezenove'], 
+        ['um','dois','tres','quatro','cinco','seis','sete','oito','nove','dez','onze','doze','treze','quatorze','quinze','dezesseis','dezessete','dezoito','dezenove'], 
         ['vinte','trinta','quarenta','cinquenta','sessenta','setenta','oitenta','noventa'], 
         ['cem','cento','duzentos','trezentos','quatrocentos','quinhentos','seiscentos','setecentos','oitocentos','novecentos']
     ];
-    if(preg_match('#^(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ao|oes) | milh(ao|oes) e | milh(ao|oes)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}(mil |mil e | mil | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( | e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( | e |$){0,1}(um|dois|três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$#',
+    if(preg_match('#^(ce(nto|m)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|tres|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}( milh(ao|oes) | milh(ao|oes) e | milh(ao|oes)$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( e ){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( e ){0,1}(um|dois|tres|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}(mil |mil e | mil | mil e | mil$){0,1}(ce(m|nto)|duzentos|trezentos|quatrocentos|quinhentos|seiscentos|setecentos|oitocentos|novecentos){0,1}( | e |$){0,1}(vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa){0,1}( | e |$){0,1}(um|dois|tres|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove){0,1}$#',
     $value)){
         $num = explode(' ', $value);
         if(in_array('', $num)){
@@ -74,28 +74,32 @@ function checkNumber($value){
                 preg_match($regExp2, $value, $matchesMilhao, PREG_OFFSET_CAPTURE);
                 $matchesMil = $matchesMil[0][1];
                 $matchesMilhao = $matchesMilhao[0][1];
-                $centena = substr($value, ($matchesMil+5));
+                $centena = substr($value, ($matchesMil+4));
                 $mil = substr($value, ($matchesMilhao+8), ($matchesMil-($matchesMilhao+8)));
                 $milhao = substr($value, 0, $matchesMilhao);
-                if($milhao == 'um' && strpos('milhões', $value) !== false){
+                if($milhao == 'um' && strpos('milhoes', $value) !== false){
                     $erroMilhao++;
                 }
-                if($milhao != 'um' && strpos('milhão', $value) !== false){
+                if($milhao != 'um' && strpos('milhao', $value) !== false){
                     $erroMilhao++;
                 }
             } 
             if(!preg_match($regExp1, $value) && preg_match($regExp2, $value)){
+                preg_match($regExp2, $value, $matchesMilhao, PREG_OFFSET_CAPTURE);
+                $matchesMilhao = $matchesMilhao[0][1];
                 $centena = substr($value, ($matchesMilhao+8));
                 $milhao = substr($value, 0, $matchesMilhao);
-                if($milhao == 'um' && strpos('milhões', $value) !== false){
+                if($milhao == 'um' && strpos('milhoes', $value) !== false){
                     $erroMilhao++;
                 }
-                if($milhao != 'um' && strpos('milhão', $value) !== false){
+                if($milhao != 'um' && strpos('milhao', $value) !== false){
                     $erroMilhao++;
                 }
             }
             if(preg_match($regExp1, $value) && !preg_match($regExp2, $value)){
-                $centena = substr($value, ($matchesMil+5));
+                preg_match($regExp1, $value, $matchesMil, PREG_OFFSET_CAPTURE);
+                $matchesMil = $matchesMil[0][1];
+                $centena = substr($value, ($matchesMil+4));
                 $mil = substr($value, 0, $matchesMil);
             }
             if(!preg_match($regExp1, $value) && !preg_match($regExp2, $value)){
@@ -109,22 +113,37 @@ function checkNumber($value){
             $mil = trim($mil);
             $milhao = trim($milhao);
             
+            // $array = ["Milhão: "=>$milhao, "Mil: "=>$mil, "Centena: "=>$centena];
+            // foreach($array as $key => $value){
+            //     echo $key."<br>";
+            //     echo $value."<br>";
+            //     echo "<hr>";
+            // }
+
             $ok = casasOk();
             if($ok){
                 $erro = 0;
                 if($centena != ''){
                     $centena = explode(' ', $centena);
                     if($mil != '' || $milhao != ''){
-                        if(count($centena) <= 2 && $centena[0] != 'e'){$erro++;}
-                        if(count($centena) > 2 && $centena[0] == 'e'){$erro++;}
+                        if(count($centena) <= 2 && $centena[0] != 'e'){
+                            $erro++;
+                        }
+                        if(count($centena) > 2 && $centena[0] == 'e'){
+                            $erro++;
+                        }
                     }
                     !incongr($centena, $numExt) ? $erro++ : "";
                 }
                 if($mil != ''){
                     $mil = explode(' ', $mil);
                     if($milhao != ''){
-                        if(count($mil) <= 2 && $mil[0] != 'e'){$erro++;}
-                        if(count($mil) > 2 && $mil[0] == 'e'){$erro++;}
+                        if(count($mil) <= 2 && $mil[0] != 'e'){
+                            $erro++;
+                        }
+                        if(count($mil) > 2 && $mil[0] == 'e'){
+                            $erro++;
+                        }
                     }
                     !incongr($mil, $numExt) ? $erro++ : "";
                 };
@@ -194,14 +213,14 @@ function calculadora(){
     }
 
     function extToNumber($operador){
-        $numExt1 = ['um'=>1, 'dois'=>2, 'três'=>3, 'quatro'=>4, 'cinco'=>5, 'seis'=>6, 'sete'=>7, 'oito'=>8, 'nove'=>9, 'dez'=>10, 'onze'=>11, 'doze'=>12, 'treze'=>13, 'quatorze'=>14, 'quinze'=>15, 'dezesseis'=>16, 'dezessete'=>17, 'dezoito'=>18, 'dezenove'=>19];
+        $numExt1 = ['um'=>1, 'dois'=>2, 'tres'=>3, 'quatro'=>4, 'cinco'=>5, 'seis'=>6, 'sete'=>7, 'oito'=>8, 'nove'=>9, 'dez'=>10, 'onze'=>11, 'doze'=>12, 'treze'=>13, 'quatorze'=>14, 'quinze'=>15, 'dezesseis'=>16, 'dezessete'=>17, 'dezoito'=>18, 'dezenove'=>19];
         $numExt2 = ['vinte'=>20, 'trinta'=>30, 'quarenta'=>40, 'cinquenta'=>50, 'sessenta'=>60, 'setenta'=>70, 'oitenta'=>80, 'noventa'=>90];
         $numExt3 = ['cem'=>100, 'cento'=>100, 'duzentos'=>200, 'trezentos'=>300, 'quatrocentos'=>400, 'quinhentos'=>500, 'seiscentos'=>600, 'setecentos'=>700, 'oitocentos'=>800, 'novecentos'=>900];
 
         $opNum = 0;
 
-        $milhExists1 = strpos($operador, 'milhões');
-        $milhExists2 = strpos($operador, 'milhão');
+        $milhExists1 = strpos($operador, 'milhoes');
+        $milhExists2 = strpos($operador, 'milhao');
         if($milhExists1 !== false){
             $milExists = strpos($operador, 'mil', ($milhExists1+7));
             $m = substr($operador, 0, $milhExists1);
