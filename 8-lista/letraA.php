@@ -39,7 +39,12 @@ echo "<input type=\"text\" id=\"valor\" name=\"valor\" value=\"".$value."\" size
 $parameters = array();
 if (isset($_GET["orderby"])) $parameters[] = "orderby=".$_GET["orderby"];
 if (isset($_GET["offset"])) $parameters[] = "offset=".$_GET["offset"];
-echo "<a href=\"\" onclick=\"value = document.getElementById('valor').value.trim().replace(/ +/g, '+'); result = '".strtr(implode("&", $parameters), " ", "+")."'; result = ((value != '') ? document.getElementById('campo').value+'='+value+((result != '') ? '&' : '') : '')+result; this.href ='letraA.php'+((result != '') ? '?' : '')+result;\">&#x1F50E;</a><br>\n";
+echo "<a href=\"\" onclick=\"
+	value = document.getElementById('valor').value.trim().replace(/ +/g, '+'); 
+	result = '".strtr(implode("&", $parameters), " ", "+")."'; 
+	result = ((value != '') ? document.getElementById('campo').value+'='+value+((result != '') ? '&' : '') : '')+result; 
+	this.href ='letraA.php'+((result != '') ? '?' : '')+result;
+\">&#x1F50E;</a><br>\n";
 echo "<br>\n";
 
 echo "<table border=\"1\">\n";
@@ -52,12 +57,18 @@ echo "<td></td>\n";
 echo "</tr>\n";
 
 $where = array();
-if (isset($_GET["sabor"])) $where[] = "sabor like '%".strtr($_GET["sabor"], " ", "%")."%'";
-if (isset($_GET["tipo"])) $where[] = "tipo like '%".strtr($_GET["tipo"], " ", "%")."%'";
-if (isset($_GET["ingrediente"])) $where[] = "ingrediente like '%".strtr($_GET["ingrediente"], " ", "%")."%'";
+if (isset($_GET["sabor"])) $where[] = "sabor.nome like '%".strtr($_GET["sabor"], " ", "%")."%'";
+if (isset($_GET["tipo"])) $where[] = "tipo.nome like '%".strtr($_GET["tipo"], " ", "%")."%'";
+if (isset($_GET["ingrediente"])) $where[] = "ingrediente.nome like '%".strtr($_GET["ingrediente"], " ", "%")."%'";
 $where = (count($where) > 0) ? "where ".implode(" and ", $where) : "";
 
-$total = $db->query("select count(*) as total from (select * from sabor join tipo on sabor.tipo = tipo.codigo join saboringrediente on saboringrediente.sabor = sabor.codigo join ingrediente on saboringrediente.ingrediente = ingrediente.codigo ".$where." group by sabor.codigo)")->fetchArray()["total"];
+$total = $db->query("select count(*) as total from 
+	(select * from sabor 
+		join tipo on sabor.tipo = tipo.codigo 
+		join saboringrediente on saboringrediente.sabor = sabor.codigo 
+		join ingrediente on saboringrediente.ingrediente = ingrediente.codigo 
+	".$where." 
+	group by sabor.codigo)")->fetchArray()["total"];
 
 
 $orderby = (isset($_GET["orderby"])) ? $_GET["orderby"] : "codigo asc";
@@ -65,7 +76,16 @@ $orderby = (isset($_GET["orderby"])) ? $_GET["orderby"] : "codigo asc";
 $offset = (isset($_GET["offset"])) ? max(0, min($_GET["offset"], $total-1)) : 0;
 $offset = $offset-($offset%$limit);
 
-$results = $db->query("select sabor.codigo as codigo, sabor.nome as sabor, tipo.nome as tipo, group_concat(ingrediente.nome, ', ') as ingredientes from sabor join tipo on sabor.tipo = tipo.codigo join saboringrediente on saboringrediente.sabor = sabor.codigo join ingrediente on saboringrediente.ingrediente = ingrediente.codigo $where group by sabor.codigo order by $orderby limit $limit offset $offset");
+$results = $db->query("select sabor.codigo as codigo, sabor.nome as sabor, tipo.nome as tipo, group_concat(ingrediente.nome, ', ') as ingredientes 
+from sabor 
+	join tipo on sabor.tipo = tipo.codigo 
+	join saboringrediente on saboringrediente.sabor = sabor.codigo 
+	join ingrediente on saboringrediente.ingrediente = ingrediente.codigo 
+$where 
+group by sabor.codigo 
+order by $orderby 
+limit $limit 
+offset $offset");
 
 while ($row = $results->fetchArray()) {
 	echo "<tr>\n";
