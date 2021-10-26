@@ -78,7 +78,7 @@ function valid(value) {
                     }
                 }
                 
-                // VALIDANDO EXERCICIO 5 FIXME:
+                // VALIDANDO EXERCICIO 5
                 if(value == 5){
                     var ok = validRoman(i);
                     if(!ok){
@@ -86,7 +86,7 @@ function valid(value) {
                     }
                     if((i == array[value-1].length-1) && errors == 0){
                         console.log('Sucesso!');
-                        // document.getElementById('form'+value).submit();
+                        document.getElementById('form'+value).submit();
                     } 
                 }
             }

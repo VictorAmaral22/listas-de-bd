@@ -1,0 +1,4 @@
+Pra consertar:
+
+B)
+    - não consegue converter letras com acento.

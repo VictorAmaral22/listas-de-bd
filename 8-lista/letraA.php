@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A</title>
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <?php
@@ -112,6 +113,7 @@ function validSearch(){
 		location.href= 'letraA.php'+((result != '') ? '?' : '')+result;
 	} else {
 		alert('Faça uma pesquisa válida!');
+		valor.className = 'error';
 	}	
 }
 </script>

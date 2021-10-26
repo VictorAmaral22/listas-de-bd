@@ -5,44 +5,102 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <?php
-    var_dump($_POST);
+    // var_dump($_POST);
     $db = new SQLite3("pizzaria.db");
     $db->exec("PRAGMA foreign_keys = ON");
     $nome;
     $tipo;
     $ingredientes = [];
-    if(isset($_POST['confirma'])){
-        if(isset($_POST['nome']) && isset($_POST['tipo'])){
-            $nome = $_POST['nome'];
-            $tipo = $_POST['tipo'];
-            $qtd = $db->query("select count(*) as qtd from ingrediente");
-            $result;
-            while ($row = $qtd->fetchArray()) { $result = $row; } 
-            $qtd = $result['qtd'];
-            for($c = 1; $c <= $qtd; $c++){
-                if(isset($_POST["ingr$c"])){
-                    $ingredientes[] = $_POST["ingr$c"];
-                }
+    $erros = 0;
+    if(isset($_POST['nome']) && isset($_POST['tipo'])){
+        $nome = $_POST['nome'];
+        $nome = strtoupper($nome);
+        // for($c = 0; $c < strlen($nome); $c++) {
+        //     switch ($nome[$c]) {
+        //         case 'Ã': { $nome[$c] = 'A'; break; } 
+        //         case 'Â': { $nome[$c] = 'A'; break; } 
+        //         case 'Á': { $nome[$c] = 'A'; break; } 
+        //         case 'À': { $nome[$c] = 'A'; break; } 
+        //         case 'Ä': { $nome[$c] = 'A'; break; } 
+        //         case 'É': { $nome[$c] = 'E'; break; } 
+        //         case 'È': { $nome[$c] = 'E'; break; } 
+        //         case 'Ê': { $nome[$c] = 'E'; break; } 
+        //         case 'Ë': { $nome[$c] = 'E'; break; } 
+        //         case 'Í': { $nome[$c] = 'I'; break; } 
+        //         case 'Ì': { $nome[$c] = 'I'; break; } 
+        //         case 'Î': { $nome[$c] = 'I'; break; } 
+        //         case 'Ï': { $nome[$c] = 'I'; break; } 
+        //         case 'Ó': { $nome[$c] = 'O'; break; } 
+        //         case 'Ò': { $nome[$c] = 'O'; break; } 
+        //         case 'Õ': { $nome[$c] = 'O'; break; } 
+        //         case 'Ô': { $nome[$c] = 'O'; break; } 
+        //         case 'Ö': { $nome[$c] = 'O'; break; } 
+        //         case 'Ú': { $nome[$c] = 'U'; break; } 
+        //         case 'Ù': { $nome[$c] = 'U'; break; } 
+        //         case 'Û': { $nome[$c] = 'U'; break; } 
+        //         case 'Ü': { $nome[$c] = 'U'; break; } 
+        //         case 'Ç': { $nome[$c] = 'C'; break; }
+        //     }
+        // }        
+        $tipo = $_POST['tipo'];
+        $nomesCadast = $db->query("select nome from sabor");
+        $tiposCadast = $db->query("select codigo from tipo");
+        $tmp = [];
+        $tmp2 = [];
+        while ($row = $nomesCadast->fetchArray()) {
+            $tmp[] = $row[0];
+        }
+        while ($row = $tiposCadast->fetchArray()) {
+            $tmp2[] = $row[0];
+        }
+        $nomesCadast = $tmp;
+        $tiposCadast = $tmp2;
+        if(in_array($nome, $nomesCadast)){
+            $erros++;
+            echo 'Erro: nome já cadastrado!';
+        }
+        if(!in_array($tipo, $tiposCadast)){
+            $erros++;
+            echo 'Erro: tipo inexistente!';
+        }
+    } else {
+        $erros++;
+    }
+    if($erros === 0 && $_POST['confirmar'] != ''){
+        insertSabor($db);
+    }
+
+    function insertSabor($db){
+        $nome = $_POST['nome'];
+        $nome = strtoupper($nome);
+        $tipo = $_POST['tipo'];
+        $qtd = $db->query("select count(*) as qtd from ingrediente");
+        $result;
+        while ($row = $qtd->fetchArray()) { $result = $row; } 
+        $qtd = $result['qtd'];
+        for($c = 1; $c <= $qtd; $c++){
+            if(isset($_POST["ingr$c"])){
+                $ingredientes[] = $_POST["ingr$c"];
             }
-		    $db->exec("insert into sabor (nome, tipo) values ('".$_POST["nome"]."', '".$_POST["tipo"]."')");
-		    $saborId = $db->lastInsertRowID();
-		    foreach ($ingredientes as $ingred) {
-                $db->exec("insert into saboringrediente (sabor, ingrediente) values ('".$saborId."', '".$ingred."')");
-            }
-        } else {
-            echo "Erro!";
+        }
+        $db->exec("insert into sabor (nome, tipo) values ('".$nome."', '".$tipo."')");
+        $saborId = $db->lastInsertRowID();
+        foreach ($ingredientes as $ingred) {
+            $db->exec("insert into saboringrediente (sabor, ingrediente) values ('".$saborId."', '".$ingred."')");
         }
     }
 ?>
+<a href="./letraA.php"><- Voltar</a>
 <h1>Inclusão de Sabores</h1>
-<form name="insert" action="letraB.php" method="post">
+<form id="insert" name="insert" action="letraB.php" method="post">
     <table>
         <tr>
             <td>Nome</td>
-            <td><input type="text" name="nome" value="" size="50"></td>
+            <td><input id="nome" type="text" name="nome" value="" size="50" pattern="^([a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?(( [a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?)+$" onclick="unsetError(this)"></td>
         </tr>
         <tr>
             <td>Tipo</td>
@@ -58,7 +116,7 @@
         <tr>
             <td>Ingrediente</td>
             <td>
-                <select id="ingrediente">
+                <select id="ingrediente" onclick="unsetError(this)">
                 <?php 
                     $ingredientes = $db->query("select * from ingrediente");
                     while ($row = $ingredientes->fetchArray()) { echo "<option id='option".$row['codigo']."' value='{ \"id\": \"".$row['codigo']."\", \"name\": \"".$row['nome']."\" }'\">".$row['nome']."</option>\n"; }
@@ -73,20 +131,21 @@
             </table></td>
         </tr>
     </table>
-    <input type="submit" name="confirma" value="Confirma">
+    <input id="confirmar" type="hidden" name="confirmar" value="">
+    <input type="button" value="Confirmar" onclick="valid()">
 </form>
 
 <script>
 
-var num = 1;
+var ingredientes = [];
 function addIngr(){
     var ingr = document.getElementById('ingrediente').value;
     ingr = JSON.parse(ingr);
     var table = document.getElementById('tableIngr');
     var option = document.getElementById('option'+ingr.id);
     option.remove();
+    ingredientes.push(ingr.id);
     table.innerHTML += `<tr id="row${ingr.id}"><td>${ingr.name}<input type="hidden" value="${ingr.id}" name="ingr${ingr.id}" /></td><td><button onclick="removeIngr('${ingr.id}', '${ingr.name}')">❌</button></td></tr>`;
-    num++;
 }
 function removeIngr(id, name){
     var table = document.getElementById('tableIngr');
@@ -94,6 +153,43 @@ function removeIngr(id, name){
     var select = document.getElementById('ingrediente');
     select.innerHTML += `<option id='option${id}' value='{ "id": "${id}", "name": "${name}" }'>${name}</option>\n`
     row.remove();
+    for(var i = 0; i < ingredientes.length; i++){ 
+        if ( ingredientes[i] == id) {
+            ingredientes.splice(i, 1); 
+        }    
+    }
+}
+function valid(){
+    var nome = document.getElementById('nome');
+    var ingrd = document.getElementById('ingrediente');
+    var erros = 0;
+    console.log(ingredientes);
+    if(ingredientes.length === 0){
+        ingrd.className = 'error';
+        erros++;
+    }
+    if(nome.value.trim() == ''){
+        nome.className = 'error';
+        erros++;
+    }
+    var regExp = new RegExp(nome.pattern);
+    if(!regExp.test(nome.value)){
+        nome.className = 'error';
+        erros++;
+    }
+
+    if(erros == 0){
+        var confirm = document.getElementById('confirmar');
+        confirm.value = 'certo';
+        var form = document.getElementById('insert');
+        form.submit();
+
+    } else {
+        alert('Dados inválidos!');
+    }
+}
+function unsetError(self){
+    self.className = '';
 }
 
 </script>
