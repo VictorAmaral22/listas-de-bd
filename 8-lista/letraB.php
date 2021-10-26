@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<a href="./letraA.php">↩ Voltar</a><br>
+
 <?php
     // var_dump($_POST);
     $db = new SQLite3("pizzaria.db");
@@ -16,6 +18,7 @@
     $tipo;
     $ingredientes = [];
     $erros = 0;
+    $errorMsg = '';
     if(isset($_POST['nome']) && isset($_POST['tipo'])){
         $nome = $_POST['nome'];
         $nome = strtoupper($nome);
@@ -59,22 +62,69 @@
         }
         $nomesCadast = $tmp;
         $tiposCadast = $tmp2;
+        if($nome == '' || $nome == null){
+            $erros++;
+            $errorMsg .= 'nome inválido; ';
+        }
+        if(!preg_match('#^([a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?(( [a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?)+$#', $nome)){
+            $erros++;
+            $errorMsg .= 'nome inválido; ';
+        }
         if(in_array($nome, $nomesCadast)){
             $erros++;
-            echo 'Erro: nome já cadastrado!';
+            $errorMsg .= 'nome já cadastrado; ';
+        }
+        if($tipo == '' || $tipo == null){
+            $erros++;
+            $errorMsg .= 'tipo inválido; ';
+        }
+        if(!preg_match('#^[0-9]+$#', $tipo)){
+            $erros++;
+            $errorMsg .= 'tipo inválido; ';
         }
         if(!in_array($tipo, $tiposCadast)){
             $erros++;
-            echo 'Erro: tipo inexistente!';
+            $errorMsg .= 'tipo não cadastrado; ';
+        }
+        $qtdI = $db->query("select count(*) as qtd from ingrediente");
+        $ingrCadast = $db->query("select codigo from ingrediente");
+        $resultI;
+        $resultII = [];
+        while ($row = $qtdI->fetchArray()) { $resultI = $row[0]; } 
+        $qtdI = $resultI;
+        while ($row = $ingrCadast->fetchArray()) { $resultII[] = $row[0]; } 
+        $ingrCadast = $resultII;
+        $listaIngr = [];
+        for($c = 1; $c <= $qtdI; $c++){
+            if(isset($_POST["ingr$c"])){
+                if(!in_array($_POST["ingr$c"], $ingrCadast)){
+                    $erros++;
+                    $errorMsg .= "ingrediente $c não cadastrado; ";
+                    $listaIngr[] = 'error';
+                } else {
+                    $listaIngr[] = $_POST["ingr$c"];
+                }
+            }
+            if($c == $qtdI && $listaIngr == []){
+                $erros++;
+                $errorMsg .= "ingredientes não informados; ";
+            }
         }
     } else {
         $erros++;
+        if(isset($_POST['nome']) || isset($_POST['tipo'])){
+            echo "Erro: dados faltando!";
+        }
     }
-    if($erros === 0 && $_POST['confirmar'] != ''){
-        insertSabor($db);
+    if($erros === 0 && $_POST['confirmar'] == 'confirmar'){
+        echo "salve";
+        insertSabor($db, $ingredientes);
+    }
+    if($erros != 0 && isset($_POST['confirmar']) && $_POST['confirmar'] == 'confirmar'){
+        echo "Erro: ".($errorMsg == '' ? 'dados faltando!' : $errorMsg);
     }
 
-    function insertSabor($db){
+    function insertSabor($db, $ingredientes){
         $nome = $_POST['nome'];
         $nome = strtoupper($nome);
         $tipo = $_POST['tipo'];
@@ -94,7 +144,7 @@
         }
     }
 ?>
-<a href="./letraA.php"><- Voltar</a>
+
 <h1>Inclusão de Sabores</h1>
 <form id="insert" name="insert" action="letraB.php" method="post">
     <table>
@@ -180,10 +230,9 @@ function valid(){
 
     if(erros == 0){
         var confirm = document.getElementById('confirmar');
-        confirm.value = 'certo';
+        confirm.value = 'confirmar';
         var form = document.getElementById('insert');
         form.submit();
-
     } else {
         alert('Dados inválidos!');
     }
