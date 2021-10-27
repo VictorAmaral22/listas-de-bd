@@ -28,3 +28,8 @@ select count(*) as qtd from ingrediente;
 
 insert into sabor (nome, tipo) values ('NIGERIA', 1);
 insert into saboringrediente (sabor, ingrediente) values (1, 30);
+
+select ingrediente.codigo, ingrediente.nome from sabor
+    join saboringrediente on saboringrediente.sabor = sabor.codigo
+    join ingrediente on saboringrediente.ingrediente = ingrediente.codigo
+where sabor.codigo = 1;

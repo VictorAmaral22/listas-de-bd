@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B</title>
+    <title>C</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,178 +12,188 @@
 
 <?php
     var_dump($_POST);
-    $db = new SQLite3("pizzaria.db");
-    $db->exec("PRAGMA foreign_keys = ON");
-    $nome;
-    $tipo;
-    $ingredientes = [];
-    $erros = 0;
-    $errorMsg = '';
-    if(isset($_POST['nome']) && isset($_POST['tipo'])){
-        $nome = $_POST['nome'];
-        $nome = strtoupper($nome);
-        // for($c = 0; $c < strlen($nome); $c++) {
-        //     switch ($nome[$c]) {
-        //         case 'Ã': { $nome[$c] = 'A'; break; } 
-        //         case 'Â': { $nome[$c] = 'A'; break; } 
-        //         case 'Á': { $nome[$c] = 'A'; break; } 
-        //         case 'À': { $nome[$c] = 'A'; break; } 
-        //         case 'Ä': { $nome[$c] = 'A'; break; } 
-        //         case 'É': { $nome[$c] = 'E'; break; } 
-        //         case 'È': { $nome[$c] = 'E'; break; } 
-        //         case 'Ê': { $nome[$c] = 'E'; break; } 
-        //         case 'Ë': { $nome[$c] = 'E'; break; } 
-        //         case 'Í': { $nome[$c] = 'I'; break; } 
-        //         case 'Ì': { $nome[$c] = 'I'; break; } 
-        //         case 'Î': { $nome[$c] = 'I'; break; } 
-        //         case 'Ï': { $nome[$c] = 'I'; break; } 
-        //         case 'Ó': { $nome[$c] = 'O'; break; } 
-        //         case 'Ò': { $nome[$c] = 'O'; break; } 
-        //         case 'Õ': { $nome[$c] = 'O'; break; } 
-        //         case 'Ô': { $nome[$c] = 'O'; break; } 
-        //         case 'Ö': { $nome[$c] = 'O'; break; } 
-        //         case 'Ú': { $nome[$c] = 'U'; break; } 
-        //         case 'Ù': { $nome[$c] = 'U'; break; } 
-        //         case 'Û': { $nome[$c] = 'U'; break; } 
-        //         case 'Ü': { $nome[$c] = 'U'; break; } 
-        //         case 'Ç': { $nome[$c] = 'C'; break; }
-        //     }
-        // }        
-        $tipo = $_POST['tipo'];
-        $nomesCadast = $db->query("select nome from sabor");
-        $tiposCadast = $db->query("select codigo from tipo");
-        $tmp = [];
-        $tmp2 = [];
-        while ($row = $nomesCadast->fetchArray()) {
-            $tmp[] = $row[0];
+    if (isset($_GET["codigo"])) {
+        $db = new SQLite3("pizzaria.db");
+        $db->exec("PRAGMA foreign_keys = ON");
+        $sabor = $db->query("select * from sabor where codigo = ".$_GET["codigo"]);
+        $saboringrediente = $db->query("
+        select ingrediente.codigo, ingrediente.nome from sabor
+            join saboringrediente on saboringrediente.sabor = sabor.codigo
+            join ingrediente on saboringrediente.ingrediente = ingrediente.codigo
+        where sabor.codigo = ".$_GET["codigo"]);
+        $tmpS = [];
+        $tmpSI = [];
+        while ($row = $sabor->fetchArray()) {
+            $tmpS[] = $row;
         }
-        while ($row = $tiposCadast->fetchArray()) {
-            $tmp2[] = $row[0];
+        while ($row = $saboringrediente->fetchArray()) {
+            $tmpSI[] = $row;
         }
-        $nomesCadast = $tmp;
-        $tiposCadast = $tmp2;
-        if($nome == '' || $nome == null){
-            $erros++;
-            $errorMsg .= 'nome inválido; ';
-        }
-        if(!preg_match('#^([a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?(( [a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?)+$#', $nome)){
-            $erros++;
-            $errorMsg .= 'nome inválido; ';
-        }
-        if(in_array($nome, $nomesCadast)){
-            $erros++;
-            $errorMsg .= 'nome já cadastrado; ';
-        }
-        if($tipo == '' || $tipo == null){
-            $erros++;
-            $errorMsg .= 'tipo inválido; ';
-        }
-        if(!preg_match('#^[0-9]+$#', $tipo)){
-            $erros++;
-            $errorMsg .= 'tipo inválido; ';
-        }
-        if(!in_array($tipo, $tiposCadast)){
-            $erros++;
-            $errorMsg .= 'tipo não cadastrado; ';
-        }
-        $qtdI = $db->query("select count(*) as qtd from ingrediente");
-        $ingrCadast = $db->query("select codigo from ingrediente");
-        $resultI;
-        $resultII = [];
-        while ($row = $qtdI->fetchArray()) { $resultI = $row[0]; } 
-        $qtdI = $resultI;
-        while ($row = $ingrCadast->fetchArray()) { $resultII[] = $row[0]; } 
-        $ingrCadast = $resultII;
-        $listaIngr = [];
-        for($c = 1; $c <= $qtdI; $c++){
-            if(isset($_POST["ingr$c"])){
-                if(!in_array($_POST["ingr$c"], $ingrCadast)){
+        $sabor = $tmpS[0];
+        $saboringrediente = $tmpSI;
+        print_r($saboringrediente);
+        $nome;
+        $tipo;
+        $ingredientes = [];
+        $erros = 0;
+        $errorMsg = '';
+        if(isset($_POST['nome']) && isset($_POST['tipo'])){
+            $nome = $_POST['nome'];
+            $nome = strtoupper($nome);
+            // for($c = 0; $c < strlen($nome); $c++) {
+            //     switch ($nome[$c]) {
+            //         case 'Ã': { $nome[$c] = 'A'; break; } 
+            //         case 'Â': { $nome[$c] = 'A'; break; } 
+            //         case 'Á': { $nome[$c] = 'A'; break; } 
+            //         case 'À': { $nome[$c] = 'A'; break; } 
+            //         case 'Ä': { $nome[$c] = 'A'; break; } 
+            //         case 'É': { $nome[$c] = 'E'; break; } 
+            //         case 'È': { $nome[$c] = 'E'; break; } 
+            //         case 'Ê': { $nome[$c] = 'E'; break; } 
+            //         case 'Ë': { $nome[$c] = 'E'; break; } 
+            //         case 'Í': { $nome[$c] = 'I'; break; } 
+            //         case 'Ì': { $nome[$c] = 'I'; break; } 
+            //         case 'Î': { $nome[$c] = 'I'; break; } 
+            //         case 'Ï': { $nome[$c] = 'I'; break; } 
+            //         case 'Ó': { $nome[$c] = 'O'; break; } 
+            //         case 'Ò': { $nome[$c] = 'O'; break; } 
+            //         case 'Õ': { $nome[$c] = 'O'; break; } 
+            //         case 'Ô': { $nome[$c] = 'O'; break; } 
+            //         case 'Ö': { $nome[$c] = 'O'; break; } 
+            //         case 'Ú': { $nome[$c] = 'U'; break; } 
+            //         case 'Ù': { $nome[$c] = 'U'; break; } 
+            //         case 'Û': { $nome[$c] = 'U'; break; } 
+            //         case 'Ü': { $nome[$c] = 'U'; break; } 
+            //         case 'Ç': { $nome[$c] = 'C'; break; }
+            //     }
+            // }        
+            $tipo = $_POST['tipo'];
+            $nomesCadast = $db->query("select nome from sabor");
+            $tiposCadast = $db->query("select codigo from tipo");
+            $tmp = [];
+            $tmp2 = [];
+            while ($row = $nomesCadast->fetchArray()) {
+                $tmp[] = $row[0];
+            }
+            while ($row = $tiposCadast->fetchArray()) {
+                $tmp2[] = $row[0];
+            }
+            $nomesCadast = $tmp;
+            $tiposCadast = $tmp2;
+            if($nome == '' || $nome == null){
+                $erros++;
+                $errorMsg .= 'nome inválido; ';
+            }
+            if(!preg_match('#^([a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?(( [a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?)+$#', $nome)){
+                $erros++;
+                $errorMsg .= 'nome inválido; ';
+            }
+            if(in_array($nome, $nomesCadast)){
+                $erros++;
+                $errorMsg .= 'nome já cadastrado; ';
+            }
+            if($tipo == '' || $tipo == null){
+                $erros++;
+                $errorMsg .= 'tipo inválido; ';
+            }
+            if(!preg_match('#^[0-9]+$#', $tipo)){
+                $erros++;
+                $errorMsg .= 'tipo inválido; ';
+            }
+            if(!in_array($tipo, $tiposCadast)){
+                $erros++;
+                $errorMsg .= 'tipo não cadastrado; ';
+            }
+            $qtdI = $db->query("select count(*) as qtd from ingrediente");
+            $ingrCadast = $db->query("select codigo from ingrediente");
+            $resultI;
+            $resultII = [];
+            while ($row = $qtdI->fetchArray()) { $resultI = $row[0]; } 
+            $qtdI = $resultI;
+            while ($row = $ingrCadast->fetchArray()) { $resultII[] = $row[0]; } 
+            $ingrCadast = $resultII;
+            $listaIngr = [];
+            for($c = 1; $c <= $qtdI; $c++){
+                if(isset($_POST["ingr$c"])){
+                    if(!in_array($_POST["ingr$c"], $ingrCadast)){
+                        $erros++;
+                        $errorMsg .= "ingrediente $c não cadastrado; ";
+                        $listaIngr[] = 'error';
+                    } else {
+                        $listaIngr[] = $_POST["ingr$c"];
+                    }
+                }
+                if($c == $qtdI && $listaIngr == []){
                     $erros++;
-                    $errorMsg .= "ingrediente $c não cadastrado; ";
-                    $listaIngr[] = 'error';
-                } else {
-                    $listaIngr[] = $_POST["ingr$c"];
+                    $errorMsg .= "ingredientes não informados; ";
                 }
             }
-            if($c == $qtdI && $listaIngr == []){
-                $erros++;
-                $errorMsg .= "ingredientes não informados; ";
+        } else {
+            $erros++;
+            if(isset($_POST['nome']) || isset($_POST['tipo'])){
+                echo "Erro: dados faltando!";
             }
         }
-    } else {
-        $erros++;
-        if(isset($_POST['nome']) || isset($_POST['tipo'])){
-            echo "Erro: dados faltando!";
+        if($erros === 0 && $_POST['confirmar'] == 'confirmar'){
+            echo "salve";
+            insertSabor($db, $ingredientes);
         }
-    }
-    if($erros === 0 && $_POST['confirmar'] == 'confirmar'){
-        echo "salve";
-        insertSabor($db, $ingredientes);
-    }
-    if($erros != 0 && isset($_POST['confirmar']) && $_POST['confirmar'] == 'confirmar'){
-        echo "Erro: ".($errorMsg == '' ? 'dados faltando!' : $errorMsg);
+        if($erros != 0 && isset($_POST['confirmar']) && $_POST['confirmar'] == 'confirmar'){
+            echo "Erro: ".($errorMsg == '' ? 'dados faltando!' : $errorMsg);
+        }
+    
+        function insertSabor($db, $ingredientes){
+            $nome = $_POST['nome'];
+            $nome = strtoupper($nome);
+            $tipo = $_POST['tipo'];
+            $qtd = $db->query("select count(*) as qtd from ingrediente");
+            $result;
+            while ($row = $qtd->fetchArray()) { $result = $row; } 
+            $qtd = $result['qtd'];
+            for($c = 1; $c <= $qtd; $c++){
+                if(isset($_POST["ingr$c"])){
+                    $ingredientes[] = $_POST["ingr$c"];
+                }
+            }
+            $db->exec("insert into sabor (nome, tipo) values ('".$nome."', '".$tipo."')");
+            $saborId = $db->lastInsertRowID();
+            foreach ($ingredientes as $ingred) {
+                $db->exec("insert into saboringrediente (sabor, ingrediente) values ('".$saborId."', '".$ingred."')");
+            }
+        }
     }
 
-    function insertSabor($db, $ingredientes){
-        $nome = $_POST['nome'];
-        $nome = strtoupper($nome);
-        $tipo = $_POST['tipo'];
-        $qtd = $db->query("select count(*) as qtd from ingrediente");
-        $result;
-        while ($row = $qtd->fetchArray()) { $result = $row; } 
-        $qtd = $result['qtd'];
-        for($c = 1; $c <= $qtd; $c++){
-            if(isset($_POST["ingr$c"])){
-                $ingredientes[] = $_POST["ingr$c"];
+    echo "<h1>Alteração de Sabores</h1>";
+    echo "<form id=\"insert\" name=\"insert\" action=\"letraC.php\" method=\"post\">";
+    echo "<table>";
+    echo "<tr>";
+    echo "<td>Nome</td>";
+    echo "<td><input id=\"nome\" type=\"text\" name=\"nome\" value=\"".$sabor['nome']."\" size=\"50\" pattern=\"^([a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?(( [a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?)+$\" onclick=\"unsetError(this)\"></td>";
+    echo "</tr><tr><td>Tipo</td><td>";
+    echo "<select id=\"tipo\" name=\"tipo\">";
+        $tipos = $db->query("select * from tipo");
+        while ($row = $tipos->fetchArray()) { 
+            if($sabor['tipo'] == $row['codigo']){
+                echo "<option value=\"".$row['codigo']."\" selected>".$row['nome']."</option>\n"; 
+            } else {
+                echo "<option value=\"".$row['codigo']."\">".$row['nome']."</option>\n"; 
             }
         }
-        $db->exec("insert into sabor (nome, tipo) values ('".$nome."', '".$tipo."')");
-        $saborId = $db->lastInsertRowID();
-        foreach ($ingredientes as $ingred) {
-            $db->exec("insert into saboringrediente (sabor, ingrediente) values ('".$saborId."', '".$ingred."')");
-        }
-    }
+    echo "</select></td></tr><tr>";
+    echo "<td>Ingrediente</td><td>";
+    echo "<select id=\"ingrediente\" onclick=\"unsetError(this)\">";
+        $ingredientes = $db->query("select * from ingrediente");
+        while ($row = $ingredientes->fetchArray()) { echo "<option id='option".$row['codigo']."' value='{ \"id\": \"".$row['codigo']."\", \"name\": \"".$row['nome']."\" }'\">".$row['nome']."</option>\n"; }
+    echo "</select>";
+    echo "<input type=\"button\" id=\"addIngrediente\" onclick=\"addIngr()\" value=\"+\"/>";
+    echo "</td></tr><tr>";
+    echo "<td>Ingredientes</td>";
+    echo "<td><table id=\"tableIngr\" border=\"1\" name=\"tableIngr\">";
+    echo "</table></td></tr></table>";
+    echo "<input id=\"confirmar\" type=\"hidden\" name=\"confirmar\" value=\"\">";
+    echo "<input type=\"button\" value=\"Confirmar\" onclick=\"valid()\">";
+    echo "</form>";
 ?>
-
-<h1>Alteração de Sabores</h1>
-<form id="insert" name="insert" action="letraC.php" method="post">
-    <table>
-        <tr>
-            <td>Nome</td>
-            <td><input id="nome" type="text" name="nome" value="" size="50" pattern="^([a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?(( [a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?)+$" onclick="unsetError(this)"></td>
-        </tr>
-        <tr>
-            <td>Tipo</td>
-            <td>
-                <select id="tipo" name="tipo">
-                    <?php 
-                        $tipos = $db->query("select * from tipo");
-                        while ($row = $tipos->fetchArray()) { echo "<option value=\"".$row['codigo']."\">".$row['nome']."</option>\n"; }
-                    ?>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Ingrediente</td>
-            <td>
-                <select id="ingrediente" onclick="unsetError(this)">
-                <?php 
-                    $ingredientes = $db->query("select * from ingrediente");
-                    while ($row = $ingredientes->fetchArray()) { echo "<option id='option".$row['codigo']."' value='{ \"id\": \"".$row['codigo']."\", \"name\": \"".$row['nome']."\" }'\">".$row['nome']."</option>\n"; }
-                ?>
-                </select>
-                <input type="button" id='addIngrediente' onclick='addIngr()' value="+"/>
-            </td>
-        </tr>
-        <tr>
-            <td>Ingredientes</td>
-            <td><table id="tableIngr" border="1" name='tableIngr'>
-            </table></td>
-        </tr>
-    </table>
-    <input id="confirmar" type="hidden" name="confirmar" value="">
-    <input type="button" value="Confirmar" onclick="valid()">
-</form>
 
 <script>
 
