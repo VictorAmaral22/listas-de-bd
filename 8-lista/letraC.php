@@ -11,7 +11,7 @@
 <a href="./letraA.php">↩ Voltar</a><br>
 
 <?php
-    var_dump($_POST);
+    // var_dump($_POST);
     if (isset($_GET["codigo"])) {
         $db = new SQLite3("pizzaria.db");
         $db->exec("PRAGMA foreign_keys = ON");
@@ -31,7 +31,7 @@
         }
         $sabor = $tmpS[0];
         $saboringrediente = $tmpSI;
-        print_r($saboringrediente);
+        // print_r($saboringrediente);
         $nome;
         $tipo;
         $ingredientes = [];
@@ -68,12 +68,12 @@
             //     }
             // }        
             $tipo = $_POST['tipo'];
-            $nomesCadast = $db->query("select nome from sabor");
+            $nomesCadast = $db->query("select codigo, nome from sabor");
             $tiposCadast = $db->query("select codigo from tipo");
             $tmp = [];
             $tmp2 = [];
             while ($row = $nomesCadast->fetchArray()) {
-                $tmp[] = $row[0];
+                $tmp[$row[0]] = $row[1];
             }
             while ($row = $tiposCadast->fetchArray()) {
                 $tmp2[] = $row[0];
@@ -88,7 +88,7 @@
                 $erros++;
                 $errorMsg .= 'nome inválido; ';
             }
-            if(in_array($nome, $nomesCadast)){
+            if(in_array($nome, $nomesCadast) && array_search($nome, $nomesCadast) != $_GET['codigo']){
                 $erros++;
                 $errorMsg .= 'nome já cadastrado; ';
             }
@@ -135,14 +135,6 @@
             }
         }
         if($erros === 0 && $_POST['confirmar'] == 'confirmar'){
-            echo "salve";
-            insertSabor($db, $ingredientes);
-        }
-        if($erros != 0 && isset($_POST['confirmar']) && $_POST['confirmar'] == 'confirmar'){
-            echo "Erro: ".($errorMsg == '' ? 'dados faltando!' : $errorMsg);
-        }
-    
-        function insertSabor($db, $ingredientes){
             $nome = $_POST['nome'];
             $nome = strtoupper($nome);
             $tipo = $_POST['tipo'];
@@ -150,21 +142,25 @@
             $result;
             while ($row = $qtd->fetchArray()) { $result = $row; } 
             $qtd = $result['qtd'];
+            $db->exec("delete from saboringrediente where sabor = ".$_GET['codigo']);
             for($c = 1; $c <= $qtd; $c++){
                 if(isset($_POST["ingr$c"])){
                     $ingredientes[] = $_POST["ingr$c"];
                 }
             }
-            $db->exec("insert into sabor (nome, tipo) values ('".$nome."', '".$tipo."')");
-            $saborId = $db->lastInsertRowID();
+            $db->exec("update sabor set nome = '".$nome."', tipo = '".$tipo."' where codigo = ".$_GET['codigo']);
             foreach ($ingredientes as $ingred) {
-                $db->exec("insert into saboringrediente (sabor, ingrediente) values ('".$saborId."', '".$ingred."')");
+                $db->exec("insert into saboringrediente (sabor, ingrediente) values ('".$_GET['codigo']."', '".$ingred."')");
             }
+            header("Refresh:0");
+        }
+        if($erros != 0 && isset($_POST['confirmar']) && $_POST['confirmar'] == 'confirmar'){
+            echo "Erro: ".($errorMsg == '' ? 'dados faltando!' : $errorMsg);
         }
     }
 
     echo "<h1>Alteração de Sabores</h1>";
-    echo "<form id=\"insert\" name=\"insert\" action=\"letraC.php\" method=\"post\">";
+    echo "<form id=\"insert\" name=\"insert\" action=\"letraC.php?codigo=".$_GET['codigo']."\" method=\"post\">";
     echo "<table>";
     echo "<tr>";
     echo "<td>Nome</td>";
@@ -182,13 +178,31 @@
     echo "</select></td></tr><tr>";
     echo "<td>Ingrediente</td><td>";
     echo "<select id=\"ingrediente\" onclick=\"unsetError(this)\">";
-        $ingredientes = $db->query("select * from ingrediente");
-        while ($row = $ingredientes->fetchArray()) { echo "<option id='option".$row['codigo']."' value='{ \"id\": \"".$row['codigo']."\", \"name\": \"".$row['nome']."\" }'\">".$row['nome']."</option>\n"; }
+        $ingredientes = $db->query("select * from ingrediente");  
+        $ingreds = [];
+        foreach ($saboringrediente as $value) {
+            $ingreds[] = $value[0];
+        }
+        while ($row = $ingredientes->fetchArray()) { 
+            if(!in_array($row['codigo'], $ingreds)){
+                echo "<option id='option".$row['codigo']."' value='{ \"id\": \"".$row['codigo']."\", \"name\": \"".$row['nome']."\" }'\">".$row['nome']."</option>\n"; 
+            }
+        }
     echo "</select>";
     echo "<input type=\"button\" id=\"addIngrediente\" onclick=\"addIngr()\" value=\"+\"/>";
     echo "</td></tr><tr>";
     echo "<td>Ingredientes</td>";
     echo "<td><table id=\"tableIngr\" border=\"1\" name=\"tableIngr\">";
+    foreach ($saboringrediente as $value) {
+        echo "<tr id=\"row".$value['codigo']."\">
+                <td>".$value['nome']."
+                    <input type=\"hidden\" value=\"".$value['codigo']."\" name=\"ingr".$value['codigo']."\" />
+                </td>
+                <td>
+                    <button onclick=\"removeIngr('".$value['codigo']."', '".$value['nome']."')\">❌</button>
+                </td>
+            </tr>";
+    }
     echo "</table></td></tr></table>";
     echo "<input id=\"confirmar\" type=\"hidden\" name=\"confirmar\" value=\"\">";
     echo "<input type=\"button\" value=\"Confirmar\" onclick=\"valid()\">";
@@ -198,6 +212,15 @@
 <script>
 
 var ingredientes = [];
+document.addEventListener('DOMContentLoaded', (e) => {
+    var table = document.getElementById('tableIngr').childNodes[0];
+    // console.log(table.childNodes[0].childElementCount);
+    for(let c = 0; c <= table.childElementCount-1; c++){
+        var id = table.childNodes[c].id.split('row')[1];
+        ingredientes.push(id);
+    }    
+});
+
 function addIngr(){
     var ingr = document.getElementById('ingrediente').value;
     ingr = JSON.parse(ingr);
@@ -206,6 +229,7 @@ function addIngr(){
     option.remove();
     ingredientes.push(ingr.id);
     table.innerHTML += `<tr id="row${ingr.id}"><td>${ingr.name}<input type="hidden" value="${ingr.id}" name="ingr${ingr.id}" /></td><td><button onclick="removeIngr('${ingr.id}', '${ingr.name}')">❌</button></td></tr>`;
+    console.log(ingredientes);
 }
 function removeIngr(id, name){
     var table = document.getElementById('tableIngr');
@@ -218,6 +242,7 @@ function removeIngr(id, name){
             ingredientes.splice(i, 1); 
         }    
     }
+    console.log(ingredientes);
 }
 function valid(){
     var nome = document.getElementById('nome');
@@ -225,6 +250,7 @@ function valid(){
     var erros = 0;
     console.log(ingredientes);
     if(ingredientes.length === 0){
+        console.log('aqui');
         ingrd.className = 'error';
         erros++;
     }

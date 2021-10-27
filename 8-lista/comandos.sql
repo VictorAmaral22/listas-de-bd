@@ -33,3 +33,6 @@ select ingrediente.codigo, ingrediente.nome from sabor
     join saboringrediente on saboringrediente.sabor = sabor.codigo
     join ingrediente on saboringrediente.ingrediente = ingrediente.codigo
 where sabor.codigo = 1;
+
+delete from saboringrediente where sabor = 1;
+update sabor set nome = 'NIGÉRIA', tipo = 2 where codigo = 1;

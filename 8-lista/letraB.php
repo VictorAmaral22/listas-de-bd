@@ -117,7 +117,6 @@
         }
     }
     if($erros === 0 && $_POST['confirmar'] == 'confirmar'){
-        echo "salve";
         insertSabor($db, $ingredientes);
     }
     if($erros != 0 && isset($_POST['confirmar']) && $_POST['confirmar'] == 'confirmar'){
