@@ -36,3 +36,34 @@ where sabor.codigo = 1;
 
 delete from saboringrediente where sabor = 1;
 update sabor set nome = 'NIGÉRIA', tipo = 2 where codigo = 1;
+
+select comanda.numero as comanda, case 
+            when strftime('%w', comanda.data, 'localtime') = '0' then 'Dom'
+            when strftime('%w', comanda.data, 'localtime') = '1' then 'Seg'
+            when strftime('%w', comanda.data, 'localtime') = '2' then 'Ter'
+            when strftime('%w', comanda.data, 'localtime') = '3' then 'Qua'
+            when strftime('%w', comanda.data, 'localtime') = '4' then 'Qui'
+            when strftime('%w', comanda.data, 'localtime') = '5' then 'Sex'
+            when strftime('%w', comanda.data, 'localtime') = '6' then 'Sáb'
+        end as semana, strftime('%d/%m/%Y', comanda.data, 'localtime') as data, mesa.nome as mesa, tmp1.qtdPizzas as pizzas, tmp2.total as valor, comanda.pago as pago from comanda
+    join mesa on comanda.mesa = mesa.codigo
+	left join (
+		select comanda.numero as comanda, count(*) as qtdPizzas from comanda
+			join pizza on comanda.numero = pizza.comanda
+		group by comanda) as tmp1 on tmp1.comanda = comanda.numero
+	left join (
+		select tmp.numero as comanda, sum(tmp.preco) as total from
+			(select comanda.numero, pizza.codigo,
+				max(case
+						when borda.preco is null then 0
+						else borda.preco
+					end+precoportamanho.preco) as preco
+			from comanda
+				join pizza on pizza.comanda = comanda.numero
+				join pizzasabor on pizzasabor.pizza = pizza.codigo
+				join sabor on pizzasabor.sabor = sabor.codigo
+				join precoportamanho on precoportamanho.tipo = sabor.tipo and precoportamanho.tamanho = pizza.tamanho
+				left join borda on pizza.borda = borda.codigo
+			group by comanda.numero, pizza.codigo) as tmp
+			join comanda on comanda.numero = tmp.numero
+		group by tmp.numero) as tmp2 on tmp2.comanda = comanda.numero;

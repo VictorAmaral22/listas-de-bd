@@ -1,4 +1,11 @@
 Pra consertar:
 
+A)
+    - Falta excluir sabor
+
 B)
-    - não consegue converter letras com acento.
+    - Não consegue converter letras com acento.
+
+D)
+    - Order de data tá errado
+    - Paginar a paginação ksks
