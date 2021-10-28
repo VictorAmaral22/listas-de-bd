@@ -8,8 +8,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<a href="./letraA.php">↩ Voltar</a><br>
-
 <?php
     // var_dump($_POST);
     $db = new SQLite3("pizzaria.db");
@@ -184,8 +182,10 @@
     <input type="button" value="Confirmar" onclick="valid()">
 </form>
 
-<script>
+<br>
+<button><a href="letraA.php" class="link">Voltar</a></button>
 
+<script>
 var ingredientes = [];
 function addIngr(){
     var ingr = document.getElementById('ingrediente').value;
@@ -239,8 +239,6 @@ function valid(){
 function unsetError(self){
     self.className = '';
 }
-
 </script>
-
 </body>
 </html>

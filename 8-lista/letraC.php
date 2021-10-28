@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<a href="./letraA.php">↩ Voltar</a><br>
 
 <?php
     // var_dump($_POST);
@@ -209,8 +208,10 @@
     echo "</form>";
 ?>
 
-<script>
+<br>
+<button><a href="letraA.php" class="link">Voltar</a></button>
 
+<script>
 var ingredientes = [];
 document.addEventListener('DOMContentLoaded', (e) => {
     var table = document.getElementById('tableIngr').childNodes[0];

@@ -4,6 +4,8 @@ select sabor.codigo as codigo, sabor.nome as sabor, tipo.nome as tipo, group_con
     join ingrediente on saboringrediente.ingrediente = ingrediente.codigo
 group by sabor.codigo;
 
+select codigo from sabor;
+
 select count(*) as total from (
     select * from sabor
         join tipo on sabor.tipo = tipo.codigo
@@ -34,9 +36,11 @@ select ingrediente.codigo, ingrediente.nome from sabor
     join ingrediente on saboringrediente.ingrediente = ingrediente.codigo
 where sabor.codigo = 1;
 
+
 delete from saboringrediente where sabor = 1;
 update sabor set nome = 'NIGÉRIA', tipo = 2 where codigo = 1;
 
+-- D)
 select comanda.numero as comanda, case 
             when strftime('%w', comanda.data, 'localtime') = '0' then 'Dom'
             when strftime('%w', comanda.data, 'localtime') = '1' then 'Seg'

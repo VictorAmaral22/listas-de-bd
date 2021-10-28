@@ -89,7 +89,7 @@ while ($row = $results->fetchArray()) {
 	echo "<td>".$row["sabor"]."</td>\n";
 	echo "<td>".$row["tipo"]."</td>\n";
 	echo "<td>".$row["ingredientes"]."</td>\n";
-	echo "<td><a href=\"delete.php?codigo=".$row["codigo"]."\" onclick=\"return(confirm('Excluir ".$row["sabor"]."?'));\">&#x1F5D1;</a></td>\n";
+	echo "<td><a href=\"excluir.php?codigo=".$row["codigo"]."\" onclick=\"return(confirm('Excluir ".$row["sabor"]."?'));\">&#x1F5D1;</a></td>\n";
 	echo "</tr>\n";
 }
 
@@ -102,6 +102,9 @@ for ($page = 0; $page < ceil($total/$limit); $page++) {
 
 $db->close();
 ?>
+<br>
+<br>
+<button><a href="index.html" class="link">Voltar</a></button>
 <script>
 function validSearch(){
 	let valor = document.getElementById('valor');

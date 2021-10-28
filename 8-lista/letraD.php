@@ -170,6 +170,9 @@ for ($page = 0; $page < ceil($total/$limit); $page++) {
 
 $db->close();
 ?>
+<br>
+<br>
+<button><a href="index.html" class="link">Voltar</a></button>
 <script>
 function validSearch(){
 	let valor = document.getElementById('valor');

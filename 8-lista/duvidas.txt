@@ -5,6 +5,7 @@ A)
 
 B)
     - Não consegue converter letras com acento.
+    Barrar no front e back
 
 D)
     - Order de data tá errado
