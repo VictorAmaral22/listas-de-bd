@@ -1,11 +1,12 @@
 Pra consertar:
 
 A)
-    - Falta excluir sabor
+
 
 B)
     - Não consegue converter letras com acento.
     Barrar no front e back
+    - Mostrar response do sabor adicionado
 
 D)
     - Order de data tá errado

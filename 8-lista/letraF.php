@@ -9,6 +9,6 @@
 </head>
 <body>
     <br>
-    <button><a href="letraA.php" class="link">Voltar</a></button>
+    <button><a href="letraD.php" class="link">Voltar</a></button>
 </body>
 </html>

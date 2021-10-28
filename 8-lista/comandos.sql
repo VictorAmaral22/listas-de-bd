@@ -42,14 +42,14 @@ update sabor set nome = 'NIGÉRIA', tipo = 2 where codigo = 1;
 
 -- D)
 select comanda.numero as comanda, case 
-            when strftime('%w', comanda.data, 'localtime') = '0' then 'Dom'
-            when strftime('%w', comanda.data, 'localtime') = '1' then 'Seg'
-            when strftime('%w', comanda.data, 'localtime') = '2' then 'Ter'
-            when strftime('%w', comanda.data, 'localtime') = '3' then 'Qua'
-            when strftime('%w', comanda.data, 'localtime') = '4' then 'Qui'
-            when strftime('%w', comanda.data, 'localtime') = '5' then 'Sex'
-            when strftime('%w', comanda.data, 'localtime') = '6' then 'Sáb'
-        end as semana, strftime('%d/%m/%Y', comanda.data, 'localtime') as data, mesa.nome as mesa, tmp1.qtdPizzas as pizzas, tmp2.total as valor, comanda.pago as pago from comanda
+            when strftime('%w', comanda.data) = '0' then 'Dom'
+            when strftime('%w', comanda.data) = '1' then 'Seg'
+            when strftime('%w', comanda.data) = '2' then 'Ter'
+            when strftime('%w', comanda.data) = '3' then 'Qua'
+            when strftime('%w', comanda.data) = '4' then 'Qui'
+            when strftime('%w', comanda.data) = '5' then 'Sex'
+            when strftime('%w', comanda.data) = '6' then 'Sáb'
+        end as semana, strftime('%d/%m/%Y', comanda.data) as data, mesa.nome as mesa, tmp1.qtdPizzas as pizzas, tmp2.total as valor, comanda.pago as pago from comanda
     join mesa on comanda.mesa = mesa.codigo
 	left join (
 		select comanda.numero as comanda, count(*) as qtdPizzas from comanda

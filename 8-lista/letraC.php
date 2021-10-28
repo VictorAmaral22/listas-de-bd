@@ -38,34 +38,7 @@
         $errorMsg = '';
         if(isset($_POST['nome']) && isset($_POST['tipo'])){
             $nome = $_POST['nome'];
-            $nome = strtoupper($nome);
-            // for($c = 0; $c < strlen($nome); $c++) {
-            //     switch ($nome[$c]) {
-            //         case 'Ã': { $nome[$c] = 'A'; break; } 
-            //         case 'Â': { $nome[$c] = 'A'; break; } 
-            //         case 'Á': { $nome[$c] = 'A'; break; } 
-            //         case 'À': { $nome[$c] = 'A'; break; } 
-            //         case 'Ä': { $nome[$c] = 'A'; break; } 
-            //         case 'É': { $nome[$c] = 'E'; break; } 
-            //         case 'È': { $nome[$c] = 'E'; break; } 
-            //         case 'Ê': { $nome[$c] = 'E'; break; } 
-            //         case 'Ë': { $nome[$c] = 'E'; break; } 
-            //         case 'Í': { $nome[$c] = 'I'; break; } 
-            //         case 'Ì': { $nome[$c] = 'I'; break; } 
-            //         case 'Î': { $nome[$c] = 'I'; break; } 
-            //         case 'Ï': { $nome[$c] = 'I'; break; } 
-            //         case 'Ó': { $nome[$c] = 'O'; break; } 
-            //         case 'Ò': { $nome[$c] = 'O'; break; } 
-            //         case 'Õ': { $nome[$c] = 'O'; break; } 
-            //         case 'Ô': { $nome[$c] = 'O'; break; } 
-            //         case 'Ö': { $nome[$c] = 'O'; break; } 
-            //         case 'Ú': { $nome[$c] = 'U'; break; } 
-            //         case 'Ù': { $nome[$c] = 'U'; break; } 
-            //         case 'Û': { $nome[$c] = 'U'; break; } 
-            //         case 'Ü': { $nome[$c] = 'U'; break; } 
-            //         case 'Ç': { $nome[$c] = 'C'; break; }
-            //     }
-            // }        
+            $nome = strtoupper($nome);       
             $tipo = $_POST['tipo'];
             $nomesCadast = $db->query("select codigo, nome from sabor");
             $tiposCadast = $db->query("select codigo from tipo");
@@ -83,7 +56,7 @@
                 $erros++;
                 $errorMsg .= 'nome inválido; ';
             }
-            if(!preg_match('#^([a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?(( [a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?)+$#', $nome)){
+            if(!preg_match('#^([a-zA-Z]+)?(( [a-zA-Z]+)?)+$#', $nome)){
                 $erros++;
                 $errorMsg .= 'nome inválido; ';
             }
@@ -269,6 +242,85 @@ function valid(){
         var confirm = document.getElementById('confirmar');
         confirm.value = 'confirmar';
         var form = document.getElementById('insert');
+        var inputNome = form.nome.value;
+        inputNome = inputNome.toUpperCase();
+        inputNome = inputNome.split('');
+        for(let c = 0; c < inputNome.length; c++) {
+            switch (inputNome[c]) {
+                case 'Ã':  
+                    inputNome[c] = 'A'; 
+                    break;
+                case 'Â':  
+                    inputNome[c] = 'A'; 
+                    break;
+                case 'Á':  
+                    inputNome[c] = 'A'; 
+                    break;
+                case 'À':  
+                    inputNome[c] = 'A'; 
+                    break;
+                case 'Ä':  
+                    inputNome[c] = 'A'; 
+                    break;
+                case 'É':  
+                    inputNome[c] = 'E'; 
+                    break;
+                case 'È':  
+                    inputNome[c] = 'E'; 
+                    break;
+                case 'Ê':  
+                    inputNome[c] = 'E'; 
+                    break;
+                case 'Ë':  
+                    inputNome[c] = 'E'; 
+                    break;
+                case 'Í':  
+                    inputNome[c] = 'I'; 
+                    break;
+                case 'Ì':  
+                    inputNome[c] = 'I'; 
+                    break;
+                case 'Î':  
+                    inputNome[c] = 'I'; 
+                    break;
+                case 'Ï':  
+                    inputNome[c] = 'I'; 
+                    break;
+                case 'Ó':  
+                    inputNome[c] = 'O'; 
+                    break;
+                case 'Ò':  
+                    inputNome[c] = 'O'; 
+                    break;
+                case 'Õ':  
+                    inputNome[c] = 'O'; 
+                    break;
+                case 'Ô':  
+                    inputNome[c] = 'O'; 
+                    break;
+                case 'Ö':  
+                    inputNome[c] = 'O'; 
+                    break;
+                case 'Ú':  
+                    inputNome[c] = 'U'; 
+                    break;
+                case 'Ù':  
+                    inputNome[c] = 'U'; 
+                    break;
+                case 'Û':  
+                    inputNome[c] = 'U'; 
+                    break;
+                case 'Ü':  
+                    inputNome[c] = 'U'; 
+                    break;
+                case 'Ç': 
+                     inputNome[c] = 'C';
+                     break
+            }
+        }
+        inputNome = inputNome.join('');
+        console.log(inputNome);
+        form.nome.value = inputNome;
         form.submit();
     } else {
         alert('Dados inválidos!');

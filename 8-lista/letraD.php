@@ -58,15 +58,15 @@ echo "<td><a href=\"letraE.php\">➕</a></td>\n";
 echo "<td><b>Número</b> <a href=\"".url("orderby", "comanda+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "comanda+desc")."\">&#x25B4;</a></td>\n";
 echo "<td><b>Data</b> <a href=\"".url("orderby", "data+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "data+desc")."\">&#x25B4;</a></td>\n";
 echo "<td><b>Mesa</b> <a href=\"".url("orderby", "mesa+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "mesa+desc")."\">&#x25B4;</a></td>\n";
-echo "<td><b>Pizzas</b> <a href=\"".url("orderby", "pizzas+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "pizzas+desc")."\">&#x25B4;</a></td>\n";
+echo "<td colspan=\"2\"><b>Pizzas</b> <a href=\"".url("orderby", "pizzas+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "pizzas+desc")."\">&#x25B4;</a></td>\n";
 echo "<td><b>Valor</b> <a href=\"".url("orderby", "valor+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "valor+desc")."\">&#x25B4;</a></td>\n";
-echo "<td><b>Pago</b> <a href=\"".url("orderby", "pago+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "pago+desc")."\">&#x25B4;</a></td>\n";
+echo "<td colspan=\"3\"><b>Pago</b> <a href=\"".url("orderby", "pago+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "pago+desc")."\">&#x25B4;</a></td>\n";
 echo "<td></td>\n";
 echo "</tr>\n";
 
 $where = array();
 if (isset($_GET["comanda"])) $where[] = "comanda.numero like '%".strtr($_GET["comanda"], " ", "%")."%'";
-if (isset($_GET["data"])) $where[] = "strftime('%d/%m/%Y', comanda.data, 'localtime') like '%".strtr($_GET["data"], " ", "%")."%'";
+if (isset($_GET["data"])) $where[] = "strftime('%d/%m/%Y', comanda.data) like '%".strtr($_GET["data"], " ", "%")."%'";
 if (isset($_GET["mesa"])) $where[] = "mesa.nome like '%".strtr($_GET["mesa"], " ", "%")."%'";
 if (isset($_GET["pizzas"])) $where[] = "tmp1.qtdPizzas like '%".strtr($_GET["pizzas"], " ", "%")."%'";
 if (isset($_GET["valor"])) $where[] = "tmp2.total like '%".strtr($_GET["valor"], " ", "%")."%'";
@@ -75,14 +75,14 @@ $where = (count($where) > 0) ? "where ".implode(" and ", $where) : "";
 
 $total = $db->query("select count(*) as total from 
 	(select comanda.numero as comanda, case 
-            when strftime('%w', comanda.data, 'localtime') = '0' then 'Dom'
-            when strftime('%w', comanda.data, 'localtime') = '1' then 'Seg'
-            when strftime('%w', comanda.data, 'localtime') = '2' then 'Ter'
-            when strftime('%w', comanda.data, 'localtime') = '3' then 'Qua'
-            when strftime('%w', comanda.data, 'localtime') = '4' then 'Qui'
-            when strftime('%w', comanda.data, 'localtime') = '5' then 'Sex'
-            when strftime('%w', comanda.data, 'localtime') = '6' then 'Sáb'
-        end as semana, strftime('%d/%m/%Y', comanda.data, 'localtime') as data, mesa.nome as mesa, tmp1.qtdPizzas as pizzas, tmp2.total as valor, comanda.pago as pago from comanda
+            when strftime('%w', comanda.data) = '0' then 'Dom'
+            when strftime('%w', comanda.data) = '1' then 'Seg'
+            when strftime('%w', comanda.data) = '2' then 'Ter'
+            when strftime('%w', comanda.data) = '3' then 'Qua'
+            when strftime('%w', comanda.data) = '4' then 'Qui'
+            when strftime('%w', comanda.data) = '5' then 'Sex'
+            when strftime('%w', comanda.data) = '6' then 'Sáb'
+        end as semana, strftime('%d/%m/%Y', comanda.data) as data, mesa.nome as mesa, tmp1.qtdPizzas as pizzas, tmp2.total as valor, comanda.pago as pago from comanda
     join mesa on comanda.mesa = mesa.codigo
 	left join (
 		select comanda.numero as comanda, count(*) as qtdPizzas from comanda
@@ -114,14 +114,14 @@ $offset = $offset-($offset%$limit);
 
 $results = $db->query("
 select comanda.numero as comanda, case 
-		when strftime('%w', comanda.data, 'localtime') = '0' then 'Dom'
-		when strftime('%w', comanda.data, 'localtime') = '1' then 'Seg'
-		when strftime('%w', comanda.data, 'localtime') = '2' then 'Ter'
-		when strftime('%w', comanda.data, 'localtime') = '3' then 'Qua'
-		when strftime('%w', comanda.data, 'localtime') = '4' then 'Qui'
-		when strftime('%w', comanda.data, 'localtime') = '5' then 'Sex'
-		when strftime('%w', comanda.data, 'localtime') = '6' then 'Sáb'
-	end as semana, strftime('%d/%m/%Y', comanda.data, 'localtime') as data, mesa.nome as mesa, tmp1.qtdPizzas as pizzas, tmp2.total as valor, comanda.pago as pago from comanda
+		when strftime('%w', comanda.data) = '0' then 'Dom'
+		when strftime('%w', comanda.data) = '1' then 'Seg'
+		when strftime('%w', comanda.data) = '2' then 'Ter'
+		when strftime('%w', comanda.data) = '3' then 'Qua'
+		when strftime('%w', comanda.data) = '4' then 'Qui'
+		when strftime('%w', comanda.data) = '5' then 'Sex'
+		when strftime('%w', comanda.data) = '6' then 'Sáb'
+	end as semana, strftime('%d/%m/%Y', comanda.data) as data, mesa.nome as mesa, tmp1.qtdPizzas as pizzas, tmp2.total as valor, comanda.pago as pago from comanda
 join mesa on comanda.mesa = mesa.codigo
 left join (
 	select comanda.numero as comanda, count(*) as qtdPizzas from comanda
@@ -150,14 +150,17 @@ offset $offset");
 
 while ($row = $results->fetchArray()) {
 	echo "<tr>\n";
-	echo "<td><a href=\"letraF.php?comanda=".$row["comanda"]."\">✏️</a></td>\n";
+	echo "<td>".($row["pago"] ? "" : "<a href=\"letraF.php?comanda=".$row["comanda"]."\">✏️</a>")."</td>\n";
 	echo "<td>".$row["comanda"]."</td>\n";
 	echo "<td>".$row["semana"]." ".$row["data"]."</td>\n";
 	echo "<td>".$row["mesa"]."</td>\n";
 	echo "<td>".$row["pizzas"]."</td>\n";
-	echo "<td>".$row["valor"]."</td>\n";
-	echo "<td>".$row["pago"]."</td>\n";
-	echo "<td><a href=\"delete.php?comanda=".$row["comanda"]."\" onclick=\"return(confirm('Excluir comanda ".$row["comanda"]."?'));\">&#x1F5D1;</a></td>\n";
+	echo "<td>".($row["pizzas"] ? "<a href=\"letraG.php\">👀</a>" : "")."</td>\n";
+	echo "<td>R$ ".number_format($row["valor"], 2, '.', ',')."</td>\n";
+	echo "<td>".($row["pago"] ? "Sim" : "Não")."</td>\n";
+	echo "<td>".(!$row["pago"] && $row["valor"] ? "💳" : "")."</td>\n";
+	echo "<td>".(!$row["pago"] && $row["valor"] ? "💵" : "")."</td>\n";
+	echo "<td>".(!$row["pago"] && !$row["valor"] ? "<a href=\"delete.php?comanda=".$row["comanda"]."\" onclick=\"return(confirm('Excluir comanda ".$row["comanda"]."?'));\">&#x1F5D1;</a>" : "")."</td>\n";
 	echo "</tr>\n";
 }
 
