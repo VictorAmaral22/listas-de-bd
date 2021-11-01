@@ -71,3 +71,57 @@ select comanda.numero as comanda, case
 			group by comanda.numero, pizza.codigo) as tmp
 			join comanda on comanda.numero = tmp.numero
 		group by tmp.numero) as tmp2 on tmp2.comanda = comanda.numero;
+
+select numero from comanda
+except
+select comanda from pizza group by comanda;
+
+select comanda.numero as comanda, group_concat(pizza.codigo, ', ') as pizzas, comanda.pago as pago from comanda
+	join pizza on comanda.numero = pizza.comanda
+where comanda.pago = 0
+group by comanda.numero;
+
+-- G)
+select count(*) as qtd from pizza where comanda = "1asd";
+
+select case 
+	when pizza.tamanho = "P" then "PEQUENA"
+	when pizza.tamanho = "M" then "MÉDIA"
+	when pizza.tamanho = "G" then "GRANDE"
+	when pizza.tamanho = "F" then "FAMÍLIA"
+	end as tamanho, borda.nome as borda, group_concat(sabor.nome, ', ') as sabores, tmp2.preco as preco, tmp3.total as total, tmp.qtd as qtd
+from pizza 
+	join pizzasabor on pizza.codigo = pizzasabor.pizza
+	join sabor on sabor.codigo = pizzasabor.sabor
+	join (select pizza.comanda as comanda, count(*) as qtd from pizza group by pizza.comanda) as tmp on tmp.comanda = pizza.comanda
+	join (select comanda.numero as comanda, pizza.codigo as pizza,
+			max(case
+					when borda.preco is null then 0
+					else borda.preco
+				end+precoportamanho.preco) as preco
+		from comanda
+			join pizza on pizza.comanda = comanda.numero
+			join pizzasabor on pizzasabor.pizza = pizza.codigo
+			join sabor on pizzasabor.sabor = sabor.codigo
+			join precoportamanho on precoportamanho.tipo = sabor.tipo and precoportamanho.tamanho = pizza.tamanho
+			left join borda on pizza.borda = borda.codigo
+		group by comanda.numero, pizza.codigo) as tmp2 on tmp2.pizza = pizza.codigo
+	join (
+		select tmp.numero as comanda, sum(tmp.preco) as total from
+			(select comanda.numero, pizza.codigo,
+				max(case
+						when borda.preco is null then 0
+						else borda.preco
+					end+precoportamanho.preco) as preco
+			from comanda
+				join pizza on pizza.comanda = comanda.numero
+				join pizzasabor on pizzasabor.pizza = pizza.codigo
+				join sabor on pizzasabor.sabor = sabor.codigo
+				join precoportamanho on precoportamanho.tipo = sabor.tipo and precoportamanho.tamanho = pizza.tamanho
+				left join borda on pizza.borda = borda.codigo
+			group by comanda.numero, pizza.codigo) as tmp
+			join comanda on comanda.numero = tmp.numero
+		group by tmp.numero) as tmp3 on tmp3.comanda = pizza.comanda
+	left join borda on pizza.borda = borda.codigo
+where pizza.comanda = 1
+group by pizza.codigo;

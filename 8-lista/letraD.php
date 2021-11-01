@@ -44,7 +44,7 @@ if (isset($_GET["mesa"])) $value = $_GET["mesa"];
 if (isset($_GET["pizzas"])) $value = $_GET["pizzas"];
 if (isset($_GET["valor"])) $value = $_GET["valor"];
 if (isset($_GET["pago"])) $value = $_GET["pago"];
-echo "<input type=\"text\" id=\"valor\" name=\"valor\" value=\"".$value."\" size=\"20\" pattern=\"\"> \n";
+echo "<input type=\"text\" id=\"valor\" name=\"valor\" value=\"".$value."\" size=\"20\" > \n";
 
 $parameters = array();
 if (isset($_GET["orderby"])) $parameters[] = "orderby=".$_GET["orderby"];
@@ -55,9 +55,9 @@ echo "<br>\n";
 echo "<table border=\"1\">\n";
 echo "<tr>\n";
 echo "<td><a href=\"letraE.php\">➕</a></td>\n";
-echo "<td><b>Número</b> <a href=\"".url("orderby", "comanda+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "comanda+desc")."\">&#x25B4;</a></td>\n";
-echo "<td><b>Data</b> <a href=\"".url("orderby", "data+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "data+desc")."\">&#x25B4;</a></td>\n";
-echo "<td><b>Mesa</b> <a href=\"".url("orderby", "mesa+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "mesa+desc")."\">&#x25B4;</a></td>\n";
+echo "<td><b>Número</b> <a href=\"".url("orderby", "comanda.numero+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "comanda.numero+desc")."\">&#x25B4;</a></td>\n";
+echo "<td><b>Data</b> <a href=\"".url("orderby", "comanda.data+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "comanda.data+desc")."\">&#x25B4;</a></td>\n";
+echo "<td><b>Mesa</b> <a href=\"".url("orderby", "mesa.nome+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "mesa.nome+desc")."\">&#x25B4;</a></td>\n";
 echo "<td colspan=\"2\"><b>Pizzas</b> <a href=\"".url("orderby", "pizzas+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "pizzas+desc")."\">&#x25B4;</a></td>\n";
 echo "<td><b>Valor</b> <a href=\"".url("orderby", "valor+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "valor+desc")."\">&#x25B4;</a></td>\n";
 echo "<td colspan=\"3\"><b>Pago</b> <a href=\"".url("orderby", "pago+asc")."\">&#x25BE;</a> <a href=\"".url("orderby", "pago+desc")."\">&#x25B4;</a></td>\n";
@@ -155,12 +155,12 @@ while ($row = $results->fetchArray()) {
 	echo "<td>".$row["semana"]." ".$row["data"]."</td>\n";
 	echo "<td>".$row["mesa"]."</td>\n";
 	echo "<td>".$row["pizzas"]."</td>\n";
-	echo "<td>".($row["pizzas"] ? "<a href=\"letraG.php\">👀</a>" : "")."</td>\n";
+	echo "<td>".($row["pizzas"] ? "<a href=\"letraG.php?comanda=".$row["comanda"]."\">👀</a>" : "")."</td>\n";
 	echo "<td>R$ ".number_format($row["valor"], 2, '.', ',')."</td>\n";
 	echo "<td>".($row["pago"] ? "Sim" : "Não")."</td>\n";
-	echo "<td>".(!$row["pago"] && $row["valor"] ? "💳" : "")."</td>\n";
-	echo "<td>".(!$row["pago"] && $row["valor"] ? "💵" : "")."</td>\n";
-	echo "<td>".(!$row["pago"] && !$row["valor"] ? "<a href=\"delete.php?comanda=".$row["comanda"]."\" onclick=\"return(confirm('Excluir comanda ".$row["comanda"]."?'));\">&#x1F5D1;</a>" : "")."</td>\n";
+	echo "<td>".(!$row["pago"] && $row["valor"] ? "<a style=\"text-decoration:none\" href=\"pagarComanda.php?comanda=".$row["comanda"]."\" onclick=\"return(confirm('Pagar comanda ".$row["comanda"]." no cartão?'));\">💳</a>" : "")."</td>\n";
+	echo "<td>".(!$row["pago"] && $row["valor"] ? "<a style=\"text-decoration:none\" href=\"pagarComanda.php?comanda=".$row["comanda"]."\" onclick=\"return(confirm('Pagar comanda ".$row["comanda"]." em dinheiro?'));\">💵</a>" : "")."</td>\n";
+	echo "<td>".(!$row["pago"] && !$row["valor"] ? "<a style=\"text-decoration:none\" href=\"excluirComanda.php?comanda=".$row["comanda"]."\" onclick=\"return(confirm('Excluir comanda ".$row["comanda"]."?'));\">&#x1F5D1;</a>" : "")."</td>\n";
 	echo "</tr>\n";
 }
 
@@ -178,7 +178,7 @@ $db->close();
 <button><a href="index.html" class="link">Voltar</a></button>
 <script>
 function validSearch(){
-	let valor = document.getElementById('valor');
+	let valor = document.getElementById('valor').value;
 	let regExp = new RegExp(valor.pattern);
 	if(regExp.test(valor.value)){
 		let value = document.getElementById('valor').value.trim().replace(/ +/g, '+'); 

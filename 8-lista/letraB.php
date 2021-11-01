@@ -89,6 +89,11 @@
     }
     if($erros === 0 && $_POST['confirmar'] == 'confirmar'){
         insertSabor($db, $ingredientes);
+        $host  = $_SERVER['HTTP_HOST'];
+        $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+        $extra = 'incluir.php';
+        header("Location: http://$host$uri/$extra");
+        exit;
     }
     if($erros != 0 && isset($_POST['confirmar']) && $_POST['confirmar'] == 'confirmar'){
         echo "Erro: ".($errorMsg == '' ? 'dados faltando!' : $errorMsg);

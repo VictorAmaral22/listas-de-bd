@@ -1,0 +1,18 @@
+Pra consertar:
+
+A)
+
+B)
+
+C)
+
+D)
+    - Paginar a paginação ksks
+    - Pesquisa precisa passar por validação
+    - Permitir pesquisa por data formatada e por pago com sim e não
+
+E)
+
+F)
+
+G)
