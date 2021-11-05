@@ -11,6 +11,7 @@
 
 <?php
     // var_dump($_POST);
+    echo "<h1>Alteração de Sabores</h1>";
     if (isset($_GET["codigo"])) {
         $db = new SQLite3("pizzaria.db");
         $db->exec("PRAGMA foreign_keys = ON");
@@ -30,7 +31,6 @@
         }
         $sabor = $tmpS[0];
         $saboringrediente = $tmpSI;
-        // print_r($saboringrediente);
         $nome;
         $tipo;
         $ingredientes = [];
@@ -129,56 +129,57 @@
         if($erros != 0 && isset($_POST['confirmar']) && $_POST['confirmar'] == 'confirmar'){
             echo "Erro: ".($errorMsg == '' ? 'dados faltando!' : $errorMsg);
         }
+        echo "<form id=\"insert\" name=\"insert\" action=\"letraC.php?codigo=".$_GET['codigo']."\" method=\"post\">";
+        echo "<table>";
+        echo "<tr>";
+        echo "<td>Nome</td>";
+        echo "<td><input id=\"nome\" type=\"text\" name=\"nome\" value=\"".$sabor['nome']."\" size=\"50\" pattern=\"^([a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?(( [a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?)+$\" onclick=\"unsetError(this)\"></td>";
+        echo "</tr><tr><td>Tipo</td><td>";
+        echo "<select id=\"tipo\" name=\"tipo\">";
+            $tipos = $db->query("select * from tipo");
+            while ($row = $tipos->fetchArray()) { 
+                if($sabor['tipo'] == $row['codigo']){
+                    echo "<option value=\"".$row['codigo']."\" selected>".$row['nome']."</option>\n"; 
+                } else {
+                    echo "<option value=\"".$row['codigo']."\">".$row['nome']."</option>\n"; 
+                }
+            }
+        echo "</select></td></tr><tr>";
+        echo "<td>Ingrediente</td><td>";
+        echo "<select id=\"ingrediente\" onclick=\"unsetError(this)\">";
+            $ingredientes = $db->query("select * from ingrediente");  
+            $ingreds = [];
+            foreach ($saboringrediente as $value) {
+                $ingreds[] = $value[0];
+            }
+            while ($row = $ingredientes->fetchArray()) { 
+                if(!in_array($row['codigo'], $ingreds)){
+                    echo "<option id='option".$row['codigo']."' value='{ \"id\": \"".$row['codigo']."\", \"name\": \"".$row['nome']."\" }'\">".$row['nome']."</option>\n"; 
+                }
+            }
+        echo "</select>";
+        echo "<input type=\"button\" id=\"addIngrediente\" onclick=\"addIngr()\" value=\"+\"/>";
+        echo "</td></tr><tr>";
+        echo "<td>Ingredientes</td>";
+        echo "<td><table id=\"tableIngr\" border=\"1\" name=\"tableIngr\">";
+        foreach ($saboringrediente as $value) {
+            echo "<tr id=\"row".$value['codigo']."\">
+                    <td>".$value['nome']."
+                        <input type=\"hidden\" value=\"".$value['codigo']."\" name=\"ingr".$value['codigo']."\" />
+                    </td>
+                    <td>
+                        <button onclick=\"removeIngr('".$value['codigo']."', '".$value['nome']."')\">❌</button>
+                    </td>
+                </tr>";
+        }
+        echo "</table></td></tr></table>";
+        echo "<input id=\"confirmar\" type=\"hidden\" name=\"confirmar\" value=\"\">";
+        echo "<input type=\"button\" value=\"Confirmar\" onclick=\"valid()\">";
+        echo "</form>";
+    } else {
+        echo "<p>Informe um sabor!</p>";
     }
 
-    echo "<h1>Alteração de Sabores</h1>";
-    echo "<form id=\"insert\" name=\"insert\" action=\"letraC.php?codigo=".$_GET['codigo']."\" method=\"post\">";
-    echo "<table>";
-    echo "<tr>";
-    echo "<td>Nome</td>";
-    echo "<td><input id=\"nome\" type=\"text\" name=\"nome\" value=\"".$sabor['nome']."\" size=\"50\" pattern=\"^([a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?(( [a-zA-ZáàãâäÃÂÁÀÄéèêëÉÈÊËíìîïÍÌÎÏóòõôöÓÒÕÔÖúùûüÚÙÛÜçÇ]+)?)+$\" onclick=\"unsetError(this)\"></td>";
-    echo "</tr><tr><td>Tipo</td><td>";
-    echo "<select id=\"tipo\" name=\"tipo\">";
-        $tipos = $db->query("select * from tipo");
-        while ($row = $tipos->fetchArray()) { 
-            if($sabor['tipo'] == $row['codigo']){
-                echo "<option value=\"".$row['codigo']."\" selected>".$row['nome']."</option>\n"; 
-            } else {
-                echo "<option value=\"".$row['codigo']."\">".$row['nome']."</option>\n"; 
-            }
-        }
-    echo "</select></td></tr><tr>";
-    echo "<td>Ingrediente</td><td>";
-    echo "<select id=\"ingrediente\" onclick=\"unsetError(this)\">";
-        $ingredientes = $db->query("select * from ingrediente");  
-        $ingreds = [];
-        foreach ($saboringrediente as $value) {
-            $ingreds[] = $value[0];
-        }
-        while ($row = $ingredientes->fetchArray()) { 
-            if(!in_array($row['codigo'], $ingreds)){
-                echo "<option id='option".$row['codigo']."' value='{ \"id\": \"".$row['codigo']."\", \"name\": \"".$row['nome']."\" }'\">".$row['nome']."</option>\n"; 
-            }
-        }
-    echo "</select>";
-    echo "<input type=\"button\" id=\"addIngrediente\" onclick=\"addIngr()\" value=\"+\"/>";
-    echo "</td></tr><tr>";
-    echo "<td>Ingredientes</td>";
-    echo "<td><table id=\"tableIngr\" border=\"1\" name=\"tableIngr\">";
-    foreach ($saboringrediente as $value) {
-        echo "<tr id=\"row".$value['codigo']."\">
-                <td>".$value['nome']."
-                    <input type=\"hidden\" value=\"".$value['codigo']."\" name=\"ingr".$value['codigo']."\" />
-                </td>
-                <td>
-                    <button onclick=\"removeIngr('".$value['codigo']."', '".$value['nome']."')\">❌</button>
-                </td>
-            </tr>";
-    }
-    echo "</table></td></tr></table>";
-    echo "<input id=\"confirmar\" type=\"hidden\" name=\"confirmar\" value=\"\">";
-    echo "<input type=\"button\" value=\"Confirmar\" onclick=\"valid()\">";
-    echo "</form>";
 ?>
 
 <br>

@@ -12,7 +12,12 @@ D)
     - Permitir pesquisa por data formatada e por pago com sim e não
 
 E)
+    - Tem que fazer update e não insert da comanda
 
 F)
 
 G)
+
+SQL injection
+
+' or 1 = 1; --

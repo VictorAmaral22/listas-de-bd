@@ -81,6 +81,9 @@ select comanda.numero as comanda, group_concat(pizza.codigo, ', ') as pizzas, co
 where comanda.pago = 0
 group by comanda.numero;
 
+-- E)
+select * from mesa;
+
 -- G)
 select count(*) as qtd from pizza where comanda = "1asd";
 

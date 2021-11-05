@@ -107,7 +107,7 @@ $total = $db->query("select count(*) as total from
 		".$where." )")->fetchArray()["total"];
 
 
-$orderby = (isset($_GET["orderby"])) ? $_GET["orderby"] : "comanda asc";
+$orderby = (isset($_GET["orderby"])) ? $_GET["orderby"] : "comanda.data desc, comanda.numero desc";
 
 $offset = (isset($_GET["offset"])) ? max(0, min($_GET["offset"], $total-1)) : 0;
 $offset = $offset-($offset%$limit);
@@ -167,9 +167,11 @@ while ($row = $results->fetchArray()) {
 echo "</table>\n";
 echo "<br>\n";
 
+echo "<a href=\"".url("offset", 0*$limit)."\">Início</a>";
 for ($page = 0; $page < ceil($total/$limit); $page++) {
 	echo (($offset == $page*$limit) ? ($page+1) : "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a>")." \n";
 }
+echo "<a href=\"".url("offset", (ceil($total/$limit)-1)*$limit)."\">Fim</a>";
 
 $db->close();
 ?>
@@ -178,17 +180,48 @@ $db->close();
 <button><a href="index.html" class="link">Voltar</a></button>
 <script>
 function validSearch(){
-	let valor = document.getElementById('valor').value;
-	let regExp = new RegExp(valor.pattern);
-	if(regExp.test(valor.value)){
-		let value = document.getElementById('valor').value.trim().replace(/ +/g, '+'); 
+	let valor = document.getElementById('valor');
+	let campo = document.getElementById('campo').value;
+	
+	if(campo == "comanda"){
+		let regExp = new RegExp('^[0-9]+$');
+		if(regExp.test(valor.value)){
+			let value = document.getElementById('valor').value.trim().replace(/ +/g, '+'); 
+			let result = '".strtr(implode("&", $parameters), " ", "+")."'; 
+			result = ((value != '') ? document.getElementById('campo').value+'='+value+((result != '') ? '&' : '') : '')+result; 
+			location.href= 'letraD.php'+((result != '') ? '?' : '')+result;
+		} else {
+			alert('Digite apenas números!');
+			valor.className = 'error';
+		}
+	}
+	if(campo == "data"){
+		let regExp = new RegExp('^(Seg|Ter|Quar|Qui|Sex|Sáb|Dom)?( )?([0-9]{2}/[0-9]{2}/[0-9]{4})?$', 'i');
+		if(regExp.test(valor.value)){
+			let value = document.getElementById('valor').value.trim().replace(/ +/g, '+'); 
+			let result = '".strtr(implode("&", $parameters), " ", "+")."'; 
+			result = ((value != '') ? document.getElementById('campo').value+'='+value+((result != '') ? '&' : '') : '')+result; 
+			location.href= 'letraD.php'+((result != '') ? '?' : '')+result;
+		} else {
+			alert('Digite apenas números!');
+			valor.className = 'error';
+		}
+	}
+	if(campo == "mesa"){}
+	if(campo == "pizzas"){}
+	if(campo == "valor"){}
+	if(campo == "pago"){
+		let value = document.getElementById('valor').value;
 		let result = '".strtr(implode("&", $parameters), " ", "+")."'; 
-		result = ((value != '') ? document.getElementById('campo').value+'='+value+((result != '') ? '&' : '') : '')+result; 
+		value = value.trim().toLowerCase();
+		if(value == 'sim'){
+			result = ((value != '') ? document.getElementById('campo').value+'='+'1'+((result != '') ? '&' : '') : '')+result; 
+		}
+		if(value == 'não'){
+			result = ((value != '') ? document.getElementById('campo').value+'='+'0'+((result != '') ? '&' : '') : '')+result; 
+		}
 		location.href= 'letraD.php'+((result != '') ? '?' : '')+result;
-	} else {
-		alert('Faça uma pesquisa válida!');
-		valor.className = 'error';
-	}	
+	}
 }
 </script>
 </body>
