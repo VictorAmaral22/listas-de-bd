@@ -60,12 +60,11 @@ function validTime($hora){
 
 if (isset($_POST["confirmar"]) && $_POST["confirmar"] == 'confirmar') {
 	$error = "";
-	if(!isset($_POST['mesa']) || !isset($_POST['numero']) || !isset($_POST['data'])){
+	if(!isset($_POST['mesa']) || !isset($_POST['numero'])){
 		$error .= 'Campos faltando; ';
 	}
 	$mesa = $_POST['mesa'];
 	$numero = $_POST['numero'];
-	$data = $_POST['data'];
 	
 	if($mesa == "" || $mesa === null){
 		$error .= 'Mesa não informada; ';
@@ -85,36 +84,13 @@ if (isset($_POST["confirmar"]) && $_POST["confirmar"] == 'confirmar') {
 		$tmp3 = [];
 		while($row = $comandas->fetchArray()){ $tmp3[] = $row[0]; }
 		$comandas = $tmp3;
-		if(in_array($numero, $comandas)){
-			$error .= 'Esta comanda já existe; ';
+		if(!in_array($numero, $comandas)){
+			$error .= 'Esta comanda não existe; ';
 		}
 	}
-	if($data == "" || $data === null){
-		$error .= 'Data não informada; ';
-	} else {
-		if(!preg_match('#^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$#', $data)){
-			$error .= 'Data inválida; ';
-		} else {
-			$dateNow = date('d/m/y H:i:s');
-			$dateC = explode(' ', $data);
-			$dateC[0] = explode('-', $dateC[0]);
-			$dateC[1] = explode(':', $dateC[1]);
-			$okData = validData($dateC[0]);
-			$okHora = validTime($dateC[1]);
-			if(!$okData || !$okHora){
-				$error .= 'Data inválida; ';
-			}
-			if($okData && $okHora) {
-				$dateC = date("d/m/y H:i:s", mktime($dateC[1][0], $dateC[1][1], $dateC[1][2], $dateC[0][1], $dateC[0][2], $dateC[0][0]));
-				if(strtotime($dateNow) < strtotime($dateC)){
-					$error .= 'Data inválida; ';
-				}
-			}
-		}
-	}
-	
+		
 	if ($error == "") {
-		$db->exec("insert into comanda (numero, mesa, data) values ('".$numero."', '".$mesa."', '".$data."')");
+		$db->exec("update comanda set mesa = ".$mesa." where numero = ".$numero);
 		$host  = $_SERVER['HTTP_HOST'];
         $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
         $extra = 'incluirComanda.php';
@@ -124,47 +100,38 @@ if (isset($_POST["confirmar"]) && $_POST["confirmar"] == 'confirmar') {
 		echo "<font color=\"red\">".$error."</font>";
 	}
 }
+$updated = $db->changes();
+echo $updated;
 
-$ultimaComanda = $db-> query("select numero from comanda order by numero desc limit 1"); 
+$db->exec("insert into comanda (mesa) values (1)");
+$comandaId = $db->lastInsertRowID();
+$ultimaComanda = $db-> query("select numero, strftime('%d/%m/%Y', data, 'localtime') as data, 
+	case 
+		when strftime('%w', comanda.data, 'localtime') = '0' then 'Dom'
+		when strftime('%w', comanda.data, 'localtime') = '1' then 'Seg'
+		when strftime('%w', comanda.data, 'localtime') = '2' then 'Ter'
+		when strftime('%w', comanda.data, 'localtime') = '3' then 'Qua'
+		when strftime('%w', comanda.data, 'localtime') = '4' then 'Qui'
+		when strftime('%w', comanda.data, 'localtime') = '5' then 'Sex'
+		when strftime('%w', comanda.data, 'localtime') = '6' then 'Sáb'
+	end as semana from comanda where numero =".$comandaId); 
 $tmp;
-while ($row = $ultimaComanda->fetchArray()) { $tmp = $row[0]; }
+while ($row = $ultimaComanda->fetchArray()) { $tmp = $row; }
 $ultimaComanda = $tmp;
-$hoje = date('d/m/Y', mktime(date("H"), date("i"), date("s"), date("m"), date("d"), date("Y"))); 
-$diaSemana = date("l", mktime(date("H"), date("i"), date("s"), date("m"), date("d"), date("Y")));
-switch ($diaSemana) {
-	case 'Monday':
-		$diaSemana = 'Seg';
-		break;
-	case 'Tuesday':
-		$diaSemana = 'Ter';
-		break;
-	case 'Wednesday':
-		$diaSemana = 'Qua';
-		break;
-	case 'Thursday':
-		$diaSemana = 'Qui';
-		break;
-	case 'Friday':
-		$diaSemana = 'Sex';
-		break;
-	case 'Saturday':
-		$diaSemana = 'Sáb';
-		break;
-	case 'Sunday':
-		$diaSemana = 'Dom';
-		break;
-}
+$data = $ultimaComanda[1];
+$diaSemana = $ultimaComanda[2];
+var_dump($_POST);
 
 echo "<h1>Inclusão de Comandas</h1>\n";
 echo "<form id=\"comanda\" name=\"comanda\" action=\"letraE.php?\" method=\"post\">";
 echo "<table>";
 echo "<tr>";
 echo "<td>Número</td>";
-echo "<td>".($ultimaComanda+1)."</td>";
+echo "<td>".($ultimaComanda[0])."</td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td>Data</td>";
-echo "<td>".$diaSemana." ".$hoje."</td>";
+echo "<td>".$diaSemana." ".$data."</td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td>Mesa</td>";
@@ -174,17 +141,16 @@ while ($row = $mesas->fetchArray()) { echo "<option id='option".$row['codigo']."
 echo "</select></td>";
 echo "</tr>";
 echo "</table>";
-echo "<input id=\"numero\" type=\"hidden\" name=\"numero\" value=\"".($ultimaComanda+1)."\" >";
-echo "<input id=\"data\" type=\"hidden\" name=\"data\" value=\"".(date('Y-m-d H:i:s', mktime(date("H"), date("i"), date("s"), date("m"), date("d"), date("Y"))))."\" >";
+echo "<input id=\"numero\" type=\"hidden\" name=\"numero\" value=\"".$ultimaComanda[0]."\" >";
 echo "<input id=\"confirmar\" type=\"hidden\" name=\"confirmar\" value=\"confirmar\">";
 echo "<input type=\"button\" value=\"Inclui\" onclick=\"valid()\">";
 echo "</form>";
 
+echo "<br>";
+echo "<button onclick=\"\"><a href=\"letraD.php\" class=\"link\">Voltar</a></button>";
+
 $db->close();
 ?>
-
-<br>
-<button><a href="letraD.php" class="link">Voltar</a></button>
 
 <!-- validação js front -->
 <script>

@@ -12,7 +12,8 @@ D)
     - Permitir pesquisa por data formatada e por pago com sim e não
 
 E)
-    - Tem que fazer update e não insert da comanda
+    - Ao sair da página, se ele n tiver feito o update, tem que excluir a comanda.
+    O mesmo se houver um refresh.
 
 F)
 
