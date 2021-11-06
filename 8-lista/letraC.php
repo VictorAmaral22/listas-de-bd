@@ -90,9 +90,13 @@
                     if(!in_array($_POST["ingr$c"], $ingrCadast)){
                         $erros++;
                         $errorMsg .= "ingrediente $c não cadastrado; ";
-                        $listaIngr[] = 'error';
                     } else {
-                        $listaIngr[] = $_POST["ingr$c"];
+                        if(in_array($_POST["ingr$c"], $listaIngr)){
+                            $erros++;
+                            $errorMsg .= "ingrediente $c repetido; ";                            
+                        } else {
+                            $listaIngr[] = $_POST["ingr$c"];
+                        }
                     }
                 }
                 if($c == $qtdI && $listaIngr == []){

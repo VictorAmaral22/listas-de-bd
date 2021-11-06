@@ -12,17 +12,21 @@
 if (isset($_GET["comanda"])) {
 	$db = new SQLite3("pizzaria.db");
 	$db->exec("PRAGMA foreign_keys = ON");
-	$numero = $db->query("select numero from comanda except select comanda from pizza group by comanda");
-    $tmp = [];
-    while($row = $numero->fetchArray()){
-        $tmp[] = $row[0];
-    }
-    $numero = $tmp;
-    if(in_array($_GET['comanda'], $numero)){
-        echo "Comanda excluída!";
-        $db->exec("delete from comanda where numero = ".$_GET["comanda"]);
+    if(!preg_match('#^[0-9]+$#', $_GET['comanda'])){
+        echo "Digite somente números!";
     } else {
-        echo "Comanda inexistente ou inválida!";
+        $numero = $db->query("select numero from comanda except select comanda from pizza group by comanda");
+        $tmp = [];
+        while($row = $numero->fetchArray()){
+            $tmp[] = $row[0];
+        }
+        $numero = $tmp;
+        if(in_array($_GET['comanda'], $numero)){
+            echo "Comanda excluída!";
+            $db->exec("delete from comanda where numero = ".$_GET["comanda"]);
+        } else {
+            echo "Comanda inexistente ou inválida!";
+        }
     }
 	$db->close();
 }

@@ -211,14 +211,73 @@ if(count($errosUrl) != 0){
 	echo "</table>\n";
 	echo "<br>\n";
 	
-	echo "<a href=\"".url("offset", 0*$limit)."\">Início</a>";
+	echo "<a href=\"".url("offset", 0*$limit)."\">Início</a>\n";
 	for ($page = 0; $page < ceil($total/$limit); $page++) {
-		echo (($offset == $page*$limit) ? ($page+1) : "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a>")." \n";
+		if(($offset == ($page+38)*$limit)){
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page+33)*$limit)){
+			echo "...\n";
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page+18)*$limit)){
+			echo "...\n";
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page+13)*$limit) && $page > 0){
+			echo "...\n";
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page+8)*$limit) && $page > 0){
+			echo "...\n";
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+			echo "...\n";
+		}
+		if($offset == ($page+3)*$limit){
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page+2)*$limit)){
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page+1)*$limit)){
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page)*$limit)){
+			echo ($page+1)."\n";
+		}
+		if(($offset == ($page-1)*$limit)){
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page-2)*$limit)){
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page-3)*$limit)){
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page-8)*$limit)){
+			echo "...\n";
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page-13)*$limit)){
+			echo "...\n";
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page-18)*$limit)){
+			echo "...\n";
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+		}
+		if(($offset == ($page-33)*$limit)){
+			echo "...\n";
+			echo "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a> \n";
+			echo "...\n";
+		}
+		// echo (($offset == $page*$limit) ? ($page+1) : "<a href=\"".url("offset", $page*$limit)."\">".($page+1)."</a>")." \n";
 	}
 	echo "<a href=\"".url("offset", (ceil($total/$limit)-1)*$limit)."\">Fim</a>";
 }
 $db->close();
 ?>
+<br>
 <br>
 <button><a href="index.html" class="link">Voltar</a></button>
 <script>

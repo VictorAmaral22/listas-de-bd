@@ -12,19 +12,25 @@
 if (isset($_GET["codigo"])) {
 	$db = new SQLite3("pizzaria.db");
 	$db->exec("PRAGMA foreign_keys = ON");
-	$saboresCod = $db->query("select codigo from sabor");
-    $tmp = [];
-    while($row = $saboresCod->fetchArray()){
-        $tmp[] = $row[0];
-    }
-    $saboresCod = $tmp;
-    if(in_array($_GET['codigo'], $saboresCod)){
-        echo "Sabor excluído!";
-        $db->exec("delete from saboringrediente where sabor = ".$_GET["codigo"]);
-        $db->exec("delete from pizzasabor where sabor = ".$_GET["codigo"]);
-        $db->exec("delete from sabor where codigo = ".$_GET["codigo"]);
+
+    if(!preg_match('#^[0-9]+$#', $_GET['codigo'])){
+        echo "Digite somente números!";
     } else {
-        echo "Sabor inexistente!";        
+        $saboresCod = $db->query("select codigo from sabor");
+        $tmp = [];
+        while($row = $saboresCod->fetchArray()){
+            $tmp[] = $row[0];
+        }
+        $saboresCod = $tmp;
+        if(in_array($_GET['codigo'], $saboresCod)){
+            $db->exec("delete from saboringrediente where sabor = ".$_GET["codigo"]);
+            $db->exec("delete from pizzasabor where sabor = ".$_GET["codigo"]);
+            $db->exec("delete from sabor where codigo = ".$_GET["codigo"]);
+            echo "Sabor excluído!";
+        } else {
+            echo "Sabor inexistente!";        
+        }
+
     }
 	$db->close();
 }

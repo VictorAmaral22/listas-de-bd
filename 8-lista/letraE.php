@@ -103,15 +103,15 @@ if (isset($_POST["confirmar"]) && $_POST["confirmar"] == 'confirmar') {
 
 $db->exec("insert into comanda (mesa) values (1)");
 $comandaId = $db->lastInsertRowID();
-$ultimaComanda = $db-> query("select numero, strftime('%d/%m/%Y', data, 'localtime') as data, 
+$ultimaComanda = $db-> query("select numero, strftime('%d/%m/%Y', data) as data, 
 	case 
-		when strftime('%w', comanda.data, 'localtime') = '0' then 'Dom'
-		when strftime('%w', comanda.data, 'localtime') = '1' then 'Seg'
-		when strftime('%w', comanda.data, 'localtime') = '2' then 'Ter'
-		when strftime('%w', comanda.data, 'localtime') = '3' then 'Qua'
-		when strftime('%w', comanda.data, 'localtime') = '4' then 'Qui'
-		when strftime('%w', comanda.data, 'localtime') = '5' then 'Sex'
-		when strftime('%w', comanda.data, 'localtime') = '6' then 'Sáb'
+		when strftime('%w', comanda.data) = '0' then 'Dom'
+		when strftime('%w', comanda.data) = '1' then 'Seg'
+		when strftime('%w', comanda.data) = '2' then 'Ter'
+		when strftime('%w', comanda.data) = '3' then 'Qua'
+		when strftime('%w', comanda.data) = '4' then 'Qui'
+		when strftime('%w', comanda.data) = '5' then 'Sex'
+		when strftime('%w', comanda.data) = '6' then 'Sáb'
 	end as semana from comanda where numero =".$comandaId); 
 $tmp;
 while ($row = $ultimaComanda->fetchArray()) { $tmp = $row; }
