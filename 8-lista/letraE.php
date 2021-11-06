@@ -62,32 +62,32 @@ if (isset($_POST["confirmar"]) && $_POST["confirmar"] == 'confirmar') {
 	$error = "";
 	if(!isset($_POST['mesa']) || !isset($_POST['numero'])){
 		$error .= 'Campos faltando; ';
-	}
-	$mesa = $_POST['mesa'];
-	$numero = $_POST['numero'];
-	
-	if($mesa == "" || $mesa === null){
-		$error .= 'Mesa não informada; ';
 	} else {
-		$mesas = $db->query("select codigo from mesa");
-		$tmp2 = [];
-		while($row = $mesas->fetchArray()){ $tmp2[] = $row[0]; }
-		$mesas = $tmp2;
-		if(!in_array($mesa, $mesas)){
-			$error .= 'Mesa inválida; ';
+		$mesa = $_POST['mesa'];
+		$numero = $_POST['numero'];
+		if($mesa == "" || $mesa === null){
+			$error .= 'Mesa não informada; ';
+		} else {
+			$mesas = $db->query("select codigo from mesa");
+			$tmp2 = [];
+			while($row = $mesas->fetchArray()){ $tmp2[] = $row[0]; }
+			$mesas = $tmp2;
+			if(!in_array($mesa, $mesas)){
+				$error .= 'Mesa inválida; ';
+			}
 		}
-	}
-	if($numero == "" || $numero === null){
-		$error .= 'Comanda não informada; ';
-	} else {
-		$comandas = $db->query("select numero from comanda");
-		$tmp3 = [];
-		while($row = $comandas->fetchArray()){ $tmp3[] = $row[0]; }
-		$comandas = $tmp3;
-		if(!in_array($numero, $comandas)){
-			$error .= 'Esta comanda não existe; ';
+		if($numero == "" || $numero === null){
+			$error .= 'Comanda não informada; ';
+		} else {
+			$comandas = $db->query("select numero from comanda");
+			$tmp3 = [];
+			while($row = $comandas->fetchArray()){ $tmp3[] = $row[0]; }
+			$comandas = $tmp3;
+			if(!in_array($numero, $comandas)){
+				$error .= 'Esta comanda não existe; ';
+			}
 		}
-	}
+	}	
 		
 	if ($error == "") {
 		$db->exec("update comanda set mesa = ".$mesa." where numero = ".$numero);

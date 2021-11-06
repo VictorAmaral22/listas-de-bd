@@ -22,7 +22,7 @@ function url($campo, $valor) {
 }
 if(isset($_GET['comanda'])){
     if(!preg_match("#^[0-9]{1,}$#", $_GET["comanda"])){
-        echo "Esta comanda não existe!<br>";
+        echo "Escreva uma comanda válida!<br>";
     } else {
         $exists = $db->query("select count(*) as qtd from pizza where comanda = ".$_GET['comanda']);
         $tmp;

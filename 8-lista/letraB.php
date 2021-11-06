@@ -84,7 +84,7 @@
     } else {
         $erros++;
         if(isset($_POST['nome']) || isset($_POST['tipo'])){
-            echo "Erro: dados faltando!";
+            $errorMsg .= "dados faltando!";
         }
     }
     if($erros === 0 && $_POST['confirmar'] == 'confirmar'){

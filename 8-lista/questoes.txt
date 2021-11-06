@@ -1,14 +1,16 @@
 Pra consertar:
 
 A)
+    - Pesquisa precisa passar por validação no backend
 
 B)
+    - Validar se o ingrediente está repetido
 
 C)
+    - Validar se o ingrediente está repetido
 
 D)
     - Paginar a paginação ksks
-    - Pesquisa precisa passar por validação front e back
 
 E)
 
