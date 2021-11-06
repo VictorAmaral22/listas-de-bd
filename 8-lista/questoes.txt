@@ -8,12 +8,9 @@ C)
 
 D)
     - Paginar a paginação ksks
-    - Pesquisa precisa passar por validação
-    - Permitir pesquisa por data formatada e por pago com sim e não
+    - Pesquisa precisa passar por validação front e back
 
 E)
-    - Ao sair da página, se ele n tiver feito o update, tem que excluir a comanda.
-    O mesmo se houver um refresh.
 
 F)
 

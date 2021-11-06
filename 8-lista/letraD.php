@@ -18,7 +18,10 @@ function url($campo, $valor) {
 	if (isset($_GET["data"])) $result["data"] = "data=".$_GET["data"];
 	if (isset($_GET["mesa"])) $result["mesa"] = "mesa=".$_GET["mesa"];
 	if (isset($_GET["pizzas"])) $result["pizzas"] = "pizzas=".$_GET["pizzas"];
-	if (isset($_GET["valor"])) $result["valor"] = "valor=".$_GET["valor"];
+	if (isset($_GET["valor"])) {
+		$valor = implode('.', explode(',', $_GET["valor"]));
+		$result["valor"] = "valor=".$valor;
+	}
 	if (isset($_GET["pago"])) $result["pago"] = "pago=".$_GET["pago"];
 	if (isset($_GET["orderby"])) $result["orderby"] = "orderby=".$_GET["orderby"];
 	if (isset($_GET["offset"])) $result["offset"] = "offset=".$_GET["offset"];
@@ -43,7 +46,7 @@ if (isset($_GET["data"])) $value = $_GET["data"];
 if (isset($_GET["mesa"])) $value = $_GET["mesa"];
 if (isset($_GET["pizzas"])) $value = $_GET["pizzas"];
 if (isset($_GET["valor"])) $value = $_GET["valor"];
-if (isset($_GET["pago"])) $value = $_GET["pago"];
+if (isset($_GET["pago"])) $value = $_GET["pago"] ? 'Sim' : 'Não';
 echo "<input type=\"text\" id=\"valor\" name=\"valor\" value=\"".$value."\" size=\"20\" > \n";
 
 $parameters = array();
@@ -66,10 +69,10 @@ echo "</tr>\n";
 
 $where = array();
 if (isset($_GET["comanda"])) $where[] = "comanda.numero like '%".strtr($_GET["comanda"], " ", "%")."%'";
-if (isset($_GET["data"])) $where[] = "strftime('%d/%m/%Y', comanda.data) like '%".strtr($_GET["data"], " ", "%")."%'";
+if (isset($_GET["data"])) $where[] = "strftime('%d/%m/%Y', comanda.data) = '".$_GET["data"]."'";
 if (isset($_GET["mesa"])) $where[] = "mesa.nome like '%".strtr($_GET["mesa"], " ", "%")."%'";
 if (isset($_GET["pizzas"])) $where[] = "tmp1.qtdPizzas like '%".strtr($_GET["pizzas"], " ", "%")."%'";
-if (isset($_GET["valor"])) $where[] = "tmp2.total like '%".strtr($_GET["valor"], " ", "%")."%'";
+if (isset($_GET["valor"])) $where[] = "tmp2.total = cast(".$_GET["valor"]." as float)";
 if (isset($_GET["pago"])) $where[] = "comanda.pago like '%".strtr($_GET["pago"], " ", "%")."%'";
 $where = (count($where) > 0) ? "where ".implode(" and ", $where) : "";
 
@@ -176,51 +179,87 @@ echo "<a href=\"".url("offset", (ceil($total/$limit)-1)*$limit)."\">Fim</a>";
 $db->close();
 ?>
 <br>
-<br>
 <button><a href="index.html" class="link">Voltar</a></button>
 <script>
 function validSearch(){
 	let valor = document.getElementById('valor');
 	let campo = document.getElementById('campo').value;
-	
-	if(campo == "comanda"){
-		let regExp = new RegExp('^[0-9]+$');
-		if(regExp.test(valor.value)){
-			let value = document.getElementById('valor').value.trim().replace(/ +/g, '+'); 
-			let result = '".strtr(implode("&", $parameters), " ", "+")."'; 
-			result = ((value != '') ? document.getElementById('campo').value+'='+value+((result != '') ? '&' : '') : '')+result; 
-			location.href= 'letraD.php'+((result != '') ? '?' : '')+result;
-		} else {
-			alert('Digite apenas números!');
-			valor.className = 'error';
-		}
-	}
-	if(campo == "data"){
-		let regExp = new RegExp('^(Seg|Ter|Quar|Qui|Sex|Sáb|Dom)?( )?([0-9]{2}/[0-9]{2}/[0-9]{4})?$', 'i');
-		if(regExp.test(valor.value)){
-			let value = document.getElementById('valor').value.trim().replace(/ +/g, '+'); 
-			let result = '".strtr(implode("&", $parameters), " ", "+")."'; 
-			result = ((value != '') ? document.getElementById('campo').value+'='+value+((result != '') ? '&' : '') : '')+result; 
-			location.href= 'letraD.php'+((result != '') ? '?' : '')+result;
-		} else {
-			alert('Digite apenas números!');
-			valor.className = 'error';
-		}
-	}
-	if(campo == "mesa"){}
-	if(campo == "pizzas"){}
-	if(campo == "valor"){}
-	if(campo == "pago"){
-		let value = document.getElementById('valor').value;
+	if(valor.value == ""){
+		let value = document.getElementById('valor').value.trim().replace(/ +/g, '+'); 
 		let result = '".strtr(implode("&", $parameters), " ", "+")."'; 
-		value = value.trim().toLowerCase();
-		if(value == 'sim'){
-			result = ((value != '') ? document.getElementById('campo').value+'='+'1'+((result != '') ? '&' : '') : '')+result; 
-		}
-		if(value == 'não'){
-			result = ((value != '') ? document.getElementById('campo').value+'='+'0'+((result != '') ? '&' : '') : '')+result; 
-		}
+		result = ((value != '') ? document.getElementById('campo').value+'='+value+((result != '') ? '&' : '') : '')+result; 
 		location.href= 'letraD.php'+((result != '') ? '?' : '')+result;
+	} else {
+		if(campo == "comanda"){
+			let regExp = new RegExp('^[0-9]+$');
+			if(regExp.test(valor.value)){
+				let value = document.getElementById('valor').value.trim().replace(/ +/g, '+'); 
+				let result = '".strtr(implode("&", $parameters), " ", "+")."'; 
+				result = ((value != '') ? document.getElementById('campo').value+'='+value+((result != '') ? '&' : '') : '')+result; 
+				location.href= 'letraD.php'+((result != '') ? '?' : '')+result;
+			} else {
+				alert('Digite apenas números!');
+				valor.className = 'error';
+			}
+		}
+		if(campo == "data"){
+			let regExp = new RegExp('^([0-9]{2}/[0-9]{2}/[0-9]{4})$');
+			if(regExp.test(valor.value)){
+				let value = document.getElementById('valor').value.trim().replace(/ +/g, '+'); 
+				let result = '".strtr(implode("&", $parameters), " ", "+")."'; 
+				result = ((value != '') ? document.getElementById('campo').value+'='+value+((result != '') ? '&' : '') : '')+result; 
+				location.href= 'letraD.php'+((result != '') ? '?' : '')+result;
+			} else {
+				alert('Digite a data formatadada dd/mm/aaaa!');
+				valor.className = 'error';
+			}
+		}
+		if(campo == "mesa"){
+			let regExp = new RegExp('^[0-9]{1,}[A-Z]{1,}$', 'i');
+			if(regExp.test(valor.value)){
+				let value = document.getElementById('valor').value.trim().replace(/ +/g, '+'); 
+				let result = '".strtr(implode("&", $parameters), " ", "+")."'; 
+				result = ((value != '') ? document.getElementById('campo').value+'='+value+((result != '') ? '&' : '') : '')+result; 
+				location.href= 'letraD.php'+((result != '') ? '?' : '')+result;
+			} else {
+				alert('Digite a mesa dessa forma 1A!');
+				valor.className = 'error';
+			}
+		}
+		if(campo == "pizzas"){}
+		if(campo == "valor"){
+			let regExp = new RegExp('^([0-9]+),([0-9]{2})$');
+			if(regExp.test(valor.value)){
+				let value = document.getElementById('valor').value; 
+				// value = implode('.', explode(',', value));
+				value = value.split(',');
+				value = value.join('.');
+				let result = '".strtr(implode("&", $parameters), " ", "+")."'; 
+				result = ((value != '') ? document.getElementById('campo').value+'='+value+((result != '') ? '&' : '') : '')+result; 
+				location.href= 'letraD.php'+((result != '') ? '?' : '')+result;
+			} else {
+				alert('Digite um número!');
+				valor.className = 'error';
+			}
+		}
+		if(campo == "pago"){
+			let regExp = new RegExp('^(Sim|Não)$', 'i');
+			if(regExp.test(valor.value)){
+				let value = document.getElementById('valor').value;
+				let result = '".strtr(implode("&", $parameters), " ", "+")."'; 
+				value = value.trim().toLowerCase();
+				if(value == 'sim'){
+					result = ((value != '') ? document.getElementById('campo').value+'='+'1'+((result != '') ? '&' : '') : '')+result; 
+				}
+				if(value == 'não'){
+					result = ((value != '') ? document.getElementById('campo').value+'='+'0'+((result != '') ? '&' : '') : '')+result; 
+				}
+				location.href= 'letraD.php'+((result != '') ? '?' : '')+result;	
+			} else {
+				alert('Digite sim ou não...');
+				valor.className = 'error';
+			}
+		}
 	}
 }
 </script>

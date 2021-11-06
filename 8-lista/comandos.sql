@@ -84,6 +84,15 @@ group by comanda.numero;
 -- E)
 select * from mesa;
 
+-- F)
+select pizza.codigo, pizza.comanda, tamanho.nome, group_concat(sabor.nome, ', '), borda.nome from pizza 
+	join tamanho on pizza.tamanho = tamanho.codigo
+	join pizzasabor on pizzasabor.pizza = pizza.codigo 
+	join sabor on pizzasabor.sabor = sabor.codigo
+	left join borda on pizza.borda = borda.codigo 
+group by pizza.codigo
+limit 10;
+
 -- G)
 select count(*) as qtd from pizza where comanda = "1asd";
 

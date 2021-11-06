@@ -100,8 +100,6 @@ if (isset($_POST["confirmar"]) && $_POST["confirmar"] == 'confirmar') {
 		echo "<font color=\"red\">".$error."</font>";
 	}
 }
-$updated = $db->changes();
-echo $updated;
 
 $db->exec("insert into comanda (mesa) values (1)");
 $comandaId = $db->lastInsertRowID();
@@ -120,7 +118,6 @@ while ($row = $ultimaComanda->fetchArray()) { $tmp = $row; }
 $ultimaComanda = $tmp;
 $data = $ultimaComanda[1];
 $diaSemana = $ultimaComanda[2];
-var_dump($_POST);
 
 echo "<h1>Inclusão de Comandas</h1>\n";
 echo "<form id=\"comanda\" name=\"comanda\" action=\"letraE.php?\" method=\"post\">";
@@ -147,7 +144,7 @@ echo "<input type=\"button\" value=\"Inclui\" onclick=\"valid()\">";
 echo "</form>";
 
 echo "<br>";
-echo "<button onclick=\"\"><a href=\"letraD.php\" class=\"link\">Voltar</a></button>";
+echo "<button><a href=\"letraD.php\" class=\"link\">Voltar</a></button>";
 
 $db->close();
 ?>
